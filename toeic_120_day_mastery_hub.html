@@ -1556,7 +1556,130 @@
   <!-- Toast Container -->
   <div id="toastContainer" class="toast-wrap"></div>
 
-  <script>
+  <script data-cfasync="false">
+    // ==========================================================================
+    // 1. GLOBAL STATE, CONSTANTS & SEED DATA (DAY 1: "filing cabinet")
+    // ==========================================================================
+    const STORAGE_KEY = 'toeic_120days_hub_v4_state';
+    const AI_CONFIG_KEY = 'toeic_120days_hub_v4_aiconfig';
+
+    const DEFAULT_DAY1_WORDS = [
+      {
+        id: 'w_day1_1',
+        word: 'filing cabinet',
+        pos: 'Noun Phrase',
+        phonetic: '/ˈfaɪ.lɪŋ ˌkæb.ɪ.nət/',
+        meaning: 'tủ đựng tài liệu',
+        exampleEn: 'She needed some folders, so she went to the filing cabinet and opened the top drawer.',
+        exampleVi: 'Cô ấy cần một vài bìa kẹp hồ sơ, vì vậy cô ấy đã đi đến tủ đựng tài liệu và mở ngăn kéo trên cùng.',
+        notes: 'open the top/bottom drawer (mở ngăn kéo trên/dưới); locked filing cabinet (tủ tài liệu có khóa); keep signed contracts in a filing cabinet.'
+      }
+    ];
+
+    const FALLBACK_POOL = [
+      {
+        id: 'fb_1',
+        word: 'implement',
+        pos: 'Verb',
+        phonetic: '/ˈɪm.plɪ.ment/',
+        meaning: 'triển khai, thực thi',
+        exampleEn: 'Our backend team will implement the new authentication API this afternoon.'
+      },
+      {
+        id: 'fb_2',
+        word: 'verify',
+        pos: 'Verb',
+        phonetic: '/ˈver.ɪ.faɪ/',
+        meaning: 'xác minh, kiểm chứng',
+        exampleEn: 'Please verify the database schema before running the migration.'
+      },
+      {
+        id: 'fb_3',
+        word: 'confidential',
+        pos: 'Adjective',
+        phonetic: '/ˌkɒn.fɪˈden.ʃəl/',
+        meaning: 'bảo mật, tuyệt mật',
+        exampleEn: 'All client payment records must be kept strictly confidential.'
+      },
+      {
+        id: 'fb_4',
+        word: 'reconcile',
+        pos: 'Verb',
+        phonetic: '/ˈrek.ən.saɪl/',
+        meaning: 'đối soát, hòa giải',
+        exampleEn: 'The system automatically reconciles tuition payments via VietQR.'
+      }
+    ];
+
+    function createInitialAppState() {
+      const days = {};
+      for (let i = 1; i <= 120; i++) {
+        days[String(i)] = {
+          words: i === 1 ? [...DEFAULT_DAY1_WORDS] : [],
+          sentences: i === 1 ? [
+            {
+              id: 's_seed_1',
+              text: 'Even though we deploy project documents on the cloud, HR still keeps signed contracts in the filing cabinet.',
+              usedWords: ['filing cabinet'],
+              createdAt: 'Mẫu gợi ý Ngày 1',
+              aiFeedback: {
+                score: '9.5/10',
+                encouragement: 'Kết hợp từ vựng văn phòng (filing cabinet) vào ngữ cảnh thực tế công nghệ rất tự nhiên!',
+                grammarNotes: 'Cấu trúc tương phản "Even though + mệnh đề" chuẩn xác, dùng giới từ "in the filing cabinet" hoàn toàn đúng.',
+                naturalWorkVersion: 'We store most specs on the cloud, but HR still locks physical contracts in the filing cabinet.',
+                toeicHighVersion: 'Although most corporate documentation is archived digitally, the HR department retains signed agreements in a locked filing cabinet.'
+              }
+            }
+          ] : [],
+          story: null
+        };
+      }
+      return {
+        activeDay: 1,
+        extraReviewDays: [],
+        dayFilter: 'all',
+        vocabViewMode: 'focus',
+        focusCardIndex: 0,
+        voiceAccent: 'en-US',
+        voiceRate: 1.0,
+        days
+      };
+    }
+
+    function loadAppState() {
+      const base = createInitialAppState();
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return base;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object' || !parsed.days) return base;
+        for (let i = 1; i <= 120; i++) {
+          const k = String(i);
+          if (!parsed.days[k]) {
+            parsed.days[k] = { words: [], sentences: [], story: null };
+          } else {
+            parsed.days[k].words = Array.isArray(parsed.days[k].words) ? parsed.days[k].words : [];
+            parsed.days[k].sentences = Array.isArray(parsed.days[k].sentences) ? parsed.days[k].sentences : [];
+          }
+        }
+        if (parsed.days['1'].words.length === 0) {
+          parsed.days['1'].words = [...DEFAULT_DAY1_WORDS];
+        }
+        return { ...base, ...parsed };
+      } catch (e) {
+        return base;
+      }
+    }
+
+    let activeTab = 'vocab';
+    let quizState = {
+      mode: 'EN_VI',
+      questions: [],
+      currentIndex: 0,
+      score: 0,
+      answeredCount: 0
+    };
+
     // ==========================================================================
     // 2. CLINE-STYLE AI ENGINE (ANTHROPIC CLAUDE OPUS 5.5 / SONNET & GEMINI)
     // ==========================================================================
@@ -1932,6 +2055,9 @@
       }
     }
 
+    let appState = loadAppState();
+    let aiConfig = loadAiSettings();
+
     function saveAppState() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
@@ -1947,174 +2073,6 @@
         appState.days[k] = { words: [], sentences: [], story: null };
       }
       return appState.days[k];
-    }
-
-    // ==========================================================================
-    // 2. DUAL AI ENGINE (ANTHROPIC CLAUDE & GOOGLE GEMINI)
-    // ==========================================================================
-    function loadAiSettings() {
-      const def = {
-        provider: 'gemini',
-        claudeKey: '',
-        claudeModel: 'claude-sonnet-4-20250514',
-        geminiKey: '',
-        geminiModel: 'gemini-3-flash-preview'
-      };
-      try {
-        const raw = localStorage.getItem(AI_CONFIG_KEY);
-        return raw ? { ...def, ...JSON.parse(raw) } : def;
-      } catch (e) {
-        return def;
-      }
-    }
-
-    function saveAiSettings() {
-      localStorage.setItem(AI_CONFIG_KEY, JSON.stringify(aiConfig));
-      updateAiHeaderIndicator();
-    }
-
-    function updateAiHeaderIndicator() {
-      const label = document.getElementById('aiHeaderLabel');
-      const dot = document.getElementById('aiStatusDot');
-      if (!label || !dot) return;
-
-      if (aiConfig.provider === 'claude') {
-        const hasKey = Boolean(aiConfig.claudeKey && aiConfig.claudeKey.trim());
-        label.textContent = hasKey ? 'AI: Claude API' : 'AI: Claude (Thiếu Key)';
-        dot.style.backgroundColor = hasKey ? 'var(--success)' : 'var(--amber)';
-      } else {
-        label.textContent = 'AI: Gemini API';
-        dot.style.backgroundColor = 'var(--success)';
-      }
-    }
-
-    let modalProviderTemp = 'gemini';
-
-    function selectProviderInModal(prov) {
-      modalProviderTemp = prov;
-      const cardClaude = document.getElementById('providerCardClaude');
-      const cardGemini = document.getElementById('providerCardGemini');
-      const tickClaude = document.getElementById('providerTickClaude');
-      const tickGemini = document.getElementById('providerTickGemini');
-
-      if (prov === 'claude') {
-        cardClaude.style.borderColor = 'var(--primary)';
-        cardClaude.style.backgroundColor = 'var(--primary-soft)';
-        cardGemini.style.borderColor = 'var(--border-default)';
-        cardGemini.style.backgroundColor = 'var(--bg-surface)';
-        tickClaude.classList.remove('hidden');
-        tickGemini.classList.add('hidden');
-      } else {
-        cardGemini.style.borderColor = 'var(--primary)';
-        cardGemini.style.backgroundColor = 'var(--primary-soft)';
-        cardClaude.style.borderColor = 'var(--border-default)';
-        cardClaude.style.backgroundColor = 'var(--bg-surface)';
-        tickGemini.classList.remove('hidden');
-        tickClaude.classList.add('hidden');
-      }
-    }
-
-    function saveAiConfigFromModal() {
-      aiConfig.provider = modalProviderTemp;
-      aiConfig.claudeKey = document.getElementById('inputClaudeKey').value.trim();
-      aiConfig.claudeModel = document.getElementById('selectClaudeModel').value;
-      aiConfig.geminiKey = document.getElementById('inputGeminiKey').value.trim();
-      aiConfig.geminiModel = document.getElementById('selectGeminiModel').value;
-      saveAiSettings();
-      closeModal('aiSettingsModal');
-      showToast('Đã lưu cấu hình AI API!');
-    }
-
-    async function callAI(systemPrompt, userPrompt, overrideCfg = null) {
-      const cfg = overrideCfg || aiConfig;
-      if (cfg.provider === 'claude') {
-        if (!cfg.claudeKey) {
-          openModal('aiSettingsModal');
-          throw new Error('Vui lòng nhập Anthropic Claude API Key (sk-ant-...) trong mục Cấu hình AI!');
-        }
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': cfg.claudeKey,
-            'anthropic-version': '2023-06-01',
-            'anthropic-dangerous-direct-browser-access': 'true'
-          },
-          body: JSON.stringify({
-            model: cfg.claudeModel || 'claude-sonnet-4-20250514',
-            max_tokens: 2000,
-            system: systemPrompt,
-            messages: [{ role: 'user', content: userPrompt }]
-          })
-        });
-        if (!res.ok) {
-          const errTxt = await res.text();
-          throw new Error(`Claude API (${res.status}): ${errTxt.slice(0, 160)}`);
-        }
-        const data = await res.json();
-        return data?.content?.[0]?.text || '';
-      } else {
-        const apiKey = cfg.geminiKey || "";
-        const model = cfg.geminiModel || 'gemini-3-flash-preview';
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: userPrompt }] }],
-            systemInstruction: { parts: [{ text: systemPrompt }] }
-          })
-        });
-        if (!res.ok) {
-          const errTxt = await res.text();
-          throw new Error(`Gemini API (${res.status}): ${errTxt.slice(0, 160)}`);
-        }
-        const data = await res.json();
-        return data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      }
-    }
-
-    function parseJsonResponse(raw) {
-      const cleaned = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
-      const first = cleaned.indexOf('{');
-      const last = cleaned.lastIndexOf('}');
-      if (first !== -1 && last !== -1 && last > first) {
-        return JSON.parse(cleaned.slice(first, last + 1));
-      }
-      return JSON.parse(cleaned);
-    }
-
-    async function testAiConnection() {
-      const btn = document.getElementById('btnTestAi');
-      const box = document.getElementById('aiConnectionResultBox');
-      const tempCfg = {
-        provider: modalProviderTemp,
-        claudeKey: document.getElementById('inputClaudeKey').value.trim(),
-        claudeModel: document.getElementById('selectClaudeModel').value,
-        geminiKey: document.getElementById('inputGeminiKey').value.trim(),
-        geminiModel: document.getElementById('selectGeminiModel').value
-      };
-
-      btn.disabled = true;
-      btn.textContent = 'Đang kiểm tra...';
-      box.classList.remove('hidden');
-      box.style.backgroundColor = 'var(--bg-subtle)';
-      box.style.color = 'var(--text-secondary)';
-      box.textContent = 'Đang gửi yêu cầu kết nối tới API...';
-
-      try {
-        const reply = await callAI('Trả lời ngắn gọn bằng 1 câu tiếng Việt.', 'Xác nhận kết nối API thành công.', tempCfg);
-        box.style.backgroundColor = 'var(--success-soft)';
-        box.style.color = 'var(--success)';
-        box.textContent = `Kết nối thành công (${tempCfg.provider.toUpperCase()}): "${reply.trim()}"`;
-      } catch (err) {
-        box.style.backgroundColor = 'var(--danger-soft)';
-        box.style.color = 'var(--danger)';
-        box.textContent = `Lỗi: ${err.message}`;
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Kiểm tra kết nối API';
-      }
     }
 
     // ==========================================================================
@@ -3047,7 +3005,7 @@ Hãy đánh giá câu tiếng Anh của người học và trả về DUY NHẤT
               </div>
             </div>
             <div style="display:flex;align-items:center;gap:4px;">
-              <button onclick="speakText('${s.text.replace(/'/g, "\\'")}')" class="speaker-mini-btn">🔊</button>
+              <button onclick="speakTextById('${s.id}')" class="speaker-mini-btn">🔊</button>
               <button onclick="deleteSavedSentence('${s.id}')" class="btn-danger-ghost">✕</button>
             </div>
           </div>
@@ -3064,6 +3022,19 @@ Hãy đánh giá câu tiếng Anh của người học và trả về DUY NHẤT
         `;
         listEl.appendChild(item);
       });
+    }
+
+    function speakTextById(sid) {
+      const dObj = ensureDay(appState.activeDay);
+      const found = (dObj.sentences || []).find(s => s.id === sid);
+      if (found && found.text) speakText(found.text);
+    }
+
+    function speakCurrentStory() {
+      const dObj = ensureDay(appState.activeDay);
+      if (dObj.story && dObj.story.englishText) {
+        speakText(dObj.story.englishText);
+      }
     }
 
     function deleteSavedSentence(sid) {
@@ -3116,7 +3087,7 @@ Hãy đánh giá câu tiếng Anh của người học và trả về DUY NHẤT
           <div style="padding:20px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-md);">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
               <h3 style="font-size:15px;font-weight:700;">${escapeHtml(st.title || 'TOEIC Contextual Reading')}</h3>
-              <button onclick="speakText(\`${(st.englishText || '').replace(/`/g, '')}\`)" class="btn btn-secondary btn-sm">🔊 Nghe đọc cả bài</button>
+              <button onclick="speakCurrentStory()" class="btn btn-secondary btn-sm">🔊 Nghe đọc cả bài</button>
             </div>
             <p style="font-size:14.5px;line-height:1.7;white-space:pre-line;">${htmlEn}</p>
           </div>
@@ -3333,9 +3304,20 @@ Trả về DUY NHẤT 1 JSON object hợp lệ:
       }
     });
 
-    window.onload = function () {
-      renderAll();
-    };
+    function bootstrapApp() {
+      try {
+        switchTab('vocab');
+        renderAll();
+      } catch (err) {
+        console.error('Initialization error:', err);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bootstrapApp);
+    } else {
+      bootstrapApp();
+    }
   </script>
 </body>
 </html>
