@@ -1246,6 +1246,75 @@
 
               <div style="display:flex;align-items:center;gap:8px;">
                 <input id="vocabSearchInput" type="text" placeholder="Lọc nhanh từ hoặc nghĩa..." oninput="renderVocabSection()" class="input" style="width:220px;height:32px;" />
+              </div>
+            </div>
+
+            <!-- Dynamic Vocab Content (Focus Card OR Detailed List) -->
+            <div id="vocabContentContainer"></div>
+          </section>
+
+          <!-- ==================== TAB 2: IMMERSIVE MCQ QUIZ ==================== -->
+          <section id="tabPanel-quiz" class="hidden" style="display:flex;flex-direction:column;gap:16px;">
+            <div class="card" style="padding:20px 24px;">
+              <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;">
+                <div class="segmented-group">
+                  <button id="quizModeBtn-EN_VI" onclick="setQuizMode('EN_VI')" class="segmented-btn active">Anh ➔ Việt</button>
+                  <button id="quizModeBtn-VI_EN" onclick="setQuizMode('VI_EN')" class="segmented-btn">Việt ➔ Anh</button>
+                  <button id="quizModeBtn-CONTEXT" onclick="setQuizMode('CONTEXT')" class="segmented-btn">Điền từ TOEIC Part 5</button>
+                </div>
+
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span id="quizScoreBadge" class="badge badge-success">Đúng: 0/0</span>
+                  <button onclick="startNewQuiz()" class="btn btn-secondary btn-sm">Trộn đề mới</button>
+                </div>
+              </div>
+
+              <div id="quizBodyContainer"></div>
+            </div>
+          </section>
+
+          <!-- ==================== TAB 3: START MIXING (CHRIS LONSDALE) ==================== -->
+          <section id="tabPanel-mixing" class="hidden" style="display:flex;flex-direction:column;gap:16px;">
+            <div class="card" style="padding:20px 24px;display:flex;flex-direction:column;gap:14px;">
+              <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;">
+                <div>
+                  <h3 style="font-size:15px;font-weight:700;">Start Mixing — Tự đặt câu phản xạ với từ vựng đang chọn</h3>
+                  <p style="font-size:12.5px;color:var(--text-muted);">Bấm vào các thẻ từ bên dưới để chèn nhanh vào câu của bạn (kết hợp 2-3 từ trong 1 câu để nhớ lâu gấp 5 lần)</p>
+                </div>
+                <span id="mixingUsedCountLabel" class="badge badge-primary">Đã kết hợp: 0/21 từ</span>
+              </div>
+
+              <div id="mixingChipsContainer" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+
+              <textarea id="mixingSentenceInput" rows="3" oninput="updateMixingChipsHighlight()" class="textarea" placeholder="Viết câu tiếng Anh của bạn tại đây (VD: Please organize the filing cabinet and label each drawer so we can locate any document quickly)..."></textarea>
+
+              <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <button onclick="speakText(document.getElementById('mixingSentenceInput').value)" class="btn btn-secondary btn-sm">
+                    🔊 Nghe thử câu vừa viết
+                  </button>
+                  <button onclick="saveSentenceOnly()" class="btn btn-secondary btn-sm">
+                    Lưu câu vào sổ tay
+                  </button>
+                  <button onclick="copyPromptForChat()" class="btn btn-secondary btn-sm">
+                    Copy Prompt nhờ chấm
+                  </button>
+                </div>
+
+                <button id="btnEvaluateWithAI" onclick="evaluateCurrentSentenceWithAI()" class="btn btn-primary">
+                  ✨ Chấm điểm & Nâng cấp câu bằng AI (Claude / Gemini)
+                </button>
+              </div>
+
+              <div id="aiEvaluationOutput" class="hidden"></div>
+            </div>
+
+            <div class="card" style="padding:20px 24px;">
+              <h4 style="font-size:14px;font-weight:700;margin-bottom:12px;">Sổ tay các câu đã viết trong Ngày này</h4>
+              <div id="savedSentencesContainer" style="display:flex;flex-direction:column;gap:10px;"></div>
+            </div>
+          </section>
+
           <!-- ==================== TAB 4: AI LIFE STORIES & CONTEXTUAL WRITING (MASTER-DETAIL) ==================== -->
           <section id="tabPanel-story" class="hidden" style="display:flex;flex-direction:column;gap:14px;">
             <div class="story-studio-grid">
@@ -2244,18 +2313,6 @@
       }
     }
 
-    function handleProviderDropdownChange(prov) {
-      const anthBlock = document.getElementById('anthropicConfigBlock');
-      const gemBlock = document.getElementById('geminiConfigBlock');
-      if (prov === 'claude') {
-        anthBlock.classList.remove('hidden');
-        gemBlock.classList.add('hidden');
-      } else {
-        anthBlock.classList.add('hidden');
-        gemBlock.classList.remove('hidden');
-      }
-    }
-
     function togglePasswordVisibility(inputId, btnEl) {
       const inp = document.getElementById(inputId);
       if (!inp) return;
@@ -2357,6 +2414,24 @@
         openAiModel: document.getElementById('inputOpenAiModel').value.trim()
       };
     }
+
+    function resolveAnthropicEndpoint(cfg) {
+      let base = (cfg.useCustomBaseUrl && cfg.customBaseUrl)
+        ? cfg.customBaseUrl.trim()
+        : 'https://api.anthropic.com';
+      base = base.replace(/\/+$/, '');
+      if (base.endsWith('/v1/messages')) return base;
+      if (base.endsWith('/v1')) return base + '/messages';
+      return base + '/v1/messages';
+    }
+
+    function saveAiConfigFromModal() {
+      aiConfig = buildClineDraftConfigFromModal();
+      saveAiSettings();
+      closeModal('aiSettingsModal');
+      showToast('Đã lưu cấu hình AI API thành công!');
+    }
+
     async function sendAnthropicRequestSingle(endpoint, apiKey, modelId, systemPrompt, userPrompt, reasoningEffort, workspaceId = '') {
       const payload = {
         model: modelId,
@@ -2855,6 +2930,40 @@
       appState.dayFilter = mode;
       document.getElementById('filterBtnAll').className = mode === 'all' ? 'segmented-btn active' : 'segmented-btn';
       document.getElementById('filterBtnHasWords').className = mode === 'has_words' ? 'segmented-btn active' : 'segmented-btn';
+      saveAppState();
+      renderSidebarDays();
+    }
+
+    function handleDaySearch(val) {
+      const num = parseInt(val, 10);
+      if (!isNaN(num) && num >= 1 && num <= 120) {
+        selectDay(num);
+      }
+    }
+
+    function toggleReviewDay(dayNum) {
+      const d = Number(dayNum);
+      const list = Array.isArray(appState.extraReviewDays) ? [...appState.extraReviewDays] : [];
+      const idx = list.indexOf(d);
+      if (idx >= 0) list.splice(idx, 1);
+      else list.push(d);
+      appState.extraReviewDays = list.sort((a, b) => a - b);
+      saveAppState();
+      renderAll();
+    }
+
+    function getActiveVocabularyPool() {
+      const targetDays = [appState.activeDay, ...(appState.extraReviewDays || [])];
+      const pool = [];
+      targetDays.forEach(dNum => {
+        const dObj = ensureDay(dNum);
+        (dObj.words || []).forEach(w => {
+          pool.push({ ...w, dayNum: dNum });
+        });
+      });
+      return pool;
+    }
+
     function selectDay(dayNum) {
       const num = Math.max(1, Math.min(120, Number(dayNum) || 1));
       stopAllSpeech();
