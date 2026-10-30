@@ -1,0 +1,3341 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TOEIC 120-Day Mastery Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================================================
+       1. DESIGN TOKENS & RESET (NO GRADIENTS, MATTE EYE-CARE STUDIO PALETTE)
+       ========================================================================== */
+    :root {
+      --bg-canvas: #F8FAFC;
+      --bg-surface: #FFFFFF;
+      --bg-subtle: #F1F5F9;
+      --bg-hover: #F1F5F9;
+      --bg-active: #EFF6FF;
+
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #64748B;
+      --text-placeholder: #94A3B8;
+
+      --border-default: #E2E8F0;
+      --border-strong: #CBD5E1;
+      --border-focus: #2563EB;
+
+      /* Flat Solid Accents - Strictly No Gradients */
+      --primary: #2563EB;
+      --primary-hover: #1D4ED8;
+      --primary-soft: #EFF6FF;
+      --primary-border: #BFDBFE;
+
+      /* Keyword Highlight matching reference image "filing cabinet" */
+      --amber: #D97706;
+      --amber-soft: #FEF3C7;
+      --amber-border: #FDE68A;
+
+      /* Semantic Success */
+      --success: #059669;
+      --success-soft: #ECFDF5;
+      --success-border: #A7F3D0;
+
+      /* Semantic Danger */
+      --danger: #E11D48;
+      --danger-soft: #FFF1F2;
+      --danger-border: #FECDD3;
+
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+
+      --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+      --shadow-modal: 0 12px 32px rgba(15, 23, 42, 0.12);
+
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      font-family: var(--font-sans);
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
+    }
+
+    /* ==========================================================================
+       2. APP SHELL LAYOUT (8PX SPATIAL SYSTEM)
+       ========================================================================== */
+    .app-shell {
+      display: grid;
+      grid-template-rows: 56px 1fr;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+
+    /* Top Header (56px fixed) */
+    .top-header {
+      height: 56px;
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-default);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      z-index: 20;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-md);
+      background-color: var(--primary);
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding-left: 12px;
+      border-left: 1px solid var(--border-default);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Workspace 2-Column Split */
+    .workspace {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      height: calc(100vh - 56px);
+      overflow: hidden;
+    }
+
+    /* Left Sidebar (280px) */
+    .sidebar {
+      width: 280px;
+      background-color: var(--bg-surface);
+      border-right: 1px solid var(--border-default);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .sidebar-section {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    .sidebar-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .day-list-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 12px 16px 12px;
+    }
+
+    .day-item {
+      width: 100%;
+      height: 38px;
+      padding: 0 12px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: background-color 0.12s ease, color 0.12s ease;
+      border: 1px solid transparent;
+    }
+
+    .day-item:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .day-item.active {
+      background-color: var(--primary-soft);
+      color: var(--primary);
+      border-color: var(--primary-border);
+      font-weight: 600;
+    }
+
+    .day-item-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .day-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #CBD5E1;
+    }
+
+    .day-item.has-words .day-dot {
+      background-color: var(--success);
+    }
+
+    .day-item.active .day-dot {
+      background-color: var(--primary);
+    }
+
+    /* Main Content Scrollable Area */
+    .main-stage {
+      height: 100%;
+      overflow-y: auto;
+      padding: 24px 32px 48px 32px;
+    }
+
+    .stage-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ==========================================================================
+       3. ATOMIC UI COMPONENTS (BUTTONS, INPUTS, BADGES, CARDS, TABS)
+       ========================================================================== */
+    .btn {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: 1px solid transparent;
+      transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .btn-sm {
+      height: 30px;
+      padding: 0 10px;
+      font-size: 12px;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-surface);
+      color: var(--text-primary);
+      border-color: var(--border-default);
+      box-shadow: var(--shadow-xs);
+    }
+    .btn-secondary:hover:not(:disabled) {
+      background-color: var(--bg-subtle);
+      border-color: var(--border-strong);
+    }
+
+    .btn-soft {
+      background-color: var(--primary-soft);
+      color: var(--primary);
+      border-color: var(--primary-border);
+    }
+    .btn-soft:hover:not(:disabled) {
+      background-color: #DBEAFE;
+    }
+
+    .btn-amber {
+      background-color: var(--amber-soft);
+      color: var(--amber);
+      border-color: var(--amber-border);
+    }
+    .btn-amber:hover:not(:disabled) {
+      background-color: #FDE68A;
+    }
+
+    .btn-danger-ghost {
+      color: var(--text-muted);
+      height: 30px;
+      padding: 0 8px;
+      border-radius: var(--radius-sm);
+    }
+    .btn-danger-ghost:hover {
+      background-color: var(--danger-soft);
+      color: var(--danger);
+    }
+
+    .input, .select, .textarea {
+      width: 100%;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 13px;
+      color: var(--text-primary);
+      transition: border-color 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .input:focus, .select:focus, .textarea:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .input-mono {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 500;
+      background-color: var(--bg-subtle);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-default);
+    }
+
+    .badge-primary {
+      background-color: var(--primary-soft);
+      color: var(--primary);
+      border-color: var(--primary-border);
+    }
+
+    .badge-success {
+      background-color: var(--success-soft);
+      color: var(--success);
+      border-color: var(--success-border);
+    }
+
+    .badge-amber {
+      background-color: var(--amber-soft);
+      color: var(--amber);
+      border-color: var(--amber-border);
+    }
+
+    .card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xs);
+    }
+
+    /* Segmented Control & Navigation Bar */
+    .segmented-group {
+      display: inline-flex;
+      background-color: var(--bg-subtle);
+      padding: 3px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-default);
+    }
+
+    .segmented-btn {
+      height: 30px;
+      padding: 0 12px;
+      border-radius: 5px;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.12s ease;
+    }
+
+    .segmented-btn.active {
+      background-color: var(--bg-surface);
+      color: var(--text-primary);
+      font-weight: 600;
+      box-shadow: var(--shadow-xs);
+    }
+
+    /* Main Workspace Tabs */
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      border-bottom: 1px solid var(--border-default);
+      padding-bottom: 0;
+    }
+
+    .nav-tab {
+      height: 42px;
+      padding: 0 16px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      border-bottom: 2px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: -1px;
+      transition: color 0.12s ease, border-color 0.12s ease;
+    }
+
+    .nav-tab:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* ==========================================================================
+       4. FOCUS FLASHCARD VIEW (MATCHING USER SCREENSHOT "filing cabinet")
+       ========================================================================== */
+    .focus-study-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 32px 40px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .focus-counter {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .focus-word {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .focus-pos-pill {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 6px;
+      background-color: var(--bg-subtle);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    .focus-phonetic {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+
+    .focus-meaning {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 18px;
+    }
+
+    .speaker-box-btn {
+      width: 56px;
+      height: 38px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--primary);
+      background-color: var(--bg-surface);
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.12s ease;
+      margin-bottom: 28px;
+    }
+
+    .speaker-box-btn:hover {
+      background-color: var(--primary-soft);
+    }
+
+    .speaker-mini-btn {
+      width: 32px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--primary-border);
+      background-color: var(--bg-surface);
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background-color 0.12s ease;
+    }
+    .speaker-mini-btn:hover {
+      background-color: var(--primary-soft);
+    }
+
+    .focus-example-bar {
+      width: 100%;
+      max-width: 720px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-default);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: left;
+    }
+
+    .focus-example-en-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 15px;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .kw-highlight {
+      color: var(--amber);
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       5. VOCABULARY LIST CARDS, QUIZ & START MIXING WORKSPACE
+       ========================================================================== */
+    .vocab-list-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .vocab-row-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      box-shadow: var(--shadow-xs);
+      transition: border-color 0.12s ease;
+    }
+
+    .vocab-row-card:hover {
+      border-color: var(--border-strong);
+    }
+
+    .quiz-option-btn {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-default);
+      background-color: var(--bg-surface);
+      text-align: left;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: all 0.12s ease;
+    }
+
+    .quiz-option-btn:hover:not(:disabled) {
+      background-color: var(--bg-subtle);
+      border-color: var(--primary);
+    }
+
+    .quiz-option-btn.correct {
+      background-color: var(--success-soft);
+      border-color: var(--success);
+      color: #065F46;
+      font-weight: 600;
+    }
+
+    .quiz-option-btn.wrong {
+      background-color: var(--danger-soft);
+      border-color: var(--danger);
+      color: #9F1239;
+    }
+
+    .word-chip {
+      height: 30px;
+      padding: 0 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-default);
+      background-color: var(--bg-surface);
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.12s ease;
+    }
+
+    .word-chip:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .word-chip.used {
+      background-color: var(--success-soft);
+      border-color: var(--success-border);
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    /* ==========================================================================
+       6. MODALS & TOAST NOTIFICATIONS
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(15, 23, 42, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-panel {
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-modal);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-body {
+      padding: 20px 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-footer {
+      padding: 14px 24px;
+      background-color: var(--bg-canvas);
+      border-top: 1px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    /* ==========================================================================
+       6B. CLINE-STYLE API CONFIGURATION MODAL (CLEAN STUDIO EDITION)
+       ========================================================================== */
+    .cline-modal-panel {
+      width: 100%;
+      max-width: 680px;
+      max-height: 92vh;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-modal);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .cline-topbar {
+      height: 54px;
+      padding: 0 20px;
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .cline-topbar-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .cline-done-btn {
+      height: 32px;
+      padding: 0 16px;
+      border-radius: 4px;
+      background-color: #007ACC;
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid #007ACC;
+      transition: background-color 0.12s ease;
+    }
+    .cline-done-btn:hover {
+      background-color: #0062A3;
+      border-color: #0062A3;
+    }
+
+    .cline-body-split {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .cline-left-rail {
+      background-color: var(--bg-canvas);
+      border-right: 1px solid var(--border-default);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 8px;
+      gap: 4px;
+    }
+
+    .cline-rail-item {
+      width: 48px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      position: relative;
+      cursor: pointer;
+    }
+
+    .cline-rail-item.active {
+      color: #007ACC;
+      background-color: var(--primary-soft);
+    }
+
+    .cline-rail-item.active::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background-color: #007ACC;
+    }
+
+    .cline-config-pane {
+      padding: 20px 24px 28px 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .cline-section-heading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    .cline-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .cline-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .cline-caption {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .cline-checkbox-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .cline-checkbox-row input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      accent-color: #007ACC;
+      cursor: pointer;
+    }
+
+    .cline-specs-bar {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      padding-top: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cline-specs-bar strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .cline-advanced-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      padding: 4px 0;
+      cursor: pointer;
+      user-select: none;
+    }
+    .cline-advanced-toggle:hover {
+      color: var(--text-primary);
+    }
+
+    .toast-wrap {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast-item {
+      background-color: var(--text-primary);
+      color: #FFFFFF;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: var(--shadow-modal);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 860px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        display: none;
+      }
+      .brand-subtitle {
+        display: none;
+      }
+      .main-stage {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-shell">
+    <!-- ==================== TOP HEADER (56px) ==================== -->
+    <header class="top-header">
+      <div class="brand-group">
+        <div class="brand-mark">120</div>
+        <span class="brand-title">TOEIC 120-Day Mastery</span>
+        <span class="brand-subtitle">Phương pháp Ngữ cảnh & Phản xạ Câu (Chris Lonsdale)</span>
+      </div>
+
+      <div class="header-actions">
+        <!-- Global Stats Pill -->
+        <span id="headerProgressBadge" class="badge">Đã học: 1/120 ngày • 1 từ</span>
+
+        <!-- Voice Accent & Speed -->
+        <div class="segmented-group">
+          <button id="btnVoiceAccent" onclick="toggleAccent()" class="segmented-btn active" title="Chuyển giọng đọc Mỹ / Anh">US</button>
+          <button id="btnVoiceSpeed" onclick="toggleSpeed()" class="segmented-btn" title="Tốc độ phát âm">1.0x</button>
+        </div>
+
+        <!-- AI API Settings Button (Cline Style Trigger) -->
+        <button onclick="openModal('aiSettingsModal')" class="btn btn-secondary" title="Cấu hình API theo chuẩn Cline (Anthropic Claude / Gemini)">
+          <span id="aiStatusDot" style="width:7px;height:7px;border-radius:50%;background-color:var(--success);display:inline-block;"></span>
+          <span id="aiHeaderLabel" style="font-family:var(--font-mono);font-size:12px;">Anthropic: claude-opus-5-5</span>
+        </button>
+
+        <!-- Backup JSON Modal Trigger -->
+        <button onclick="openBackupModal()" class="btn btn-secondary" title="Sao lưu & Khôi phục dữ liệu localStorage">
+          Sao lưu JSON
+        </button>
+
+        <!-- Primary Action: Smart Paste -->
+        <button onclick="openSmartPasteModal()" class="btn btn-primary">
+          <span>+ Nạp từ nhanh (Smart Paste)</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ==================== MAIN WORKSPACE ==================== -->
+    <div class="workspace">
+      <!-- LEFT SIDEBAR: 120 DAYS ROADMAP & CUMULATIVE REVIEW -->
+      <aside class="sidebar">
+        <!-- Quick Jump & Filter -->
+        <div class="sidebar-section">
+          <div class="sidebar-label">
+            <span>Lộ trình 120 Ngày</span>
+            <span id="sidebarLearnedCount" style="color:var(--primary);">1 ngày có từ</span>
+          </div>
+          <div style="display:flex;gap:6px;margin-bottom:8px;">
+            <input id="daySearchInput" type="number" min="1" max="120" placeholder="Đến ngày (1-120)..." oninput="handleDaySearch(this.value)" class="input" style="height:32px;padding:4px 10px;" />
+          </div>
+          <div class="segmented-group" style="width:100%;">
+            <button id="filterBtnAll" onclick="setDayFilter('all')" class="segmented-btn active" style="flex:1;justify-content:center;">Tất cả (120)</button>
+            <button id="filterBtnHasWords" onclick="setDayFilter('has_words')" class="segmented-btn" style="flex:1;justify-content:center;">Đã có từ</button>
+          </div>
+        </div>
+
+        <!-- Cumulative Review Selector (Spaced Repetition) -->
+        <div class="sidebar-section" style="background-color:var(--bg-canvas);">
+          <div class="sidebar-label" style="margin-bottom:4px;">
+            <span>Ôn tập cộng dồn</span>
+            <button onclick="clearReviewDays()" style="font-size:11px;color:var(--primary);font-weight:600;text-transform:none;">Bỏ chọn</button>
+          </div>
+          <p style="font-size:11.5px;color:var(--text-muted);margin-bottom:8px;">
+            Tick chọn các ngày cũ để gộp chung vào bài Quiz & Viết câu của ngày đang học:
+          </p>
+          <div id="reviewDaysCheckList" style="max-height:92px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;"></div>
+        </div>
+
+        <!-- 120 Days Scrollable List -->
+        <div id="dayListContainer" class="day-list-container"></div>
+      </aside>
+
+      <!-- RIGHT STAGE: DAY WORKSPACE -->
+      <main class="main-stage">
+        <div class="stage-container">
+
+          <!-- Day Header Banner Card -->
+          <div class="card" style="padding:20px 24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;">
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                <span id="activeDayBadge" class="badge badge-primary">NGÀY 1 / 120</span>
+                <span id="activePoolBadge" class="badge">Phạm vi: Chỉ Ngày 1 (1 từ)</span>
+              </div>
+              <h1 id="activeDayHeading" style="font-size:20px;font-weight:700;color:var(--text-primary);letter-spacing:-0.01em;">
+                Ngày 1 — Không gian Từ vựng & Phản xạ Câu
+              </h1>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:8px;">
+              <button onclick="openEditWordModal(null)" class="btn btn-secondary">
+                + Thêm 1 từ thủ công
+              </button>
+              <button onclick="openSmartPasteModal()" class="btn btn-primary">
+                + Copy / Dán từ mới vào Ngày này
+              </button>
+            </div>
+          </div>
+
+          <!-- Navigation Tabs -->
+          <nav class="nav-tabs">
+            <button id="tabBtn-vocab" onclick="switchTab('vocab')" class="nav-tab active">
+              <span>1. Từ vựng & Flashcard</span>
+              <span id="tabCountVocab" class="badge" style="height:20px;padding:0 6px;font-size:11px;">1</span>
+            </button>
+            <button id="tabBtn-quiz" onclick="switchTab('quiz')" class="nav-tab">
+              <span>2. Trắc nghiệm Phản xạ (MCQ)</span>
+            </button>
+            <button id="tabBtn-mixing" onclick="switchTab('mixing')" class="nav-tab">
+              <span>3. Start Mixing (Viết câu & AI Chấm)</span>
+              <span id="tabCountSentences" class="badge" style="height:20px;padding:0 6px;font-size:11px;">1</span>
+            </button>
+            <button id="tabBtn-story" onclick="switchTab('story')" class="nav-tab">
+              <span>4. Đọc hiểu Ngữ cảnh (AI Email / Story)</span>
+            </button>
+          </nav>
+
+          <!-- ==================== TAB 1: VOCABULARY & FOCUS CARD ==================== -->
+          <section id="tabPanel-vocab" style="display:flex;flex-direction:column;gap:16px;">
+            <!-- Sub-toolbar: Switch between Focus Card (1/21 like image) and Detailed List -->
+            <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+              <div class="segmented-group">
+                <button id="viewBtnFocus" onclick="setVocabViewMode('focus')" class="segmented-btn active">
+                  Chế độ Thẻ Học (Giống ảnh mẫu 1/N)
+                </button>
+                <button id="viewBtnList" onclick="setVocabViewMode('list')" class="segmented-btn">
+                  Chế độ Danh sách Chi tiết
+                </button>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:8px;">
+                <input id="vocabSearchInput" type="text" placeholder="Lọc nhanh từ hoặc nghĩa..." oninput="renderVocabSection()" class="input" style="width:220px;height:32px;" />
+              </div>
+            </div>
+
+            <!-- Container rendered dynamically -->
+            <div id="vocabContentContainer"></div>
+          </section>
+
+          <!-- ==================== TAB 2: IMMERSIVE QUIZ (EN-VI / VI-EN / PART 5) ==================== -->
+          <section id="tabPanel-quiz" class="hidden" style="display:flex;flex-direction:column;gap:16px;">
+            <div class="card" style="padding:20px 24px;">
+              <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--border-default);">
+                <div class="segmented-group">
+                  <button id="quizModeBtn-EN_VI" onclick="setQuizMode('EN_VI')" class="segmented-btn active">Chế độ EN ➔ VI</button>
+                  <button id="quizModeBtn-VI_EN" onclick="setQuizMode('VI_EN')" class="segmented-btn">Chế độ VI ➔ EN</button>
+                  <button id="quizModeBtn-CONTEXT" onclick="setQuizMode('CONTEXT')" class="segmented-btn">Điền khuyết Câu (TOEIC Part 5)</button>
+                </div>
+
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <span id="quizScoreBadge" class="badge badge-success">Đúng: 0/0</span>
+                  <button onclick="startNewQuiz()" class="btn btn-secondary btn-sm">Trộn đề mới</button>
+                </div>
+              </div>
+
+              <div id="quizBodyContainer" style="padding-top:20px;"></div>
+            </div>
+          </section>
+
+          <!-- ==================== TAB 3: START MIXING & AI LANGUAGE PARENT ==================== -->
+          <section id="tabPanel-mixing" class="hidden" style="display:flex;flex-direction:column;gap:16px;">
+            <div class="card" style="padding:24px;">
+              <div style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px;">
+                <div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                    <h2 style="font-size:16px;font-weight:700;">Thực hành "Start Mixing" — Tự đặt câu với Từ vựng hôm nay</h2>
+                    <span class="badge badge-primary">Language Parent AI</span>
+                  </div>
+                  <p style="font-size:13px;color:var(--text-secondary);">
+                    Bấm vào các thẻ từ bên dưới để chèn vào câu. Từ nào đã xuất hiện trong câu sẽ tự động chuyển sang màu xanh lá.
+                  </p>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <button onclick="copyPromptForChat()" class="btn btn-secondary btn-sm" title="Copy toàn bộ từ và câu để dán vào khung chat">
+                    Copy gửi qua Chat
+                  </button>
+                </div>
+              </div>
+
+              <!-- Active Vocabulary Chips -->
+              <div style="margin-bottom:16px;padding:12px 14px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-md);">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:12px;font-weight:600;color:var(--text-secondary);">
+                  <span>Kho từ mục tiêu cần kết hợp (Click vào từ để chèn nhanh):</span>
+                  <span id="mixingUsedCountLabel" style="color:var(--success);">Đã kết hợp: 0/1 từ</span>
+                </div>
+                <div id="mixingChipsContainer" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+              </div>
+
+              <!-- Sentence Editor -->
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <textarea id="mixingSentenceInput" rows="3" oninput="updateMixingChipsHighlight()" class="textarea" placeholder="Viết 1 hoặc nhiều câu tiếng Anh gắn với công việc của bạn (VD: I opened the top drawer of the filing cabinet to check the signed API contracts...)"></textarea>
+
+                <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;">
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <button onclick="speakText(document.getElementById('mixingSentenceInput').value)" class="btn btn-secondary btn-sm">
+                      🔊 Nghe thử câu đang gõ
+                    </button>
+                    <button onclick="saveSentenceOnly()" class="btn btn-secondary btn-sm">
+                      + Lưu câu vào sổ tay
+                    </button>
+                  </div>
+
+                  <button id="btnEvaluateWithAI" onclick="evaluateCurrentSentenceWithAI()" class="btn btn-primary">
+                    <span>Chấm điểm & Nâng cấp câu bằng AI (Claude / Gemini)</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Live AI Evaluation Output Panel -->
+              <div id="aiEvaluationOutput" class="hidden" style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border-default);"></div>
+            </div>
+
+            <!-- Saved Sentences List -->
+            <div class="card" style="padding:20px 24px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                <h3 style="font-size:14px;font-weight:700;color:var(--text-primary);">Lịch sử câu đã viết & Nhận xét AI trong Ngày này</h3>
+              </div>
+              <div id="savedSentencesContainer" style="display:flex;flex-direction:column;gap:10px;"></div>
+            </div>
+          </section>
+
+          <!-- ==================== TAB 4: AI COMPREHENSIBLE INPUT (EMAIL / STORY) ==================== -->
+          <section id="tabPanel-story" class="hidden" style="display:flex;flex-direction:column;gap:16px;">
+            <div class="card" style="padding:24px;">
+              <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--border-default);">
+                <div>
+                  <h2 style="font-size:16px;font-weight:700;">Comprehensible Input — Đọc hiểu Ngữ cảnh chứa 100% Từ hôm nay</h2>
+                  <p style="font-size:13px;color:var(--text-secondary);">
+                    AI dệt toàn bộ từ vựng đang chọn vào một bức Email TOEIC Part 6/7 hoặc buổi họp dự án phần mềm thực tế.
+                  </p>
+                </div>
+
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <select id="storyGenreSelect" class="select" style="width:230px;height:36px;">
+                    <option value="toeic_email">Email Công sở (TOEIC Part 6/7)</option>
+                    <option value="software_team">Họp Dự án Phần mềm / Backend IT</option>
+                    <option value="office_dialogue">Hội thoại Văn phòng (TOEIC Part 3)</option>
+                  </select>
+                  <button id="btnGenerateStory" onclick="generateStoryWithAI()" class="btn btn-primary">
+                    Tạo bài đọc bằng AI
+                  </button>
+                </div>
+              </div>
+
+              <div id="storyOutputContainer" style="padding-top:20px;"></div>
+            </div>
+          </section>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 1: SMART PASTE (EXACT USER FORMAT PARSER + AI TRANSLATION)
+       ========================================================================== -->
+  <div id="smartPasteModal" class="modal-backdrop">
+    <div class="modal-panel" style="max-width:640px;">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:16px;font-weight:700;">Nạp từ vựng nhanh (Smart Paste)</h3>
+          <p style="font-size:12px;color:var(--text-muted);">Copy trực tiếp theo mẫu của bạn và dán vào bên dưới</p>
+        </div>
+        <button onclick="closeModal('smartPasteModal')" class="btn btn-secondary btn-sm">Đóng</button>
+      </div>
+
+      <div class="modal-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-md);">
+          <span style="font-size:13px;font-weight:500;">Lưu vào Ngày học:</span>
+          <select id="smartPasteDaySelect" class="select" style="width:160px;height:32px;font-weight:600;"></select>
+        </div>
+
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <label style="font-size:12.5px;font-weight:600;color:var(--text-secondary);">
+              Nội dung từ vựng (Dán 1 từ hoặc nhiều từ cách nhau bằng dấu <code style="font-family:var(--font-mono);">---</code>):
+            </label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <button onclick="fillSampleSmartPaste()" class="btn btn-secondary btn-sm">Điền mẫu thử</button>
+              <button id="btnSmartPasteAI" onclick="autoTranslateSmartPasteWithAI()" class="btn btn-soft btn-sm">
+                ✨ Dùng AI tự dịch câu mẫu & thêm Collocations
+              </button>
+            </div>
+          </div>
+
+          <textarea id="smartPasteTextarea" rows="9" class="textarea input-mono" placeholder="filing cabinet&#10;Noun Phrase&#10;/ˈfaɪ.lɪŋ ˌkæb.ɪ.nət/&#10;tủ đựng tài liệu&#10;&#10;She needed some folders, so she went to the filing cabinet and opened the top drawer."></textarea>
+        </div>
+
+        <div style="padding:12px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-md);font-size:12px;color:var(--text-secondary);line-height:1.5;">
+          <strong>Định dạng tự động nhận diện:</strong><br/>
+          Dòng 1: Từ vựng (VD: <code>filing cabinet</code>) • Dòng 2: Từ loại (<code>Noun Phrase</code>) • Dòng 3: Phiên âm (<code>/ˈfaɪ.lɪŋ ˌkæb.ɪ.nət/</code>) • Dòng 4: Nghĩa tiếng Việt (<code>tủ đựng tài liệu</code>) • Dòng tiếp theo: Câu ví dụ tiếng Anh (kèm dịch tiếng Việt nếu có).
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button onclick="closeModal('smartPasteModal')" class="btn btn-secondary">Hủy</button>
+        <button onclick="confirmSmartPaste()" class="btn btn-primary">Lưu vào Ngày đã chọn</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 2: ADD / EDIT SINGLE WORD
+       ========================================================================== -->
+  <div id="editWordModal" class="modal-backdrop">
+    <div class="modal-panel" style="max-width:560px;">
+      <div class="modal-header">
+        <h3 id="editWordModalTitle" style="font-size:16px;font-weight:700;">Thêm / Chỉnh sửa Từ vựng</h3>
+        <button onclick="closeModal('editWordModal')" class="btn btn-secondary btn-sm">Đóng</button>
+      </div>
+
+      <div class="modal-body">
+        <input type="hidden" id="editWordId" />
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;">
+          <div>
+            <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Từ vựng tiếng Anh *</label>
+            <input id="fieldWord" type="text" class="input" placeholder="filing cabinet" />
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Từ loại (PoS)</label>
+            <input id="fieldPos" type="text" class="input" placeholder="Noun Phrase" />
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:12px;">
+          <div>
+            <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Phiên âm IPA</label>
+            <input id="fieldPhonetic" type="text" class="input input-mono" placeholder="/ˈfaɪ.lɪŋ ˌkæb.ɪ.nət/" />
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Nghĩa tiếng Việt *</label>
+            <input id="fieldMeaning" type="text" class="input" placeholder="tủ đựng tài liệu" />
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Câu ví dụ tiếng Anh (Example Sentence)</label>
+          <textarea id="fieldExampleEn" rows="2" class="textarea" placeholder="She needed some folders, so she went to the filing cabinet and opened the top drawer."></textarea>
+        </div>
+
+        <div>
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Dịch nghĩa câu ví dụ (Tiếng Việt)</label>
+          <textarea id="fieldExampleVi" rows="2" class="textarea" placeholder="Cô ấy cần một vài bìa kẹp hồ sơ, vì vậy cô ấy đã đi đến tủ đựng tài liệu và mở ngăn kéo trên cùng."></textarea>
+        </div>
+
+        <div>
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Cụm từ đi kèm (Collocations) & Lưu ý TOEIC</label>
+          <input id="fieldNotes" type="text" class="input" placeholder="open the top drawer, locked filing cabinet..." />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button onclick="closeModal('editWordModal')" class="btn btn-secondary">Hủy</button>
+        <button onclick="saveEditedWord()" class="btn btn-primary">Lưu thông tin</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 3: CLINE-STYLE SETTINGS -> API CONFIGURATION (ANTHROPIC & GEMINI)
+       ========================================================================== -->
+  <div id="aiSettingsModal" class="modal-backdrop">
+    <div class="cline-modal-panel">
+      <!-- Top Bar: Settings + Done Button -->
+      <div class="cline-topbar">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="cline-topbar-title">Settings</span>
+          <span class="badge" style="font-family:var(--font-mono);font-size:11px;">Cline API Configuration</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button type="button" id="btnTestAi" onclick="testAiConnection()" class="btn btn-secondary btn-sm">
+            🔌 Test API
+          </button>
+          <button type="button" onclick="saveAiConfigFromModal()" class="cline-done-btn">
+            Done
+          </button>
+        </div>
+      </div>
+
+      <!-- Body Split: Left Icon Strip + Right Configuration Pane -->
+      <div class="cline-body-split">
+        <!-- Left Mini Icon Rail (Matching Cline Sidebar) -->
+        <div class="cline-left-rail">
+          <div class="cline-rail-item active" title="API Configuration">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16M8 4v4m8 2v4m-6 2v4"/>
+            </svg>
+          </div>
+          <div class="cline-rail-item" onclick="toggleAdvancedSection(true)" title="Advanced & Token Budget ($200 Credit)">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Right Main Config Content -->
+        <div class="cline-config-pane">
+          <div class="cline-section-heading">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16M8 4v4m8 2v4m-6 2v4"/>
+            </svg>
+            <span>API Configuration</span>
+          </div>
+
+          <!-- 1. API Provider Dropdown -->
+          <div class="cline-field-group">
+            <label class="cline-label" for="selectApiProvider">API Provider</label>
+            <select id="selectApiProvider" onchange="handleProviderDropdownChange(this.value)" class="select">
+              <option value="claude">Anthropic</option>
+              <option value="gemini">Google Gemini</option>
+            </select>
+          </div>
+
+          <!-- ==================== ANTHROPIC CLAUDE CONFIG BLOCK ==================== -->
+          <div id="anthropicConfigBlock" style="display:flex;flex-direction:column;gap:14px;">
+            <!-- Anthropic API Key -->
+            <div class="cline-field-group">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <label class="cline-label" for="inputClaudeKey">Anthropic API Key</label>
+                <button type="button" onclick="togglePasswordVisibility('inputClaudeKey', this)" style="font-size:11.5px;color:var(--primary);font-weight:600;">
+                  Hiện / Ẩn Key
+                </button>
+              </div>
+              <input id="inputClaudeKey" type="password" class="input input-mono" placeholder="sk-ant-usr-16-... hoặc sk-ant-api03-..." autocomplete="off" />
+              <span class="cline-caption">
+                This key is stored locally and only used to make API requests from this application.
+              </span>
+            </div>
+
+            <!-- Use custom base URL -->
+            <div class="cline-field-group">
+              <label class="cline-checkbox-row">
+                <input id="chkCustomBaseUrl" type="checkbox" onchange="toggleCustomBaseUrlInput()" />
+                <span>Use custom base URL</span>
+              </label>
+              <div id="customBaseUrlWrap" class="hidden" style="margin-top:4px;">
+                <input id="inputCustomBaseUrl" type="text" class="input input-mono" placeholder="https://api.anthropic.com" />
+                <span class="cline-caption" style="display:block;margin-top:4px;">
+                  Mặc định: <code>https://api.anthropic.com</code> (tự động nối <code>/v1/messages</code> nếu chỉ nhập domain).
+                </span>
+              </div>
+            </div>
+
+            <!-- Model Dropdown (Default: claude-opus-5-5 matching user screenshot) -->
+            <div class="cline-field-group">
+              <label class="cline-label" for="selectClaudeModel">Model</label>
+              <select id="selectClaudeModel" onchange="handleClaudeModelChange()" class="select input-mono">
+                <option value="claude-opus-5-5">claude-opus-5-5</option>
+                <option value="claude-sonnet-4-5">claude-sonnet-4-5</option>
+                <option value="claude-opus-4-1-20250805">claude-opus-4-1-20250805</option>
+                <option value="claude-opus-4-20250514">claude-opus-4-20250514</option>
+                <option value="claude-sonnet-4-20250514">claude-sonnet-4-20250514</option>
+                <option value="claude-3-7-sonnet-latest">claude-3-7-sonnet-latest</option>
+                <option value="claude-3-5-sonnet-latest">claude-3-5-sonnet-latest</option>
+                <option value="claude-3-5-haiku-latest">claude-3-5-haiku-latest</option>
+                <option value="__custom__">-- Nhập mã Model tùy chỉnh (Custom Model ID) --</option>
+              </select>
+              <div id="customClaudeModelWrap" class="hidden" style="margin-top:4px;">
+                <input id="inputCustomClaudeModel" type="text" class="input input-mono" placeholder="Nhập chính xác Model ID (VD: claude-opus-5-5)..." />
+              </div>
+            </div>
+
+            <!-- Reasoning Effort Dropdown -->
+            <div class="cline-field-group">
+              <label class="cline-label" for="selectReasoningEffort">Reasoning Effort</label>
+              <select id="selectReasoningEffort" class="select">
+                <option value="none">None</option>
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+              </select>
+              <span class="cline-caption">
+                Use None to disable extended thinking. Higher effort improves depth, but uses more tokens.
+              </span>
+              <!-- Dynamic Specs Line matching Cline screenshot -->
+              <div id="modelSpecsLine" class="cline-specs-bar">
+                <span>Context: <strong>1M</strong></span>
+                <span>Input: <strong>$4/M</strong></span>
+                <span>Output: <strong>$20/M</strong></span>
+              </div>
+            </div>
+
+            <!-- Collapsible ADVANCED Section -->
+            <div style="border-top:1px solid var(--border-default);padding-top:10px;">
+              <button type="button" onclick="toggleAdvancedSection()" class="cline-advanced-toggle">
+                <span id="advArrowIcon">►</span>
+                <span>ADVANCED</span>
+              </button>
+
+              <div id="clineAdvancedBody" class="hidden" style="margin-top:10px;display:flex;flex-direction:column;gap:14px;">
+                <!-- Use different models for Plan and Act modes -->
+                <div class="cline-field-group">
+                  <label class="cline-checkbox-row">
+                    <input id="chkSplitPlanAct" type="checkbox" onchange="togglePlanActModelSelect()" />
+                    <span>Use different models for Plan and Act modes</span>
+                  </label>
+                  <span class="cline-caption">
+                    Switching between Plan (chấm chữa câu sâu & phân tích ngữ pháp) and Act mode (dịch nhanh câu mẫu khi Smart Paste) giúp tối ưu tốc độ và chi phí token.
+                  </span>
+                  <div id="fastActModelWrap" class="hidden" style="margin-top:6px;">
+                    <label class="cline-label" style="display:block;margin-bottom:4px;">Act Mode Model (Dịch nhanh & Tách từ):</label>
+                    <select id="selectFastActModel" class="select input-mono">
+                      <option value="claude-3-5-haiku-latest">claude-3-5-haiku-latest (Nhanh & Tiết kiệm)</option>
+                      <option value="claude-sonnet-4-20250514">claude-sonnet-4-20250514</option>
+                      <option value="claude-opus-5-5">claude-opus-5-5</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Claude Console $200 Credit Tracker (Matching Screenshot 2: haisonet + myapikey) -->
+                <div style="padding:12px 14px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-md);display:flex;flex-direction:column;gap:8px;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;">
+                    <span style="font-size:12.5px;font-weight:700;color:var(--text-primary);">Claude Console Credit Tracker ($200 Budget)</span>
+                    <span id="creditRemainingBadge" class="badge badge-success">Còn lại: $79.57</span>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:12px;">
+                    <div style="padding:8px;background-color:var(--bg-surface);border:1px solid var(--border-default);border-radius:var(--radius-sm);">
+                      <div style="color:var(--text-muted);font-size:11px;">Tổng hạn mức ($)</div>
+                      <input id="inputBudgetTotal" type="number" step="0.01" value="200.00" oninput="updateCreditSummaryUI()" class="input input-mono" style="height:26px;padding:2px 6px;margin-top:3px;font-weight:600;" />
+                    </div>
+                    <div style="padding:8px;background-color:var(--bg-surface);border:1px solid var(--border-default);border-radius:var(--radius-sm);">
+                      <div style="color:var(--text-muted);font-size:11px;">Đã dùng trên Console ($)</div>
+                      <input id="inputConsoleSpent" type="number" step="0.01" value="120.43" oninput="updateCreditSummaryUI()" class="input input-mono" style="height:26px;padding:2px 6px;margin-top:3px;font-weight:600;" title="$2.15 (haisonet) + $118.28 (myapikey) = $120.43" />
+                    </div>
+                    <div style="padding:8px;background-color:var(--bg-surface);border:1px solid var(--border-default);border-radius:var(--radius-sm);">
+                      <div style="color:var(--text-muted);font-size:11px;">Phát sinh trên Web App</div>
+                      <div id="webAppSessionCostLabel" style="font-family:var(--font-mono);font-weight:700;color:var(--primary);margin-top:6px;">$0.0000</div>
+                    </div>
+                  </div>
+                  <div id="tokenCounterSummary" style="font-size:11.5px;color:var(--text-muted);font-family:var(--font-mono);">
+                    Tokens đã gọi trên App: 0 in / 0 out
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== GOOGLE GEMINI CONFIG BLOCK ==================== -->
+          <div id="geminiConfigBlock" class="hidden" style="display:flex;flex-direction:column;gap:14px;">
+            <div class="cline-field-group">
+              <label class="cline-label" for="inputGeminiKey">Google Gemini API Key</label>
+              <input id="inputGeminiKey" type="password" class="input input-mono" placeholder="AIzaSy... (Để trống nếu dùng mặc định trên Canvas)" />
+              <span class="cline-caption">
+                Stored locally in browser localStorage. Leave blank to use the built-in runtime key.
+              </span>
+            </div>
+            <div class="cline-field-group">
+              <label class="cline-label" for="selectGeminiModel">Model</label>
+              <select id="selectGeminiModel" class="select input-mono">
+                <option value="gemini-3-flash-preview">gemini-3-flash-preview</option>
+                <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+                <option value="gemini-2.5-pro">gemini-2.5-pro</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Connection Test Status Box -->
+          <div id="aiConnectionResultBox" class="hidden" style="padding:10px 12px;border-radius:var(--radius-sm);font-size:12.5px;border:1px solid var(--border-default);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 4: BACKUP & RESTORE JSON
+       ========================================================================== -->
+  <div id="backupModal" class="modal-backdrop">
+    <div class="modal-panel" style="max-width:600px;">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:16px;font-weight:700;">Sao lưu & Khôi phục Dữ liệu 120 Ngày (JSON)</h3>
+          <p style="font-size:12px;color:var(--text-muted);">Đảm bảo dữ liệu học tập của bạn an toàn tuyệt đối</p>
+        </div>
+        <button onclick="closeModal('backupModal')" class="btn btn-secondary btn-sm">Đóng</button>
+      </div>
+
+      <div class="modal-body">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <button onclick="downloadBackupFile()" class="btn btn-primary btn-sm">Tải file .JSON về máy</button>
+          <button onclick="copyBackupJson()" class="btn btn-secondary btn-sm">Copy mã JSON</button>
+          <button onclick="restoreFromBackupTextarea()" class="btn btn-soft btn-sm">Khôi phục từ ô JSON bên dưới</button>
+        </div>
+        <textarea id="backupJsonTextarea" rows="10" class="textarea input-mono"></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button onclick="closeModal('backupModal')" class="btn btn-secondary">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-wrap"></div>
+
+  <script>
+    // ==========================================================================
+    // 2. CLINE-STYLE AI ENGINE (ANTHROPIC CLAUDE OPUS 5.5 / SONNET & GEMINI)
+    // ==========================================================================
+    const CLAUDE_MODEL_SPECS = {
+      'claude-opus-5-5': { context: '1M', inputRate: 4, outputRate: 20 },
+      'claude-sonnet-4-5': { context: '1M', inputRate: 3, outputRate: 15 },
+      'claude-opus-4-1-20250805': { context: '200K', inputRate: 15, outputRate: 75 },
+      'claude-opus-4-20250514': { context: '200K', inputRate: 15, outputRate: 75 },
+      'claude-sonnet-4-20250514': { context: '200K', inputRate: 3, outputRate: 15 },
+      'claude-3-7-sonnet-latest': { context: '200K', inputRate: 3, outputRate: 15 },
+      'claude-3-5-sonnet-latest': { context: '200K', inputRate: 3, outputRate: 15 },
+      'claude-3-5-haiku-latest': { context: '200K', inputRate: 0.8, outputRate: 4 }
+    };
+
+    // Automatic fallback list if an experimental/alias model ID isn't enabled on direct endpoint
+    const ANTHROPIC_FALLBACK_MODELS = [
+      'claude-sonnet-4-20250514',
+      'claude-3-7-sonnet-latest',
+      'claude-3-5-sonnet-latest'
+    ];
+
+    function loadAiSettings() {
+      const def = {
+        provider: 'claude',
+        claudeKey: '',
+        claudeModel: 'claude-opus-5-5',
+        customClaudeModel: '',
+        useCustomBaseUrl: false,
+        customBaseUrl: 'https://api.anthropic.com',
+        reasoningEffort: 'medium',
+        splitPlanAct: false,
+        fastActModel: 'claude-3-5-haiku-latest',
+        budgetTotal: 200.00,
+        consoleSpent: 120.43, // Matches $2.15 (haisonet) + $118.28 (myapikey)
+        appInputTokens: 0,
+        appOutputTokens: 0,
+        appEstimatedCost: 0,
+        geminiKey: '',
+        geminiModel: 'gemini-3-flash-preview'
+      };
+      try {
+        const raw = localStorage.getItem(AI_CONFIG_KEY);
+        return raw ? { ...def, ...JSON.parse(raw) } : def;
+      } catch (e) {
+        return def;
+      }
+    }
+
+    function saveAiSettings() {
+      localStorage.setItem(AI_CONFIG_KEY, JSON.stringify(aiConfig));
+      updateAiHeaderIndicator();
+    }
+
+    function getResolvedClaudeModel(cfg, mode = 'plan') {
+      if (mode === 'act' && cfg.splitPlanAct && cfg.fastActModel) {
+        return cfg.fastActModel;
+      }
+      if (cfg.claudeModel === '__custom__') {
+        return (cfg.customClaudeModel || 'claude-opus-5-5').trim();
+      }
+      return cfg.claudeModel || 'claude-opus-5-5';
+    }
+
+    function updateAiHeaderIndicator() {
+      const label = document.getElementById('aiHeaderLabel');
+      const dot = document.getElementById('aiStatusDot');
+      if (!label || !dot) return;
+
+      if (aiConfig.provider === 'claude') {
+        const hasKey = Boolean(aiConfig.claudeKey && aiConfig.claudeKey.trim());
+        const activeM = getResolvedClaudeModel(aiConfig, 'plan');
+        label.textContent = hasKey ? `Anthropic: ${activeM}` : `Anthropic: ${activeM} (Nhập Key)`;
+        dot.style.backgroundColor = hasKey ? 'var(--success)' : 'var(--amber)';
+      } else {
+        label.textContent = `Gemini: ${aiConfig.geminiModel || 'gemini-3-flash-preview'}`;
+        dot.style.backgroundColor = 'var(--success)';
+      }
+    }
+
+    function handleProviderDropdownChange(prov) {
+      const anthBlock = document.getElementById('anthropicConfigBlock');
+      const gemBlock = document.getElementById('geminiConfigBlock');
+      if (prov === 'claude') {
+        anthBlock.classList.remove('hidden');
+        gemBlock.classList.add('hidden');
+      } else {
+        anthBlock.classList.add('hidden');
+        gemBlock.classList.remove('hidden');
+      }
+    }
+
+    function togglePasswordVisibility(inputId, btnEl) {
+      const inp = document.getElementById(inputId);
+      if (!inp) return;
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        btnEl.textContent = 'Ẩn Key';
+      } else {
+        inp.type = 'password';
+        btnEl.textContent = 'Hiện / Ẩn Key';
+      }
+    }
+
+    function toggleCustomBaseUrlInput() {
+      const checked = document.getElementById('chkCustomBaseUrl').checked;
+      const wrap = document.getElementById('customBaseUrlWrap');
+      if (checked) wrap.classList.remove('hidden');
+      else wrap.classList.add('hidden');
+    }
+
+    function handleClaudeModelChange() {
+      const val = document.getElementById('selectClaudeModel').value;
+      const customWrap = document.getElementById('customClaudeModelWrap');
+      if (val === '__custom__') {
+        customWrap.classList.remove('hidden');
+      } else {
+        customWrap.classList.add('hidden');
+      }
+      const spec = CLAUDE_MODEL_SPECS[val] || { context: '1M', inputRate: 4, outputRate: 20 };
+      const specEl = document.getElementById('modelSpecsLine');
+      if (specEl) {
+        specEl.innerHTML = `
+          <span>Context: <strong>${spec.context}</strong></span>
+          <span>Input: <strong>$${spec.inputRate}/M</strong></span>
+          <span>Output: <strong>$${spec.outputRate}/M</strong></span>
+        `;
+      }
+    }
+
+    function toggleAdvancedSection(forceOpen = false) {
+      const body = document.getElementById('clineAdvancedBody');
+      const arrow = document.getElementById('advArrowIcon');
+      const isHidden = body.classList.contains('hidden');
+      if (forceOpen || isHidden) {
+        body.classList.remove('hidden');
+        arrow.textContent = '▼';
+      } else {
+        body.classList.add('hidden');
+        arrow.textContent = '►';
+      }
+    }
+
+    function togglePlanActModelSelect() {
+      const checked = document.getElementById('chkSplitPlanAct').checked;
+      const wrap = document.getElementById('fastActModelWrap');
+      if (checked) wrap.classList.remove('hidden');
+      else wrap.classList.add('hidden');
+    }
+
+    function updateCreditSummaryUI() {
+      const total = parseFloat(document.getElementById('inputBudgetTotal')?.value) || 200;
+      const consoleSpent = parseFloat(document.getElementById('inputConsoleSpent')?.value) || 0;
+      const appCost = aiConfig.appEstimatedCost || 0;
+      const remaining = Math.max(0, total - consoleSpent - appCost);
+
+      const badge = document.getElementById('creditRemainingBadge');
+      if (badge) {
+        badge.textContent = `Còn lại: $${remaining.toFixed(2)} / $${total.toFixed(0)}`;
+      }
+      const sessionLbl = document.getElementById('webAppSessionCostLabel');
+      if (sessionLbl) {
+        sessionLbl.textContent = `$${appCost.toFixed(4)}`;
+      }
+      const tokEl = document.getElementById('tokenCounterSummary');
+      if (tokEl) {
+        tokEl.textContent = `Tokens đã gọi trên App: ${(aiConfig.appInputTokens || 0).toLocaleString()} in / ${(aiConfig.appOutputTokens || 0).toLocaleString()} out`;
+      }
+    }
+
+    function buildClineDraftConfigFromModal() {
+      return {
+        ...aiConfig,
+        provider: document.getElementById('selectApiProvider').value,
+        claudeKey: document.getElementById('inputClaudeKey').value.trim(),
+        claudeModel: document.getElementById('selectClaudeModel').value,
+        customClaudeModel: document.getElementById('inputCustomClaudeModel').value.trim(),
+        useCustomBaseUrl: document.getElementById('chkCustomBaseUrl').checked,
+        customBaseUrl: document.getElementById('inputCustomBaseUrl').value.trim() || 'https://api.anthropic.com',
+        reasoningEffort: document.getElementById('selectReasoningEffort').value,
+        splitPlanAct: document.getElementById('chkSplitPlanAct').checked,
+        fastActModel: document.getElementById('selectFastActModel').value,
+        budgetTotal: parseFloat(document.getElementById('inputBudgetTotal').value) || 200,
+        consoleSpent: parseFloat(document.getElementById('inputConsoleSpent').value) || 120.43,
+        geminiKey: document.getElementById('inputGeminiKey').value.trim(),
+        geminiModel: document.getElementById('selectGeminiModel').value
+      };
+    }
+
+    function saveAiConfigFromModal() {
+      aiConfig = buildClineDraftConfigFromModal();
+      saveAiSettings();
+      closeModal('aiSettingsModal');
+      showToast(`Đã lưu cấu hình API (${aiConfig.provider === 'claude' ? getResolvedClaudeModel(aiConfig) : aiConfig.geminiModel})!`);
+    }
+
+    function resolveAnthropicEndpoint(cfg) {
+      if (!cfg.useCustomBaseUrl || !cfg.customBaseUrl) {
+        return 'https://api.anthropic.com/v1/messages';
+      }
+      let base = cfg.customBaseUrl.trim().replace(/\/+$/, '');
+      if (base.endsWith('/v1/messages')) return base;
+      if (base.endsWith('/v1')) return base + '/messages';
+      return base + '/v1/messages';
+    }
+
+    async function sendAnthropicRequestSingle(endpoint, apiKey, modelId, systemPrompt, userPrompt, reasoningEffort) {
+      const payload = {
+        model: modelId,
+        max_tokens: 2048,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userPrompt }]
+      };
+
+      // Attach extended thinking if reasoningEffort is enabled and supported
+      if (reasoningEffort && reasoningEffort !== 'none' && /opus|sonnet-4|3-7/i.test(modelId)) {
+        const budgetMap = { low: 1024, medium: 2048, high: 4096 };
+        const budget = budgetMap[reasoningEffort] || 2048;
+        payload.max_tokens = Math.max(payload.max_tokens, budget + 1500);
+        payload.thinking = { type: 'enabled', budget_tokens: budget };
+      }
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      // If the specific model doesn't accept the `thinking` parameter, retry cleanly without `thinking`
+      if (!res.ok && payload.thinking) {
+        const cleanPayload = {
+          model: modelId,
+          max_tokens: 2048,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userPrompt }]
+        };
+        const retryRes = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+          },
+          body: JSON.stringify(cleanPayload)
+        });
+        return retryRes;
+      }
+
+      return res;
+    }
+
+    async function callAI(systemPrompt, userPrompt, overrideCfg = null, mode = 'plan') {
+      const cfg = overrideCfg || aiConfig;
+      if (cfg.provider === 'claude') {
+        if (!cfg.claudeKey) {
+          openModal('aiSettingsModal');
+          throw new Error('Vui lòng dán Anthropic API Key (sk-ant-usr-... hoặc sk-ant-api03-...) vào mục Settings -> API Configuration!');
+        }
+
+        const endpoint = resolveAnthropicEndpoint(cfg);
+        const primaryModel = getResolvedClaudeModel(cfg, mode);
+        const candidateModels = [
+          primaryModel,
+          ...ANTHROPIC_FALLBACK_MODELS.filter(m => m !== primaryModel)
+        ];
+
+        let lastError = '';
+        for (const modelId of candidateModels) {
+          const res = await sendAnthropicRequestSingle(
+            endpoint,
+            cfg.claudeKey,
+            modelId,
+            systemPrompt,
+            userPrompt,
+            cfg.reasoningEffort
+          );
+
+          if (res.ok) {
+            const data = await res.json();
+            // Track token usage and live cost against the $200 budget
+            const inTok = data?.usage?.input_tokens || 0;
+            const outTok = data?.usage?.output_tokens || 0;
+            const spec = CLAUDE_MODEL_SPECS[modelId] || { inputRate: 4, outputRate: 20 };
+            const callCost = (inTok / 1_000_000) * spec.inputRate + (outTok / 1_000_000) * spec.outputRate;
+
+            aiConfig.appInputTokens = (aiConfig.appInputTokens || 0) + inTok;
+            aiConfig.appOutputTokens = (aiConfig.appOutputTokens || 0) + outTok;
+            aiConfig.appEstimatedCost = (aiConfig.appEstimatedCost || 0) + callCost;
+            saveAiSettings();
+
+            const textBlock = (data?.content || []).find(c => c.type === 'text') || data?.content?.[0];
+            return textBlock?.text || '';
+          } else {
+            const errTxt = await res.text();
+            lastError = `Anthropic API (${res.status} - ${modelId}): ${errTxt.slice(0, 180)}`;
+            // Only fallback to next model if status is 404 (model_not_found on direct API)
+            if (res.status !== 404 && !errTxt.includes('not_found')) {
+              break;
+            }
+          }
+        }
+        throw new Error(lastError || 'Không thể kết nối tới Anthropic API.');
+      } else {
+        const apiKey = cfg.geminiKey || "";
+        const model = cfg.geminiModel || 'gemini-3-flash-preview';
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: userPrompt }] }],
+            systemInstruction: { parts: [{ text: systemPrompt }] }
+          })
+        });
+        if (!res.ok) {
+          const errTxt = await res.text();
+          throw new Error(`Gemini API (${res.status}): ${errTxt.slice(0, 160)}`);
+        }
+        const data = await res.json();
+        return data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      }
+    }
+
+    function parseJsonResponse(raw) {
+      const cleaned = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
+      const first = cleaned.indexOf('{');
+      const last = cleaned.lastIndexOf('}');
+      if (first !== -1 && last !== -1 && last > first) {
+        return JSON.parse(cleaned.slice(first, last + 1));
+      }
+      return JSON.parse(cleaned);
+    }
+
+    async function testAiConnection() {
+      const btn = document.getElementById('btnTestAi');
+      const box = document.getElementById('aiConnectionResultBox');
+      const tempCfg = buildClineDraftConfigFromModal();
+
+      btn.disabled = true;
+      btn.textContent = 'Testing...';
+      box.classList.remove('hidden');
+      box.style.backgroundColor = 'var(--bg-subtle)';
+      box.style.color = 'var(--text-secondary)';
+      box.textContent = `Đang kiểm tra kết nối tới ${tempCfg.provider === 'claude' ? resolveAnthropicEndpoint(tempCfg) : 'Google Gemini'}...`;
+
+      const t0 = performance.now();
+      try {
+        const reply = await callAI(
+          'You are a TOEIC assistant. Reply in 1 short Vietnamese sentence.',
+          'Xác nhận kết nối API thành công.',
+          tempCfg,
+          'act'
+        );
+        const ms = Math.round(performance.now() - t0);
+        box.style.backgroundColor = 'var(--success-soft)';
+        box.style.borderColor = 'var(--success-border)';
+        box.style.color = 'var(--success)';
+        box.textContent = `✓ Kết nối thành công (${ms}ms): "${reply.trim()}"`;
+        updateCreditSummaryUI();
+      } catch (err) {
+        box.style.backgroundColor = 'var(--danger-soft)';
+        box.style.borderColor = 'var(--danger-border)';
+        box.style.color = 'var(--danger)';
+        box.textContent = `✕ Lỗi: ${err.message}`;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🔌 Test API';
+      }
+    }
+
+    function saveAppState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+        updateHeaderMetrics();
+      } catch (e) {
+        showToast('Không thể lưu vào localStorage!');
+      }
+    }
+
+    function ensureDay(dayNum) {
+      const k = String(dayNum);
+      if (!appState.days[k]) {
+        appState.days[k] = { words: [], sentences: [], story: null };
+      }
+      return appState.days[k];
+    }
+
+    // ==========================================================================
+    // 2. DUAL AI ENGINE (ANTHROPIC CLAUDE & GOOGLE GEMINI)
+    // ==========================================================================
+    function loadAiSettings() {
+      const def = {
+        provider: 'gemini',
+        claudeKey: '',
+        claudeModel: 'claude-sonnet-4-20250514',
+        geminiKey: '',
+        geminiModel: 'gemini-3-flash-preview'
+      };
+      try {
+        const raw = localStorage.getItem(AI_CONFIG_KEY);
+        return raw ? { ...def, ...JSON.parse(raw) } : def;
+      } catch (e) {
+        return def;
+      }
+    }
+
+    function saveAiSettings() {
+      localStorage.setItem(AI_CONFIG_KEY, JSON.stringify(aiConfig));
+      updateAiHeaderIndicator();
+    }
+
+    function updateAiHeaderIndicator() {
+      const label = document.getElementById('aiHeaderLabel');
+      const dot = document.getElementById('aiStatusDot');
+      if (!label || !dot) return;
+
+      if (aiConfig.provider === 'claude') {
+        const hasKey = Boolean(aiConfig.claudeKey && aiConfig.claudeKey.trim());
+        label.textContent = hasKey ? 'AI: Claude API' : 'AI: Claude (Thiếu Key)';
+        dot.style.backgroundColor = hasKey ? 'var(--success)' : 'var(--amber)';
+      } else {
+        label.textContent = 'AI: Gemini API';
+        dot.style.backgroundColor = 'var(--success)';
+      }
+    }
+
+    let modalProviderTemp = 'gemini';
+
+    function selectProviderInModal(prov) {
+      modalProviderTemp = prov;
+      const cardClaude = document.getElementById('providerCardClaude');
+      const cardGemini = document.getElementById('providerCardGemini');
+      const tickClaude = document.getElementById('providerTickClaude');
+      const tickGemini = document.getElementById('providerTickGemini');
+
+      if (prov === 'claude') {
+        cardClaude.style.borderColor = 'var(--primary)';
+        cardClaude.style.backgroundColor = 'var(--primary-soft)';
+        cardGemini.style.borderColor = 'var(--border-default)';
+        cardGemini.style.backgroundColor = 'var(--bg-surface)';
+        tickClaude.classList.remove('hidden');
+        tickGemini.classList.add('hidden');
+      } else {
+        cardGemini.style.borderColor = 'var(--primary)';
+        cardGemini.style.backgroundColor = 'var(--primary-soft)';
+        cardClaude.style.borderColor = 'var(--border-default)';
+        cardClaude.style.backgroundColor = 'var(--bg-surface)';
+        tickGemini.classList.remove('hidden');
+        tickClaude.classList.add('hidden');
+      }
+    }
+
+    function saveAiConfigFromModal() {
+      aiConfig.provider = modalProviderTemp;
+      aiConfig.claudeKey = document.getElementById('inputClaudeKey').value.trim();
+      aiConfig.claudeModel = document.getElementById('selectClaudeModel').value;
+      aiConfig.geminiKey = document.getElementById('inputGeminiKey').value.trim();
+      aiConfig.geminiModel = document.getElementById('selectGeminiModel').value;
+      saveAiSettings();
+      closeModal('aiSettingsModal');
+      showToast('Đã lưu cấu hình AI API!');
+    }
+
+    async function callAI(systemPrompt, userPrompt, overrideCfg = null) {
+      const cfg = overrideCfg || aiConfig;
+      if (cfg.provider === 'claude') {
+        if (!cfg.claudeKey) {
+          openModal('aiSettingsModal');
+          throw new Error('Vui lòng nhập Anthropic Claude API Key (sk-ant-...) trong mục Cấu hình AI!');
+        }
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': cfg.claudeKey,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+          },
+          body: JSON.stringify({
+            model: cfg.claudeModel || 'claude-sonnet-4-20250514',
+            max_tokens: 2000,
+            system: systemPrompt,
+            messages: [{ role: 'user', content: userPrompt }]
+          })
+        });
+        if (!res.ok) {
+          const errTxt = await res.text();
+          throw new Error(`Claude API (${res.status}): ${errTxt.slice(0, 160)}`);
+        }
+        const data = await res.json();
+        return data?.content?.[0]?.text || '';
+      } else {
+        const apiKey = cfg.geminiKey || "";
+        const model = cfg.geminiModel || 'gemini-3-flash-preview';
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: userPrompt }] }],
+            systemInstruction: { parts: [{ text: systemPrompt }] }
+          })
+        });
+        if (!res.ok) {
+          const errTxt = await res.text();
+          throw new Error(`Gemini API (${res.status}): ${errTxt.slice(0, 160)}`);
+        }
+        const data = await res.json();
+        return data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      }
+    }
+
+    function parseJsonResponse(raw) {
+      const cleaned = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
+      const first = cleaned.indexOf('{');
+      const last = cleaned.lastIndexOf('}');
+      if (first !== -1 && last !== -1 && last > first) {
+        return JSON.parse(cleaned.slice(first, last + 1));
+      }
+      return JSON.parse(cleaned);
+    }
+
+    async function testAiConnection() {
+      const btn = document.getElementById('btnTestAi');
+      const box = document.getElementById('aiConnectionResultBox');
+      const tempCfg = {
+        provider: modalProviderTemp,
+        claudeKey: document.getElementById('inputClaudeKey').value.trim(),
+        claudeModel: document.getElementById('selectClaudeModel').value,
+        geminiKey: document.getElementById('inputGeminiKey').value.trim(),
+        geminiModel: document.getElementById('selectGeminiModel').value
+      };
+
+      btn.disabled = true;
+      btn.textContent = 'Đang kiểm tra...';
+      box.classList.remove('hidden');
+      box.style.backgroundColor = 'var(--bg-subtle)';
+      box.style.color = 'var(--text-secondary)';
+      box.textContent = 'Đang gửi yêu cầu kết nối tới API...';
+
+      try {
+        const reply = await callAI('Trả lời ngắn gọn bằng 1 câu tiếng Việt.', 'Xác nhận kết nối API thành công.', tempCfg);
+        box.style.backgroundColor = 'var(--success-soft)';
+        box.style.color = 'var(--success)';
+        box.textContent = `Kết nối thành công (${tempCfg.provider.toUpperCase()}): "${reply.trim()}"`;
+      } catch (err) {
+        box.style.backgroundColor = 'var(--danger-soft)';
+        box.style.color = 'var(--danger)';
+        box.textContent = `Lỗi: ${err.message}`;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Kiểm tra kết nối API';
+      }
+    }
+
+    // ==========================================================================
+    // 3. TEXT-TO-SPEECH ENGINE (US/UK & SPEED)
+    // ==========================================================================
+    function speakText(text) {
+      if (!text || !('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = appState.voiceAccent || 'en-US';
+      utter.rate = appState.voiceRate || 1.0;
+      const voices = window.speechSynthesis.getVoices();
+      const matched = voices.find(v => v.lang.includes(utter.lang));
+      if (matched) utter.voice = matched;
+      window.speechSynthesis.speak(utter);
+    }
+
+    function toggleAccent() {
+      appState.voiceAccent = appState.voiceAccent === 'en-US' ? 'en-GB' : 'en-US';
+      saveAppState();
+      renderHeaderControls();
+    }
+
+    function toggleSpeed() {
+      appState.voiceRate = appState.voiceRate === 1.0 ? 0.85 : 1.0;
+      saveAppState();
+      renderHeaderControls();
+    }
+
+    function renderHeaderControls() {
+      const btnAcc = document.getElementById('btnVoiceAccent');
+      const btnSpd = document.getElementById('btnVoiceSpeed');
+      if (btnAcc) btnAcc.textContent = appState.voiceAccent === 'en-US' ? 'US' : 'UK';
+      if (btnSpd) btnSpd.textContent = appState.voiceRate === 1.0 ? '1.0x' : '0.85x';
+    }
+
+    // ==========================================================================
+    // 4. SIDEBAR 120-DAY NAVIGATION & CUMULATIVE POOL
+    // ==========================================================================
+    function getActiveVocabularyPool() {
+      const dayList = [appState.activeDay, ...(appState.extraReviewDays || [])];
+      const uniqueDays = [...new Set(dayList)].sort((a, b) => a - b);
+      let pool = [];
+      uniqueDays.forEach(d => {
+        const dObj = ensureDay(d);
+        (dObj.words || []).forEach((w, idx) => {
+          pool.push({
+            ...w,
+            dayNum: d,
+            orderInDay: idx + 1,
+            totalInDay: dObj.words.length
+          });
+        });
+      });
+      return pool;
+    }
+
+    function selectDay(dayNum) {
+      const num = Math.max(1, Math.min(120, Number(dayNum) || 1));
+      appState.activeDay = num;
+      appState.focusCardIndex = 0;
+      appState.extraReviewDays = (appState.extraReviewDays || []).filter(d => d !== num);
+      ensureDay(num);
+      saveAppState();
+      renderAll();
+    }
+
+    function handleDaySearch(val) {
+      const num = parseInt(val, 10);
+      if (num >= 1 && num <= 120) {
+        selectDay(num);
+      }
+    }
+
+    function setDayFilter(mode) {
+      appState.dayFilter = mode;
+      document.getElementById('filterBtnAll').className = mode === 'all' ? 'segmented-btn active' : 'segmented-btn';
+      document.getElementById('filterBtnHasWords').className = mode === 'has_words' ? 'segmented-btn active' : 'segmented-btn';
+      renderSidebarDays();
+    }
+
+    function toggleReviewDay(dayNum) {
+      const arr = new Set(appState.extraReviewDays || []);
+      if (arr.has(dayNum)) arr.delete(dayNum);
+      else arr.add(dayNum);
+      appState.extraReviewDays = Array.from(arr);
+      saveAppState();
+      renderAll();
+    }
+
+    function clearReviewDays() {
+      appState.extraReviewDays = [];
+      saveAppState();
+      renderAll();
+    }
+
+    function renderSidebarDays() {
+      const listEl = document.getElementById('dayListContainer');
+      const reviewEl = document.getElementById('reviewDaysCheckList');
+      listEl.innerHTML = '';
+      reviewEl.innerHTML = '';
+
+      // Populate Cumulative Review checkboxes (Days with words != activeDay)
+      const daysWithWordsOther = [];
+      for (let i = 1; i <= 120; i++) {
+        const count = appState.days[String(i)]?.words?.length || 0;
+        if (count > 0 && i !== appState.activeDay) {
+          daysWithWordsOther.push({ day: i, count });
+        }
+      }
+
+      if (daysWithWordsOther.length === 0) {
+        reviewEl.innerHTML = `<span style="font-size:11.5px;color:var(--text-placeholder);">Chưa có ngày cũ khác có từ vựng.</span>`;
+      } else {
+        daysWithWordsOther.forEach(item => {
+          const checked = (appState.extraReviewDays || []).includes(item.day);
+          const lbl = document.createElement('label');
+          lbl.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:4px 6px;border-radius:4px;cursor:pointer;font-size:12px;';
+          lbl.innerHTML = `
+            <span style="display:flex;align-items:center;gap:6px;font-weight:500;">
+              <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleReviewDay(${item.day})" />
+              <span>Kèm Ngày ${item.day}</span>
+            </span>
+            <span style="color:var(--text-muted);font-size:11px;">${item.count} từ</span>
+          `;
+          reviewEl.appendChild(lbl);
+        });
+      }
+
+      // Render 120 Days
+      for (let d = 1; d <= 120; d++) {
+        const wCount = appState.days[String(d)]?.words?.length || 0;
+        if (appState.dayFilter === 'has_words' && wCount === 0 && d !== appState.activeDay) continue;
+
+        const isActive = d === appState.activeDay;
+        const btn = document.createElement('button');
+        btn.className = `day-item ${isActive ? 'active' : ''} ${wCount > 0 ? 'has-words' : ''}`;
+        btn.onclick = () => selectDay(d);
+        btn.innerHTML = `
+          <div class="day-item-left">
+            <span class="day-dot"></span>
+            <span>Ngày ${d}</span>
+          </div>
+          <span style="font-size:11.5px;color:${isActive ? 'var(--primary)' : (wCount > 0 ? 'var(--success)' : 'var(--text-placeholder)')};font-weight:${wCount > 0 ? '600' : '400'};">
+            ${wCount > 0 ? `${wCount} từ` : 'Trống'}
+          </span>
+        `;
+        listEl.appendChild(btn);
+      }
+    }
+
+    // ==========================================================================
+    // 5. TAB 1: VOCABULARY FOCUS CARD (1/21 IMAGE STYLE) & LIST VIEW
+    // ==========================================================================
+    function setVocabViewMode(mode) {
+      appState.vocabViewMode = mode;
+      document.getElementById('viewBtnFocus').className = mode === 'focus' ? 'segmented-btn active' : 'segmented-btn';
+      document.getElementById('viewBtnList').className = mode === 'list' ? 'segmented-btn active' : 'segmented-btn';
+      saveAppState();
+      renderVocabSection();
+    }
+
+    function highlightKeywordInSentence(sentence, keyword) {
+      if (!sentence) return '';
+      const safeSent = escapeHtml(sentence);
+      if (!keyword) return safeSent;
+      const escapedKw = keyword.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(`(${escapedKw}(?:s|es|ed|ing)?)`, 'gi');
+      return safeSent.replace(regex, '<span class="kw-highlight">$1</span>');
+    }
+
+    function stepFocusCard(delta) {
+      const pool = getActiveVocabularyPool();
+      if (pool.length === 0) return;
+      appState.focusCardIndex = (appState.focusCardIndex + delta + pool.length) % pool.length;
+      renderVocabSection();
+    }
+
+    function renderVocabSection() {
+      const container = document.getElementById('vocabContentContainer');
+      const query = (document.getElementById('vocabSearchInput')?.value || '').trim().toLowerCase();
+      const fullPool = getActiveVocabularyPool();
+      const filtered = query
+        ? fullPool.filter(w => w.word.toLowerCase().includes(query) || w.meaning.toLowerCase().includes(query))
+        : fullPool;
+
+      document.getElementById('tabCountVocab').textContent = fullPool.length;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="card" style="padding:48px 24px;text-align:center;">
+            <p style="font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:6px;">
+              Chưa có từ vựng nào trong Ngày ${appState.activeDay}
+            </p>
+            <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">
+              Hãy bấm nút "+ Nạp từ nhanh (Smart Paste)" để dán từ vựng hôm nay vào học nhé!
+            </p>
+            <button onclick="openSmartPasteModal()" class="btn btn-primary">+ Nạp từ vựng cho Ngày ${appState.activeDay}</button>
+          </div>
+        `;
+        return;
+      }
+
+      if (appState.vocabViewMode === 'focus') {
+        if (appState.focusCardIndex >= filtered.length) appState.focusCardIndex = 0;
+        const item = filtered[appState.focusCardIndex];
+        const highlightedEx = highlightKeywordInSentence(item.exampleEn, item.word);
+
+        container.innerHTML = `
+          <div class="focus-study-card">
+            <!-- Top Row Controls -->
+            <div style="width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <span class="badge">Ngày ${item.dayNum}</span>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <button id="btnAiWord_${item.id}" onclick="enrichWordWithAI('${item.id}', ${item.dayNum})" class="btn btn-soft btn-sm">
+                  ✨ AI Dịch câu & Phân tích Collocations
+                </button>
+                <button onclick="openEditWordModal('${item.id}', ${item.dayNum})" class="btn btn-secondary btn-sm">
+                  Sửa / Dịch câu
+                </button>
+                <button onclick="deleteWord('${item.id}', ${item.dayNum})" class="btn-danger-ghost" title="Xóa từ">
+                  Xóa
+                </button>
+              </div>
+            </div>
+
+            <!-- Counter 1/21 matching user's reference image -->
+            <div class="focus-counter">${appState.focusCardIndex + 1}/${filtered.length}</div>
+
+            <!-- Target Word -->
+            <div class="focus-word">${escapeHtml(item.word)}</div>
+
+            <!-- PoS Pill -->
+            <div class="focus-pos-pill">${escapeHtml(item.pos || 'Vocabulary')}</div>
+
+            <!-- Phonetic -->
+            ${item.phonetic ? `<div class="focus-phonetic">${escapeHtml(item.phonetic)}</div>` : ''}
+
+            <!-- Meaning -->
+            <div class="focus-meaning">${escapeHtml(item.meaning)}</div>
+
+            <!-- Main Audio Button matching reference image -->
+            <button onclick="speakWordItem('${item.id}', ${item.dayNum}, 'word')" class="speaker-box-btn" title="Nghe phát âm từ vựng">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+              </svg>
+            </button>
+
+            <!-- Example Sentence Section matching reference image -->
+            <div class="focus-example-bar">
+              ${item.exampleEn ? `
+                <div class="focus-example-en-row">
+                  <button onclick="speakWordItem('${item.id}', ${item.dayNum}, 'sentence')" class="speaker-mini-btn" title="Nghe phát âm cả câu">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                    </svg>
+                  </button>
+                  <span>${highlightedEx}</span>
+                </div>
+              ` : `<p style="font-size:13px;color:var(--text-muted);">Chưa có câu ví dụ tiếng Anh.</p>`}
+
+              ${item.exampleVi ? `
+                <div style="padding-left:42px;font-size:13.5px;color:var(--text-secondary);">
+                  ➔ <em>${escapeHtml(item.exampleVi)}</em>
+                </div>
+              ` : `
+                <div style="padding-left:42px;">
+                  <button onclick="enrichWordWithAI('${item.id}', ${item.dayNum})" style="font-size:12px;color:var(--primary);font-weight:600;">
+                    + Bấm để AI dịch nghĩa câu này sang tiếng Việt
+                  </button>
+                </div>
+              `}
+
+              ${item.notes ? `
+                <div style="margin-top:8px;margin-left:42px;padding:10px 14px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-sm);font-size:12.5px;color:var(--text-secondary);">
+                  <strong style="color:var(--text-primary);">Collocations & Ghi chú TOEIC:</strong> ${escapeHtml(item.notes)}
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- Prev / Next Navigation Footer -->
+            <div style="width:100%;max-width:720px;margin-top:24px;padding-top:16px;border-top:1px solid var(--border-default);display:flex;align-items:center;justify-content:space-between;">
+              <button onclick="stepFocusCard(-1)" class="btn btn-secondary">← Từ trước</button>
+              <span style="font-size:12px;color:var(--text-muted);">Dùng phím ← / → để chuyển nhanh giữa các từ trong ngày</span>
+              <button onclick="stepFocusCard(1)" class="btn btn-secondary">Từ tiếp theo →</button>
+            </div>
+          </div>
+        `;
+      } else {
+        // Detailed List View
+        const listWrap = document.createElement('div');
+        listWrap.className = 'vocab-list-grid';
+
+        filtered.forEach((item, idx) => {
+          const highlightedEx = highlightKeywordInSentence(item.exampleEn, item.word);
+          const card = document.createElement('div');
+          card.className = 'vocab-row-card';
+          card.innerHTML = `
+            <div style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <span class="badge">${idx + 1}/${filtered.length}</span>
+                <span style="font-size:20px;font-weight:700;color:var(--text-primary);">${escapeHtml(item.word)}</span>
+                <span class="focus-pos-pill" style="margin:0;">${escapeHtml(item.pos || 'Word')}</span>
+                ${item.phonetic ? `<span style="font-family:var(--font-mono);font-size:13px;color:var(--text-secondary);">${escapeHtml(item.phonetic)}</span>` : ''}
+                <button onclick="speakWordItem('${item.id}', ${item.dayNum}, 'word')" class="speaker-mini-btn" title="Nghe từ">🔊</button>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:6px;">
+                <button id="btnAiWord_${item.id}" onclick="enrichWordWithAI('${item.id}', ${item.dayNum})" class="btn btn-soft btn-sm">
+                  ✨ AI Dịch & Collocations
+                </button>
+                <button onclick="openEditWordModal('${item.id}', ${item.dayNum})" class="btn btn-secondary btn-sm">Sửa</button>
+                <button onclick="deleteWord('${item.id}', ${item.dayNum})" class="btn-danger-ghost">Xóa</button>
+              </div>
+            </div>
+
+            <div style="font-size:15px;font-weight:700;color:var(--text-primary);margin-bottom:10px;">
+              Nghĩa: ${escapeHtml(item.meaning)}
+            </div>
+
+            ${item.exampleEn ? `
+              <div style="padding:12px 14px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-md);display:flex;flex-direction:column;gap:4px;">
+                <div style="display:flex;align-items:flex-start;gap:8px;font-size:14px;">
+                  <button onclick="speakWordItem('${item.id}', ${item.dayNum}, 'sentence')" class="speaker-mini-btn">🔊</button>
+                  <span>${highlightedEx}</span>
+                </div>
+                ${item.exampleVi ? `<div style="padding-left:40px;font-size:13px;color:var(--text-secondary);">➔ <em>${escapeHtml(item.exampleVi)}</em></div>` : ''}
+              </div>
+            ` : ''}
+
+            ${item.notes ? `
+              <div style="margin-top:8px;font-size:12.5px;color:var(--text-secondary);">
+                <strong>Collocations:</strong> ${escapeHtml(item.notes)}
+              </div>
+            ` : ''}
+          `;
+          listWrap.appendChild(card);
+        });
+
+        container.innerHTML = '';
+        container.appendChild(listWrap);
+      }
+    }
+
+    function speakWordItem(wordId, dayNum, mode) {
+      const dObj = ensureDay(dayNum);
+      const found = dObj.words.find(w => w.id === wordId);
+      if (!found) return;
+      speakText(mode === 'sentence' ? found.exampleEn : found.word);
+    }
+
+    async function enrichWordWithAI(wordId, dayNum) {
+      const dObj = ensureDay(dayNum);
+      const item = dObj.words.find(w => w.id === wordId);
+      if (!item) return;
+
+      const btn = document.getElementById(`btnAiWord_${wordId}`);
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Đang phân tích...';
+      }
+
+      const sysPrompt = `Bạn là giảng viên TOEIC 990. Hãy trả về DUY NHẤT 1 JSON object hợp lệ theo cấu trúc:
+{
+  "exampleVi": "Bản dịch tiếng Việt chuẩn xác, tự nhiên cho câu exampleEn",
+  "notes": "Các cụm từ đi kèm (Collocations) quan trọng trong TOEIC + 1 câu ví dụ ngắn gắn với công việc văn phòng/IT"
+}`;
+      const userPrompt = `Từ vựng: "${item.word}" (${item.pos}) - Nghĩa: "${item.meaning}". Câu tiếng Anh: "${item.exampleEn}". Hãy dịch câu ví dụ này sang tiếng Việt và trích xuất Collocations.`;
+
+      try {
+        const raw = await callAI(sysPrompt, userPrompt, null, 'act');
+        const data = parseJsonResponse(raw);
+        if (data.exampleVi) item.exampleVi = data.exampleVi;
+        if (data.notes) item.notes = data.notes;
+        saveAppState();
+        renderVocabSection();
+        showToast(`Đã cập nhật bản dịch câu và Collocations cho "${item.word}"!`);
+      } catch (err) {
+        showToast(err.message);
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = '✨ AI Dịch câu & Phân tích Collocations';
+        }
+      }
+    }
+
+    // ==========================================================================
+    // 6. SMART PASTE PARSER (HANDLES USER'S RAW COPY-PASTE FORMAT)
+    // ==========================================================================
+    function openSmartPasteModal() {
+      const sel = document.getElementById('smartPasteDaySelect');
+      sel.innerHTML = '';
+      for (let i = 1; i <= 120; i++) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = `Ngày ${i}`;
+        if (i === appState.activeDay) opt.selected = true;
+        sel.appendChild(opt);
+      }
+      openModal('smartPasteModal');
+    }
+
+    function fillSampleSmartPaste() {
+      document.getElementById('smartPasteTextarea').value = `filing cabinet
+Noun Phrase
+/ˈfaɪ.lɪŋ ˌkæb.ɪ.nət/
+tủ đựng tài liệu
+
+She needed some folders, so she went to the filing cabinet and opened the top drawer.`;
+    }
+
+    function parseRawVocabularyBlocks(rawText) {
+      const blocks = rawText.split(/\n\s*---+\s*\n/).map(b => b.trim()).filter(Boolean);
+      const parsedItems = [];
+
+      blocks.forEach(block => {
+        const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+        if (lines.length < 2) return;
+
+        let word = lines[0];
+        let pos = 'Vocabulary';
+        let phonetic = '';
+        let meaning = '';
+        let exampleEn = '';
+        let exampleVi = '';
+        let notes = '';
+
+        let idx = 1;
+        if (idx < lines.length && /^(noun|verb|adjective|adverb|phrase|preposition|conjunction|idiom|n\b|v\b|adj\b|adv\b)/i.test(lines[idx])) {
+          pos = lines[idx];
+          idx++;
+        }
+        if (idx < lines.length && (lines[idx].startsWith('/') || lines[idx].startsWith('['))) {
+          phonetic = lines[idx];
+          idx++;
+        }
+        if (idx < lines.length) {
+          meaning = lines[idx];
+          idx++;
+        }
+        if (idx < lines.length) {
+          exampleEn = lines[idx];
+          idx++;
+        }
+        if (idx < lines.length) {
+          exampleVi = lines[idx];
+          idx++;
+        }
+        if (idx < lines.length) {
+          notes = lines.slice(idx).join(' • ');
+        }
+
+        parsedItems.push({
+          id: 'w_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+          word,
+          pos,
+          phonetic,
+          meaning: meaning || 'Chưa cập nhật nghĩa',
+          exampleEn,
+          exampleVi,
+          notes
+        });
+      });
+
+      return parsedItems;
+    }
+
+    async function autoTranslateSmartPasteWithAI() {
+      const ta = document.getElementById('smartPasteTextarea');
+      const raw = ta.value.trim();
+      if (!raw) {
+        showToast('Hãy dán nội dung từ vựng vào ô trước!');
+        return;
+      }
+      const btn = document.getElementById('btnSmartPasteAI');
+      btn.disabled = true;
+      btn.textContent = 'Đang dịch câu & tách từ...';
+
+      const sysPrompt = `Bạn là trợ lý chuẩn hóa từ vựng TOEIC. Người dùng sẽ gửi 1 hoặc nhiều từ vựng. Hãy giữ nguyên từng từ và trả về theo đúng cấu trúc từng dòng sau (ngăn cách các từ bằng ---):
+Dòng 1: Từ vựng tiếng Anh
+Dòng 2: Từ loại (Noun, Verb, Noun Phrase...)
+Dòng 3: Phiên âm IPA (/.../)
+Dòng 4: Nghĩa tiếng Việt
+Dòng 5: Câu ví dụ tiếng Anh (giữ nguyên câu gốc của người dùng)
+Dòng 6: Bản dịch tiếng Việt chuẩn xác của câu ví dụ trên
+Dòng 7: Các cụm từ đi kèm (Collocations) trong câu đó.
+Chỉ trả về văn bản kết quả, không giải thích thừa.`;
+
+      try {
+        const result = await callAI(sysPrompt, raw, null, 'act');
+        ta.value = result.trim();
+        showToast('AI đã dịch câu mẫu và bổ sung Collocations! Bấm Lưu để hoàn tất.');
+      } catch (err) {
+        showToast(err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '✨ Dùng AI tự dịch câu mẫu & thêm Collocations';
+      }
+    }
+
+    function confirmSmartPaste() {
+      const targetDay = parseInt(document.getElementById('smartPasteDaySelect').value, 10) || appState.activeDay;
+      const raw = document.getElementById('smartPasteTextarea').value.trim();
+      if (!raw) {
+        showToast('Vui lòng dán nội dung từ vựng!');
+        return;
+      }
+
+      const items = parseRawVocabularyBlocks(raw);
+      if (items.length === 0) {
+        showToast('Không nhận diện được từ vựng hợp lệ.');
+        return;
+      }
+
+      const dObj = ensureDay(targetDay);
+      let added = 0;
+      items.forEach(item => {
+        const existingIdx = dObj.words.findIndex(w => w.word.toLowerCase() === item.word.toLowerCase());
+        if (existingIdx >= 0) {
+          dObj.words[existingIdx] = { ...dObj.words[existingIdx], ...item };
+        } else {
+          dObj.words.push(item);
+        }
+        added++;
+      });
+
+      appState.activeDay = targetDay;
+      appState.focusCardIndex = dObj.words.length - 1;
+      saveAppState();
+      closeModal('smartPasteModal');
+      document.getElementById('smartPasteTextarea').value = '';
+      renderAll();
+      showToast(`Đã lưu ${added} từ vựng vào Ngày ${targetDay}!`);
+
+      // Automatically translate sentence in background if exampleVi is missing
+      items.forEach(item => {
+        if (item.exampleEn && !item.exampleVi) {
+          const saved = dObj.words.find(w => w.word.toLowerCase() === item.word.toLowerCase());
+          if (saved) enrichWordWithAI(saved.id, targetDay);
+        }
+      });
+    }
+
+    // Manual Add/Edit Modal
+    function openEditWordModal(wordId, dayNum = appState.activeDay) {
+      const dObj = ensureDay(dayNum);
+      const found = wordId ? dObj.words.find(w => w.id === wordId) : null;
+
+      document.getElementById('editWordModalTitle').textContent = found
+        ? `Chỉnh sửa từ "${found.word}" (Ngày ${dayNum})`
+        : `Thêm từ vựng vào Ngày ${appState.activeDay}`;
+
+      document.getElementById('editWordId').value = found ? `${dayNum}::${found.id}` : '';
+      document.getElementById('fieldWord').value = found ? found.word : '';
+      document.getElementById('fieldPos').value = found ? found.pos : 'Noun Phrase';
+      document.getElementById('fieldPhonetic').value = found ? found.phonetic : '';
+      document.getElementById('fieldMeaning').value = found ? found.meaning : '';
+      document.getElementById('fieldExampleEn').value = found ? found.exampleEn : '';
+      document.getElementById('fieldExampleVi').value = found ? found.exampleVi : '';
+      document.getElementById('fieldNotes').value = found ? found.notes : '';
+
+      openModal('editWordModal');
+    }
+
+    function saveEditedWord() {
+      const word = document.getElementById('fieldWord').value.trim();
+      const meaning = document.getElementById('fieldMeaning').value.trim();
+      if (!word || !meaning) {
+        showToast('Vui lòng nhập Từ vựng và Nghĩa tiếng Việt!');
+        return;
+      }
+
+      const composite = document.getElementById('editWordId').value;
+      const payload = {
+        word,
+        pos: document.getElementById('fieldPos').value.trim() || 'Vocabulary',
+        phonetic: document.getElementById('fieldPhonetic').value.trim(),
+        meaning,
+        exampleEn: document.getElementById('fieldExampleEn').value.trim(),
+        exampleVi: document.getElementById('fieldExampleVi').value.trim(),
+        notes: document.getElementById('fieldNotes').value.trim()
+      };
+
+      if (composite && composite.includes('::')) {
+        const [dStr, wId] = composite.split('::');
+        const dObj = ensureDay(dStr);
+        const idx = dObj.words.findIndex(w => w.id === wId);
+        if (idx !== -1) dObj.words[idx] = { ...dObj.words[idx], ...payload };
+      } else {
+        const dObj = ensureDay(appState.activeDay);
+        dObj.words.push({ id: 'w_' + Date.now(), ...payload });
+        appState.focusCardIndex = dObj.words.length - 1;
+      }
+
+      saveAppState();
+      closeModal('editWordModal');
+      renderAll();
+      showToast(`Đã lưu từ "${word}"!`);
+    }
+
+    function deleteWord(wordId, dayNum) {
+      const dObj = ensureDay(dayNum);
+      dObj.words = dObj.words.filter(w => w.id !== wordId);
+      saveAppState();
+      renderAll();
+      showToast('Đã xóa từ vựng.');
+    }
+
+    // ==========================================================================
+    // 7. TAB 2: IMMERSIVE MCQ QUIZ (EN-VI / VI-EN / TOEIC PART 5)
+    // ==========================================================================
+    function setQuizMode(mode) {
+      quizState.mode = mode;
+      ['EN_VI', 'VI_EN', 'CONTEXT'].forEach(m => {
+        const btn = document.getElementById(`quizModeBtn-${m}`);
+        if (btn) btn.className = m === mode ? 'segmented-btn active' : 'segmented-btn';
+      });
+      startNewQuiz();
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function startNewQuiz() {
+      const pool = getActiveVocabularyPool();
+      quizState.questions = shuffle(pool);
+      quizState.currentIndex = 0;
+      quizState.score = 0;
+      quizState.answeredCount = 0;
+      renderQuizQuestion();
+    }
+
+    function renderQuizQuestion() {
+      const container = document.getElementById('quizBodyContainer');
+      const scoreBadge = document.getElementById('quizScoreBadge');
+      scoreBadge.textContent = `Đúng: ${quizState.score}/${quizState.answeredCount}`;
+
+      if (quizState.questions.length === 0) {
+        container.innerHTML = `<p style="font-size:13.5px;color:var(--text-muted);text-align:center;padding:24px;">Hãy nạp từ vựng vào Ngày ${appState.activeDay} trước khi làm Quiz.</p>`;
+        return;
+      }
+
+      if (quizState.currentIndex >= quizState.questions.length) {
+        container.innerHTML = `
+          <div style="text-align:center;padding:28px 16px;">
+            <div class="badge badge-success" style="margin-bottom:8px;">HOÀN THÀNH LƯỢT ÔN TẬP</div>
+            <h3 style="font-size:20px;font-weight:700;margin-bottom:6px;">Kết quả: ${quizState.score} / ${quizState.questions.length} câu đúng</h3>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Luyện tập lặp lại giúp bạn phản xạ nghĩa trực tiếp không cần dịch nhẩm.</p>
+            <button onclick="startNewQuiz()" class="btn btn-primary">Làm lại lượt mới</button>
+          </div>
+        `;
+        return;
+      }
+
+      const target = quizState.questions[quizState.currentIndex];
+      const allWords = [...getActiveVocabularyPool(), ...FALLBACK_POOL].filter(
+        w => w.word.toLowerCase() !== target.word.toLowerCase()
+      );
+      const uniqueDistractors = [];
+      const usedSet = new Set([target.word.toLowerCase()]);
+      for (const item of shuffle(allWords)) {
+        if (!usedSet.has(item.word.toLowerCase())) {
+          usedSet.add(item.word.toLowerCase());
+          uniqueDistractors.push(item);
+        }
+        if (uniqueDistractors.length === 3) break;
+      }
+
+      const options = shuffle([target, ...uniqueDistractors]);
+      let promptLabel = '';
+      let promptMain = '';
+      let promptSub = '';
+
+      if (quizState.mode === 'EN_VI') {
+        promptLabel = 'CHỌN NGHĨA TIẾNG VIỆT ĐÚNG CHO TỪ:';
+        promptMain = target.word;
+        promptSub = `${target.pos || ''} ${target.phonetic || ''}`;
+      } else if (quizState.mode === 'VI_EN') {
+        promptLabel = 'CHỌN TỪ TIẾNG ANH TƯƠNG ỨNG VỚI NGHĨA:';
+        promptMain = target.meaning;
+        promptSub = `Từ loại gợi ý: ${target.pos || 'Vocabulary'}`;
+      } else {
+        promptLabel = 'ĐIỀN TỪ PHÙ HỢP VÀO CHỖ TRỐNG (TOEIC PART 5):';
+        if (target.exampleEn) {
+          const reg = new RegExp(target.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+          promptMain = target.exampleEn.replace(reg, '_______');
+        } else {
+          promptMain = `_______ (${target.meaning})`;
+        }
+        promptSub = target.exampleVi ? `Gợi ý nghĩa: "${target.exampleVi}"` : `Nghĩa từ cần điền: ${target.meaning}`;
+      }
+
+      container.innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="padding:20px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-md);">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+              <span style="font-size:11px;font-weight:700;color:var(--primary);letter-spacing:0.04em;">${promptLabel}</span>
+              <span style="font-size:12px;color:var(--text-muted);">Câu ${quizState.currentIndex + 1}/${quizState.questions.length}</span>
+            </div>
+            <div style="font-size:20px;font-weight:700;color:var(--text-primary);margin-bottom:4px;">${escapeHtml(promptMain)}</div>
+            <div style="font-size:12.5px;color:var(--text-secondary);">${escapeHtml(promptSub)}</div>
+          </div>
+
+          <div id="quizOptionsWrap" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
+          <div id="quizFeedbackWrap" class="hidden"></div>
+        </div>
+      `;
+
+      const optWrap = document.getElementById('quizOptionsWrap');
+      options.forEach((opt, i) => {
+        const labelText = quizState.mode === 'EN_VI' ? opt.meaning : opt.word;
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option-btn';
+        btn.innerHTML = `
+          <span><strong>${['A', 'B', 'C', 'D'][i]}.</strong> ${escapeHtml(labelText)}</span>
+        `;
+        btn.onclick = () => submitQuizChoice(btn, opt.word.toLowerCase() === target.word.toLowerCase(), target);
+        optWrap.appendChild(btn);
+      });
+    }
+
+    function submitQuizChoice(clickedBtn, isCorrect, target) {
+      const buttons = document.querySelectorAll('#quizOptionsWrap .quiz-option-btn');
+      buttons.forEach(b => b.disabled = true);
+
+      quizState.answeredCount++;
+      if (isCorrect) {
+        quizState.score++;
+        clickedBtn.classList.add('correct');
+      } else {
+        clickedBtn.classList.add('wrong');
+        buttons.forEach(b => {
+          const expected = quizState.mode === 'EN_VI' ? target.meaning : target.word;
+          if (b.textContent.includes(expected)) b.classList.add('correct');
+        });
+      }
+
+      speakText(target.word);
+      document.getElementById('quizScoreBadge').textContent = `Đúng: ${quizState.score}/${quizState.answeredCount}`;
+
+      const fb = document.getElementById('quizFeedbackWrap');
+      fb.classList.remove('hidden');
+      fb.innerHTML = `
+        <div style="padding:14px 16px;background-color:${isCorrect ? 'var(--success-soft)' : 'var(--bg-canvas)'};border:1px solid ${isCorrect ? 'var(--success-border)' : 'var(--border-default)'};border-radius:var(--radius-md);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+          <div style="font-size:13px;">
+            <strong>${escapeHtml(target.word)}</strong> (${escapeHtml(target.pos || '')}): ${escapeHtml(target.meaning)}
+            ${target.exampleEn ? `<div style="color:var(--text-secondary);margin-top:2px;">Ví dụ: "${escapeHtml(target.exampleEn)}"</div>` : ''}
+          </div>
+          <button onclick="quizState.currentIndex++; renderQuizQuestion();" class="btn btn-primary btn-sm">
+            Câu tiếp theo →
+          </button>
+        </div>
+      `;
+    }
+
+    // ==========================================================================
+    // 8. TAB 3: START MIXING & DIRECT AI LANGUAGE PARENT GRADING
+    // ==========================================================================
+    function renderMixingSection() {
+      const pool = getActiveVocabularyPool();
+      const chipsWrap = document.getElementById('mixingChipsContainer');
+      const textVal = (document.getElementById('mixingSentenceInput')?.value || '').toLowerCase();
+
+      chipsWrap.innerHTML = '';
+      let usedCount = 0;
+
+      pool.forEach(w => {
+        const isUsed = textVal.includes(w.word.toLowerCase());
+        if (isUsed) usedCount++;
+
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = `word-chip ${isUsed ? 'used' : ''}`;
+        chip.onclick = () => insertWordToEditor(w.word);
+        chip.innerHTML = `
+          <span>${isUsed ? '✓' : '+'}</span>
+          <span>${escapeHtml(w.word)}</span>
+          <span style="opacity:0.75;font-size:11px;">(${escapeHtml(w.meaning)})</span>
+        `;
+        chipsWrap.appendChild(chip);
+      });
+
+      document.getElementById('mixingUsedCountLabel').textContent = `Đã kết hợp: ${usedCount}/${pool.length} từ`;
+      renderSavedSentencesList();
+    }
+
+    function updateMixingChipsHighlight() {
+      renderMixingSection();
+    }
+
+    function insertWordToEditor(word) {
+      const ta = document.getElementById('mixingSentenceInput');
+      const prefix = ta.value && !ta.value.endsWith(' ') ? ' ' : '';
+      ta.value = ta.value + prefix + word + ' ';
+      ta.focus();
+      updateMixingChipsHighlight();
+    }
+
+    function saveSentenceOnly() {
+      const ta = document.getElementById('mixingSentenceInput');
+      const txt = ta.value.trim();
+      if (!txt) {
+        showToast('Hãy nhập câu tiếng Anh trước khi lưu!');
+        return;
+      }
+      const pool = getActiveVocabularyPool();
+      const usedWords = pool.filter(w => txt.toLowerCase().includes(w.word.toLowerCase())).map(w => w.word);
+
+      const dObj = ensureDay(appState.activeDay);
+      dObj.sentences.unshift({
+        id: 's_' + Date.now(),
+        text: txt,
+        usedWords,
+        createdAt: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
+        aiFeedback: null
+      });
+
+      ta.value = '';
+      saveAppState();
+      renderMixingSection();
+      showToast('Đã lưu câu vào sổ tay Ngày ' + appState.activeDay);
+    }
+
+    async function evaluateCurrentSentenceWithAI() {
+      const ta = document.getElementById('mixingSentenceInput');
+      const txt = ta.value.trim();
+      if (!txt) {
+        showToast('Hãy viết ít nhất 1 câu tiếng Anh vào ô soạn thảo để AI chấm điểm!');
+        return;
+      }
+
+      const pool = getActiveVocabularyPool();
+      const vocabStr = pool.map(w => `${w.word} (${w.pos}: ${w.meaning})`).join('; ');
+      const btn = document.getElementById('btnEvaluateWithAI');
+      const out = document.getElementById('aiEvaluationOutput');
+
+      btn.disabled = true;
+      btn.textContent = 'Đang chấm điểm & nâng cấp câu...';
+      out.classList.remove('hidden');
+      out.innerHTML = `<div style="padding:14px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-md);font-size:13px;color:var(--text-secondary);">Đang gửi câu tới AI (${aiConfig.provider.toUpperCase()}) để phân tích ngữ pháp & ngữ cảnh...</div>`;
+
+      const sysPrompt = `Bạn là "Language Parent" theo phương pháp Chris Lonsdale kiêm Giám khảo TOEIC Writing.
+Hãy đánh giá câu tiếng Anh của người học và trả về DUY NHẤT 1 JSON object hợp lệ:
+{
+  "score": "9.0/10",
+  "encouragement": "Ghi nhận ý nghĩa câu và khen ngợi cách kết hợp từ",
+  "grammarNotes": "Nhận xét ngữ pháp, giới từ, từ loại (chỉ rõ điểm đúng hoặc chỗ cần chỉnh nhẹ)",
+  "naturalWorkVersion": "Viết lại câu tự nhiên trong môi trường công sở / IT hàng ngày",
+  "toeicHighVersion": "Phiên bản nâng cấp ăn điểm cao trong TOEIC Writing / Email thương mại"
+}`;
+      const userPrompt = `Từ vựng mục tiêu Ngày ${appState.activeDay}: ${vocabStr}. Câu người học viết: "${txt}"`;
+
+      try {
+        const raw = await callAI(sysPrompt, userPrompt);
+        const ev = parseJsonResponse(raw);
+
+        const usedWords = pool.filter(w => txt.toLowerCase().includes(w.word.toLowerCase())).map(w => w.word);
+        const dObj = ensureDay(appState.activeDay);
+        dObj.sentences.unshift({
+          id: 's_' + Date.now(),
+          text: txt,
+          usedWords,
+          createdAt: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + ` (${aiConfig.provider.toUpperCase()})`,
+          aiFeedback: ev
+        });
+
+        ta.value = '';
+        saveAppState();
+        renderMixingSection();
+
+        out.innerHTML = `
+          <div style="padding:18px;background-color:var(--bg-canvas);border:1px solid var(--primary-border);border-radius:var(--radius-md);display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-weight:700;color:var(--primary);">Kết quả đánh giá từ AI (${aiConfig.provider.toUpperCase()})</span>
+              <span class="badge badge-success">Điểm: ${escapeHtml(ev.score || '9/10')}</span>
+            </div>
+            <p style="font-size:13px;color:var(--text-primary);"><strong>Ghi nhận:</strong> ${escapeHtml(ev.encouragement || '')}</p>
+            <p style="font-size:13px;color:var(--text-secondary);"><strong>Ngữ pháp & Cách dùng từ:</strong> ${escapeHtml(ev.grammarNotes || '')}</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;">
+              <div style="padding:10px 12px;background-color:var(--bg-surface);border:1px solid var(--border-default);border-radius:var(--radius-sm);">
+                <div style="font-size:11.5px;font-weight:700;color:var(--success);margin-bottom:4px;">Giao tiếp Công sở / IT tự nhiên</div>
+                <div style="font-size:13px;font-weight:600;">"${escapeHtml(ev.naturalWorkVersion || '')}"</div>
+              </div>
+              <div style="padding:10px 12px;background-color:var(--bg-surface);border:1px solid var(--border-default);border-radius:var(--radius-sm);">
+                <div style="font-size:11.5px;font-weight:700;color:var(--amber);margin-bottom:4px;">Nâng cấp chuẩn TOEIC Writing</div>
+                <div style="font-size:13px;font-weight:600;">"${escapeHtml(ev.toeicHighVersion || '')}"</div>
+              </div>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        out.innerHTML = `<div style="padding:12px;background-color:var(--danger-soft);color:var(--danger);border-radius:var(--radius-sm);font-size:13px;">Lỗi gọi AI: ${escapeHtml(err.message)}</div>`;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Chấm điểm & Nâng cấp câu bằng AI (Claude / Gemini)';
+      }
+    }
+
+    function renderSavedSentencesList() {
+      const dObj = ensureDay(appState.activeDay);
+      const listEl = document.getElementById('savedSentencesContainer');
+      document.getElementById('tabCountSentences').textContent = (dObj.sentences || []).length;
+
+      if (!dObj.sentences || dObj.sentences.length === 0) {
+        listEl.innerHTML = `<p style="font-size:13px;color:var(--text-muted);">Chưa có câu tự viết nào trong Ngày ${appState.activeDay}.</p>`;
+        return;
+      }
+
+      listEl.innerHTML = '';
+      dObj.sentences.forEach(s => {
+        let htmlSent = escapeHtml(s.text);
+        (s.usedWords || []).forEach(w => {
+          htmlSent = highlightKeywordInSentence(s.text, w);
+        });
+
+        const item = document.createElement('div');
+        item.style.cssText = 'padding:14px 16px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-md);display:flex;flex-direction:column;gap:8px;';
+        item.innerHTML = `
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--text-primary);">${htmlSent}</div>
+              <div style="font-size:11.5px;color:var(--text-muted);margin-top:2px;">
+                ${escapeHtml(s.createdAt || '')} ${s.usedWords?.length ? `• Từ đã dùng: <strong>${escapeHtml(s.usedWords.join(', '))}</strong>` : ''}
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <button onclick="speakText('${s.text.replace(/'/g, "\\'")}')" class="speaker-mini-btn">🔊</button>
+              <button onclick="deleteSavedSentence('${s.id}')" class="btn-danger-ghost">✕</button>
+            </div>
+          </div>
+          ${s.aiFeedback ? `
+            <div style="padding:10px 12px;background-color:var(--bg-surface);border:1px solid var(--border-default);border-radius:var(--radius-sm);font-size:12.5px;display:flex;flex-direction:column;gap:4px;">
+              <div style="display:flex;justify-content:space-between;">
+                <strong style="color:var(--primary);">Nhận xét Language Parent:</strong>
+                <span class="badge badge-success">${escapeHtml(s.aiFeedback.score || '9/10')}</span>
+              </div>
+              <div style="color:var(--text-secondary);">${escapeHtml(s.aiFeedback.grammarNotes || s.aiFeedback.encouragement || '')}</div>
+              ${s.aiFeedback.toeicHighVersion ? `<div><strong>Nâng cấp TOEIC:</strong> "${escapeHtml(s.aiFeedback.toeicHighVersion)}"</div>` : ''}
+            </div>
+          ` : ''}
+        `;
+        listEl.appendChild(item);
+      });
+    }
+
+    function deleteSavedSentence(sid) {
+      const dObj = ensureDay(appState.activeDay);
+      dObj.sentences = dObj.sentences.filter(s => s.id !== sid);
+      saveAppState();
+      renderMixingSection();
+    }
+
+    function copyPromptForChat() {
+      const pool = getActiveVocabularyPool();
+      const dObj = ensureDay(appState.activeDay);
+      const draft = document.getElementById('mixingSentenceInput').value.trim();
+      const allSents = [...(draft ? [draft] : []), ...(dObj.sentences || []).map(s => s.text)];
+
+      const prompt = `Nhờ bạn đóng vai Language Parent chấm giúp mình các câu phản xạ của Ngày ${appState.activeDay}:\n- Từ vựng mục tiêu: ${pool.map(w => w.word).join(', ')}\n- Câu mình viết:\n${allSents.map((s, i) => `${i + 1}. ${s}`).join('\n')}`;
+      copyTextToClipboard(prompt);
+      showToast('Đã copy Prompt! Bạn có thể dán thẳng vào khung chat.');
+    }
+
+    // ==========================================================================
+    // 9. TAB 4: AI COMPREHENSIBLE INPUT (EMAIL / MINI-STORY)
+    // ==========================================================================
+    function renderStorySection() {
+      const dObj = ensureDay(appState.activeDay);
+      const wrap = document.getElementById('storyOutputContainer');
+
+      if (!dObj.story) {
+        const pool = getActiveVocabularyPool();
+        wrap.innerHTML = `
+          <div style="padding:32px 20px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-md);text-align:center;">
+            <p style="font-size:14px;font-weight:600;margin-bottom:6px;">Chưa có bài đọc Ngữ cảnh cho Ngày ${appState.activeDay}</p>
+            <p style="font-size:12.5px;color:var(--text-secondary);margin-bottom:12px;">
+              Bấm nút "Tạo bài đọc bằng AI" ở góc phải trên để tạo Email TOEIC chứa trọn bộ ${pool.length} từ vựng đang chọn.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      const st = dObj.story;
+      let htmlEn = escapeHtml(st.englishText || '');
+      getActiveVocabularyPool().forEach(w => {
+        const reg = new RegExp(`(${w.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:s|es|ed|ing)?)`, 'gi');
+        htmlEn = htmlEn.replace(reg, '<span class="kw-highlight">$1</span>');
+      });
+
+      wrap.innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="padding:20px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-md);">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+              <h3 style="font-size:15px;font-weight:700;">${escapeHtml(st.title || 'TOEIC Contextual Reading')}</h3>
+              <button onclick="speakText(\`${(st.englishText || '').replace(/`/g, '')}\`)" class="btn btn-secondary btn-sm">🔊 Nghe đọc cả bài</button>
+            </div>
+            <p style="font-size:14.5px;line-height:1.7;white-space:pre-line;">${htmlEn}</p>
+          </div>
+
+          <div style="padding:16px 20px;background-color:var(--bg-surface);border:1px solid var(--border-default);border-radius:var(--radius-md);">
+            <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:4px;">BẢN DỊCH TIẾNG VIỆT ĐỐI CHIẾU:</div>
+            <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.65;white-space:pre-line;">${escapeHtml(st.vietnameseText || '')}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    async function generateStoryWithAI() {
+      const pool = getActiveVocabularyPool();
+      if (pool.length === 0) {
+        showToast('Hãy nạp từ vựng vào ngày này trước!');
+        return;
+      }
+      const btn = document.getElementById('btnGenerateStory');
+      btn.disabled = true;
+      btn.textContent = 'Đang biên soạn...';
+
+      const genre = document.getElementById('storyGenreSelect').value;
+      const wordsList = pool.map(w => `${w.word} (${w.meaning})`).join(', ');
+
+      const sysPrompt = `Bạn là chuyên gia viết bài đọc TOEIC theo phương pháp Comprehensible Input. Hãy viết 1 đoạn văn ngắn (80-130 từ) sử dụng TẤT CẢ các từ vựng được cung cấp.
+Trả về DUY NHẤT 1 JSON object hợp lệ:
+{
+  "title": "Tiêu đề Email / Tình huống",
+  "englishText": "Đoạn văn tiếng Anh chứa đủ các từ mục tiêu",
+  "vietnameseText": "Bản dịch tiếng Việt sát ngữ cảnh"
+}`;
+
+      try {
+        const raw = await callAI(sysPrompt, `Thể loại: ${genre}. Từ vựng bắt buộc có mặt: ${wordsList}`);
+        const data = parseJsonResponse(raw);
+        const dObj = ensureDay(appState.activeDay);
+        dObj.story = data;
+        saveAppState();
+        renderStorySection();
+        showToast('Đã tạo bài đọc ngữ cảnh thành công!');
+      } catch (err) {
+        showToast(err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Tạo bài đọc bằng AI';
+      }
+    }
+
+    // ==========================================================================
+    // 10. UTILITIES, MODALS, BACKUP & MASTER RENDER
+    // ==========================================================================
+    function switchTab(tab) {
+      activeTab = tab;
+      ['vocab', 'quiz', 'mixing', 'story'].forEach(t => {
+        const btn = document.getElementById(`tabBtn-${t}`);
+        const panel = document.getElementById(`tabPanel-${t}`);
+        if (t === tab) {
+          btn.classList.add('active');
+          panel.classList.remove('hidden');
+        } else {
+          btn.classList.remove('active');
+          panel.classList.add('hidden');
+        }
+      });
+
+      if (tab === 'quiz') startNewQuiz();
+      if (tab === 'mixing') renderMixingSection();
+      if (tab === 'story') renderStorySection();
+    }
+
+    function openModal(id) {
+      if (id === 'aiSettingsModal') {
+        const prov = aiConfig.provider || 'claude';
+        document.getElementById('selectApiProvider').value = prov;
+        handleProviderDropdownChange(prov);
+
+        document.getElementById('inputClaudeKey').value = aiConfig.claudeKey || '';
+        document.getElementById('chkCustomBaseUrl').checked = Boolean(aiConfig.useCustomBaseUrl);
+        document.getElementById('inputCustomBaseUrl').value = aiConfig.customBaseUrl || 'https://api.anthropic.com';
+        toggleCustomBaseUrlInput();
+
+        const selectModelEl = document.getElementById('selectClaudeModel');
+        const knownModels = Array.from(selectModelEl.options).map(o => o.value);
+        if (knownModels.includes(aiConfig.claudeModel)) {
+          selectModelEl.value = aiConfig.claudeModel;
+        } else {
+          selectModelEl.value = '__custom__';
+          document.getElementById('inputCustomClaudeModel').value = aiConfig.claudeModel || '';
+        }
+        handleClaudeModelChange();
+
+        document.getElementById('selectReasoningEffort').value = aiConfig.reasoningEffort || 'medium';
+        document.getElementById('chkSplitPlanAct').checked = Boolean(aiConfig.splitPlanAct);
+        document.getElementById('selectFastActModel').value = aiConfig.fastActModel || 'claude-3-5-haiku-latest';
+        togglePlanActModelSelect();
+
+        document.getElementById('inputBudgetTotal').value = (aiConfig.budgetTotal ?? 200).toFixed(2);
+        document.getElementById('inputConsoleSpent').value = (aiConfig.consoleSpent ?? 120.43).toFixed(2);
+        updateCreditSummaryUI();
+
+        document.getElementById('inputGeminiKey').value = aiConfig.geminiKey || '';
+        document.getElementById('selectGeminiModel').value = aiConfig.geminiModel || 'gemini-3-flash-preview';
+        document.getElementById('aiConnectionResultBox').classList.add('hidden');
+      }
+      document.getElementById(id).classList.add('open');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    function openBackupModal() {
+      document.getElementById('backupJsonTextarea').value = JSON.stringify(appState, null, 2);
+      openModal('backupModal');
+    }
+
+    function downloadBackupFile() {
+      const blob = new Blob([JSON.stringify(appState, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `toeic-120days-day${appState.activeDay}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function copyBackupJson() {
+      copyTextToClipboard(JSON.stringify(appState, null, 2));
+      showToast('Đã copy dữ liệu JSON!');
+    }
+
+    function restoreFromBackupTextarea() {
+      try {
+        const parsed = JSON.parse(document.getElementById('backupJsonTextarea').value);
+        if (!parsed.days) throw new Error('JSON thiếu trường days');
+        appState = parsed;
+        saveAppState();
+        closeModal('backupModal');
+        renderAll();
+        showToast('Đã khôi phục dữ liệu thành công!');
+      } catch (e) {
+        showToast('Mã JSON không hợp lệ!');
+      }
+    }
+
+    function updateHeaderMetrics() {
+      let daysLearned = 0;
+      let totalWords = 0;
+      for (let i = 1; i <= 120; i++) {
+        const c = appState.days[String(i)]?.words?.length || 0;
+        if (c > 0) {
+          daysLearned++;
+          totalWords += c;
+        }
+      }
+      document.getElementById('headerProgressBadge').textContent = `Đã học: ${daysLearned}/120 ngày • ${totalWords} từ`;
+      document.getElementById('sidebarLearnedCount').textContent = `${daysLearned} ngày có từ`;
+
+      const pool = getActiveVocabularyPool();
+      document.getElementById('activeDayBadge').textContent = `NGÀY ${appState.activeDay} / 120`;
+      document.getElementById('activeDayHeading').textContent = `Ngày ${appState.activeDay} — Không gian Từ vựng & Phản xạ Câu`;
+
+      const extra = appState.extraReviewDays || [];
+      document.getElementById('activePoolBadge').textContent = extra.length > 0
+        ? `Phạm vi: Ngày ${appState.activeDay} + Ngày ${extra.join(', ')} (${pool.length} từ)`
+        : `Phạm vi: Chỉ Ngày ${appState.activeDay} (${pool.length} từ)`;
+    }
+
+    function copyTextToClipboard(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+
+    function showToast(msg) {
+      const wrap = document.getElementById('toastContainer');
+      const el = document.createElement('div');
+      el.className = 'toast-item';
+      el.textContent = msg;
+      wrap.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function renderAll() {
+      updateHeaderMetrics();
+      updateAiHeaderIndicator();
+      renderHeaderControls();
+      renderSidebarDays();
+      setVocabViewMode(appState.vocabViewMode || 'focus');
+      renderMixingSection();
+      if (activeTab === 'quiz') startNewQuiz();
+      if (activeTab === 'story') renderStorySection();
+    }
+
+    // Keyboard navigation left/right for Focus Card
+    window.addEventListener('keydown', (e) => {
+      const tag = document.activeElement?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if (activeTab === 'vocab' && appState.vocabViewMode === 'focus') {
+        if (e.key === 'ArrowRight') stepFocusCard(1);
+        if (e.key === 'ArrowLeft') stepFocusCard(-1);
+      }
+    });
+
+    window.onload = function () {
+      renderAll();
+    };
+  </script>
+</body>
+</html>
