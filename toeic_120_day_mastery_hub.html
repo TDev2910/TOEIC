@@ -1035,7 +1035,7 @@
 
     .cline-body-split {
       display: grid;
-      grid-template-columns: 48px 1fr;
+      grid-template-columns: 56px 1fr;
       flex: 1;
       min-height: 0;
       overflow: hidden;
@@ -1047,34 +1047,86 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-top: 8px;
-      gap: 4px;
+      padding: 8px 0;
+      gap: 6px;
+      overflow-y: auto;
     }
 
     .cline-rail-item {
-      width: 48px;
-      height: 40px;
+      width: 44px;
+      height: 42px;
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       position: relative;
       cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.12s ease;
+      flex-shrink: 0;
+    }
+
+    .cline-rail-item:hover {
+      background-color: var(--bg-subtle);
+      color: var(--text-primary);
     }
 
     .cline-rail-item.active {
-      color: #007ACC;
+      color: var(--primary);
       background-color: var(--primary-soft);
+      border-color: var(--primary-border);
     }
 
     .cline-rail-item.active::before {
       content: "";
       position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
+      left: -6px;
+      top: 6px;
+      bottom: 6px;
       width: 3px;
-      background-color: #007ACC;
+      border-radius: 0 3px 3px 0;
+      background-color: var(--primary);
+    }
+
+    .rail-key-dot {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--success);
+    }
+
+    .provider-cards-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+      gap: 8px;
+    }
+
+    .provider-mini-card {
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-default);
+      background-color: var(--bg-surface);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      text-align: left;
+    }
+
+    .provider-mini-card:hover {
+      background-color: var(--bg-subtle);
+      border-color: var(--border-strong);
+    }
+
+    .provider-mini-card.active {
+      background-color: var(--primary-soft);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px var(--primary);
     }
 
     .cline-config-pane {
@@ -1234,8 +1286,9 @@
         </div>
 
         <!-- AI API Settings Button (Cline Style Trigger) -->
-        <button onclick="openModal('aiSettingsModal')" class="btn btn-secondary" title="Cấu hình API theo chuẩn Cline (Anthropic Claude / Gemini / OpenAI)">
+        <button onclick="openModal('aiSettingsModal')" class="btn btn-secondary" title="Cấu hình đa nguồn AI API (Claude, Gemini, DeepSeek, ChatGPT, Groq, GitHub Models, OpenRouter)">
           <span id="aiStatusDot" style="width:7px;height:7px;border-radius:50%;background-color:var(--success);display:inline-block;"></span>
+          <span id="aiHeaderIcon" style="display:inline-flex;align-items:center;"></span>
           <span id="aiHeaderLabel" style="font-family:var(--font-mono);font-size:12px;">Anthropic: claude-opus-5-5</span>
         </button>
 
@@ -1507,181 +1560,15 @@
   </div>
 
   <!-- ==========================================================================
-       MODAL 0: TOEIC NATURAL VOICE STUDIO (CHỐNG ĐAU ĐẦU, CHỌN GIỌNG NAM / NỮ)
-       ========================================================================== -->
-  <div id="voiceStudioModal" class="modal-backdrop">
-    <div class="modal-panel" style="max-width:580px;">
-      <div class="modal-header">
-        <div>
-          <h3 style="font-size:16px;font-weight:700;">🎙️ Phòng thu Giọng đọc TOEIC Tự nhiên (Natural Neural Audio)</h3>
-          <p style="font-size:12px;color:var(--text-muted);">Tinh chỉnh âm thanh trầm ấm, có nhịp nghỉ lấy hơi tự nhiên như băng thi TOEIC</p>
-        </div>
-        <button onclick="closeModal('voiceStudioModal')" class="btn btn-secondary btn-sm">Đóng</button>
-      </div>
-
-      <div class="modal-body">
-        <div style="padding:12px 14px;background-color:var(--primary-soft);border:1px solid var(--primary-border);border-radius:var(--radius-md);font-size:12.5px;color:var(--text-primary);line-height:1.55;">
-          <strong>💡 Vì sao giọng mặc định trước đây nghe bị chói và đau đầu?</strong><br/>
-          Trình duyệt trên Windows khi gọi phát âm thô thường lấy giọng <code>Microsoft David/Zira Desktop</code> (giọng tổng hợp đời cũ năm 2012, đọc liền mạch không nghỉ hơi ở tốc độ nhanh). Hệ thống mới đã tự động ưu tiên lọc <strong>Giọng Neural Online (Ava, Andrew, Aria, Jenny, Google US/UK)</strong>, hạ độ gắt âm thanh và tự động ngắt nghỉ <code>350ms</code> giữa các câu.
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <div>
-            <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">👩 Giọng Nữ chuẩn TOEIC (Female Voice)</label>
-            <select id="selectFemaleVoiceURI" onchange="saveCustomVoiceSelection()" class="select"></select>
-          </div>
-          <div>
-            <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">👨 Giọng Nam chuẩn TOEIC (Male Voice)</label>
-            <select id="selectMaleVoiceURI" onchange="saveCustomVoiceSelection()" class="select"></select>
-          </div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <div>
-            <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Tốc độ đọc (Khuyên dùng: 0.92x)</label>
-            <select id="selectStudioRate" onchange="changeStudioRate(this.value)" class="select">
-              <option value="0.85">0.85x — Chậm rãi, nghe rõ từng âm tiết</option>
-              <option value="0.92">0.92x — Chuẩn băng thi TOEIC (Êm tai nhất)</option>
-              <option value="1.0">1.00x — Tốc độ giao tiếp tự nhiên</option>
-            </select>
-          </div>
-          <div>
-            <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Độ trầm ấm (Pitch Filter)</label>
-            <select id="selectStudioPitch" onchange="changeStudioPitch(this.value)" class="select">
-              <option value="0.96">Trầm ấm, dịu tai (0.96 - Khuyên dùng)</option>
-              <option value="1.0">Chuẩn mặc định (1.00)</option>
-            </select>
-          </div>
-        </div>
-
-        <div style="display:flex;flex-wrap:wrap;gap:8px;padding-top:4px;">
-          <button onclick="testVoiceSample('female')" class="btn btn-secondary btn-sm">🔊 Nghe thử Giọng Nữ (Linda)</button>
-          <button onclick="testVoiceSample('male')" class="btn btn-secondary btn-sm">🔊 Nghe thử Giọng Nam (Mark)</button>
-          <button onclick="testVoiceSample('dialogue')" class="btn btn-primary btn-sm">🎙️ Nghe thử Hội thoại Nam - Nữ đối đáp</button>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button onclick="closeModal('voiceStudioModal')" class="btn btn-primary">Hoàn tất</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==========================================================================
-       MODAL 1: SMART PASTE (EXACT USER FORMAT PARSER + AI TRANSLATION)
-       ========================================================================== -->
-  <div id="smartPasteModal" class="modal-backdrop">
-    <div class="modal-panel" style="max-width:640px;">
-      <div class="modal-header">
-        <div>
-          <h3 style="font-size:16px;font-weight:700;">Nạp từ vựng nhanh (Smart Paste)</h3>
-          <p style="font-size:12px;color:var(--text-muted);">Copy trực tiếp theo mẫu của bạn và dán vào bên dưới</p>
-        </div>
-        <button onclick="closeModal('smartPasteModal')" class="btn btn-secondary btn-sm">Đóng</button>
-      </div>
-
-      <div class="modal-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-md);">
-          <span style="font-size:13px;font-weight:500;">Lưu vào Ngày học:</span>
-          <select id="smartPasteDaySelect" class="select" style="width:160px;height:32px;font-weight:600;"></select>
-        </div>
-
-        <div>
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-            <label style="font-size:12.5px;font-weight:600;color:var(--text-secondary);">
-              Nội dung từ vựng (Dán 1 từ hoặc nhiều từ cách nhau bằng dấu <code style="font-family:var(--font-mono);">---</code>):
-            </label>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <button onclick="fillSampleSmartPaste()" class="btn btn-secondary btn-sm">Điền mẫu thử</button>
-              <button id="btnSmartPasteAI" onclick="autoTranslateSmartPasteWithAI()" class="btn btn-soft btn-sm">
-                ✨ Dùng AI tự dịch câu mẫu & thêm Collocations
-              </button>
-            </div>
-          </div>
-
-          <textarea id="smartPasteTextarea" rows="9" class="textarea input-mono" placeholder="filing cabinet&#10;Noun Phrase&#10;/ˈfaɪ.lɪŋ ˌkæb.ɪ.nət/&#10;tủ đựng tài liệu&#10;&#10;She needed some folders, so she went to the filing cabinet and opened the top drawer."></textarea>
-        </div>
-
-        <div style="padding:12px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-md);font-size:12px;color:var(--text-secondary);line-height:1.5;">
-          <strong>Định dạng tự động nhận diện:</strong><br/>
-          Dòng 1: Từ vựng (VD: <code>filing cabinet</code>) • Dòng 2: Từ loại (<code>Noun Phrase</code>) • Dòng 3: Phiên âm (<code>/ˈfaɪ.lɪŋ ˌkæb.ɪ.nət/</code>) • Dòng 4: Nghĩa tiếng Việt (<code>tủ đựng tài liệu</code>) • Dòng tiếp theo: Câu ví dụ tiếng Anh (kèm dịch tiếng Việt nếu có).
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button onclick="closeModal('smartPasteModal')" class="btn btn-secondary">Hủy</button>
-        <button onclick="confirmSmartPaste()" class="btn btn-primary">Lưu vào Ngày đã chọn</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==========================================================================
-       MODAL 2: ADD / EDIT SINGLE WORD
-       ========================================================================== -->
-  <div id="editWordModal" class="modal-backdrop">
-    <div class="modal-panel" style="max-width:560px;">
-      <div class="modal-header">
-        <h3 id="editWordModalTitle" style="font-size:16px;font-weight:700;">Thêm / Chỉnh sửa Từ vựng</h3>
-        <button onclick="closeModal('editWordModal')" class="btn btn-secondary btn-sm">Đóng</button>
-      </div>
-
-      <div class="modal-body">
-        <input type="hidden" id="editWordId" />
-        <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;">
-          <div>
-            <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Từ vựng tiếng Anh *</label>
-            <input id="fieldWord" type="text" class="input" placeholder="filing cabinet" />
-          </div>
-          <div>
-            <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Từ loại (PoS)</label>
-            <input id="fieldPos" type="text" class="input" placeholder="Noun Phrase" />
-          </div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:12px;">
-          <div>
-            <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Phiên âm IPA</label>
-            <input id="fieldPhonetic" type="text" class="input input-mono" placeholder="/ˈfaɪ.lɪŋ ˌkæb.ɪ.nət/" />
-          </div>
-          <div>
-            <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Nghĩa tiếng Việt *</label>
-            <input id="fieldMeaning" type="text" class="input" placeholder="tủ đựng tài liệu" />
-          </div>
-        </div>
-
-        <div>
-          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Câu ví dụ tiếng Anh (Example Sentence)</label>
-          <textarea id="fieldExampleEn" rows="2" class="textarea" placeholder="She needed some folders, so she went to the filing cabinet and opened the top drawer."></textarea>
-        </div>
-
-        <div>
-          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Dịch nghĩa câu ví dụ (Tiếng Việt)</label>
-          <textarea id="fieldExampleVi" rows="2" class="textarea" placeholder="Cô ấy cần một vài bìa kẹp hồ sơ, vì vậy cô ấy đã đi đến tủ đựng tài liệu và mở ngăn kéo trên cùng."></textarea>
-        </div>
-
-        <div>
-          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Cụm từ đi kèm (Collocations) & Lưu ý TOEIC</label>
-          <input id="fieldNotes" type="text" class="input" placeholder="open the top drawer, locked filing cabinet..." />
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button onclick="closeModal('editWordModal')" class="btn btn-secondary">Hủy</button>
-        <button onclick="saveEditedWord()" class="btn btn-primary">Lưu thông tin</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==========================================================================
-       MODAL 3: CLINE-STYLE SETTINGS -> API CONFIGURATION (ANTHROPIC & GEMINI)
+       MODAL 3: CLINE-STYLE SETTINGS -> MULTI-PROVIDER API CONFIGURATION
        ========================================================================== -->
   <div id="aiSettingsModal" class="modal-backdrop">
-    <div class="cline-modal-panel">
+    <div class="cline-modal-panel" style="max-width:740px;">
       <!-- Top Bar: Settings + Done Button -->
       <div class="cline-topbar">
         <div style="display:flex;align-items:center;gap:10px;">
           <span class="cline-topbar-title">Settings</span>
-          <span class="badge" style="font-family:var(--font-mono);font-size:11px;">Cline API Configuration</span>
+          <span class="badge" style="font-family:var(--font-mono);font-size:11px;">Cline Multi-Provider AI Hub</span>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
           <button type="button" id="btnTestAi" onclick="testAiConnection()" class="btn btn-secondary btn-sm">
@@ -1693,112 +1580,105 @@
         </div>
       </div>
 
-      <!-- Body Split: Left Icon Strip + Right Configuration Pane -->
+      <!-- Body Split: Left Provider Icon Rail (Highlighted in user screenshot) + Right Configuration Pane -->
       <div class="cline-body-split">
-        <!-- Left Mini Icon Rail (Matching Cline Sidebar) -->
-        <div class="cline-left-rail">
-          <div class="cline-rail-item active" title="API Configuration">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16M8 4v4m8 2v4m-6 2v4"/>
-            </svg>
-          </div>
-          <div class="cline-rail-item" onclick="toggleAdvancedSection(true)" title="Advanced & Token Budget ($200 Credit)">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-          </div>
-        </div>
+        <!-- Left Vertical Icon Rail: Direct Clickable Icons for Each AI Provider + Billing Guide -->
+        <div id="clineProviderIconRail" class="cline-left-rail"></div>
 
         <!-- Right Main Config Content -->
         <div class="cline-config-pane">
-          <div class="cline-section-heading">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16M8 4v4m8 2v4m-6 2v4"/>
-            </svg>
-            <span>API Configuration</span>
+          <!-- Provider Header with SVG Icon & Key Saved Badge -->
+          <div class="cline-section-heading" style="justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span id="activeProviderSvgHeading" style="display:inline-flex;align-items:center;"></span>
+              <span id="activeProviderTitleHeading">API Configuration — Anthropic Claude</span>
+            </div>
+            <span id="activeProviderKeyStatusBadge" class="badge">Chưa lưu Key</span>
           </div>
 
-          <!-- 1. API Provider Dropdown -->
+          <!-- Visual Provider Picker Cards + Dropdown -->
           <div class="cline-field-group">
-            <label class="cline-label" for="selectApiProvider">API Provider</label>
-            <select id="selectApiProvider" onchange="handleProviderDropdownChange(this.value)" class="select">
-              <option value="claude">Anthropic (Claude Console)</option>
-              <option value="gemini">Google Gemini (Free AI Studio)</option>
-              <option value="openai">OpenAI / ChatGPT / Groq / GitHub Models</option>
+            <label class="cline-label" for="selectApiProvider">Chọn Nhà cung cấp AI (Bấm vào Icon cột trái hoặc thẻ bên dưới)</label>
+            <div id="providerVisualCardsStrip" class="provider-cards-strip" style="margin-bottom:6px;"></div>
+            <select id="selectApiProvider" onchange="selectSettingsProvider(this.value)" class="select">
+              <option value="claude">🧡 Anthropic (Claude Console)</option>
+              <option value="gemini">✨ Google Gemini (AI Studio Free Tier)</option>
+              <option value="deepseek">🐋 DeepSeek (DeepSeek-V3 & R1)</option>
+              <option value="openai">🌀 OpenAI (ChatGPT API)</option>
+              <option value="groq">⚡ GroqCloud (Free & Siêu tốc Llama/DeepSeek)</option>
+              <option value="github">🐙 GitHub Models (Free GPT-4o / o3-mini)</option>
+              <option value="openrouter">🌐 OpenRouter (Free Multi-Models)</option>
             </select>
           </div>
 
-          <!-- ==================== ANTHROPIC CLAUDE CONFIG BLOCK ==================== -->
-          <div id="anthropicConfigBlock" style="display:flex;flex-direction:column;gap:14px;">
-            <!-- Anthropic API Key -->
+          <!-- Dynamic Provider Form Pane -->
+          <div id="providerDynamicFormPane" style="display:flex;flex-direction:column;gap:14px;">
+            <!-- API Key Field -->
             <div class="cline-field-group">
               <div style="display:flex;align-items:center;justify-content:space-between;">
-                <label class="cline-label" for="inputClaudeKey">Anthropic API Key</label>
-                <button type="button" onclick="togglePasswordVisibility('inputClaudeKey', this)" style="font-size:11.5px;color:var(--primary);font-weight:600;">
-                  Hiện / Ẩn Key
-                </button>
+                <label id="lblProviderApiKey" class="cline-label" for="inputProviderApiKey">Anthropic API Key</label>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <a id="linkGetProviderKey" href="https://console.anthropic.com/" target="_blank" rel="noopener" style="font-size:11.5px;color:var(--primary);font-weight:600;text-decoration:none;">
+                    🔗 Lấy API Key ↗
+                  </a>
+                  <button type="button" onclick="togglePasswordVisibility('inputProviderApiKey', this)" style="font-size:11.5px;color:var(--primary);font-weight:600;">
+                    Hiện / Ẩn Key
+                  </button>
+                </div>
               </div>
-              <input id="inputClaudeKey" type="password" class="input input-mono" placeholder="sk-ant-api03-... hoặc sk-ant-usr-..." autocomplete="off" />
-              <span class="cline-caption">
-                This key is stored locally and only used to make API requests from this application.
+              <input id="inputProviderApiKey" type="password" oninput="handleLiveProviderFieldInput()" class="input input-mono" placeholder="sk-ant-api03-..." autocomplete="off" />
+              <span id="captionProviderApiKey" class="cline-caption">
+                This key is stored locally in your browser and never shared. Mỗi nhà cung cấp được lưu Key riêng biệt.
               </span>
             </div>
 
-            <!-- Anthropic Workspace ID (Optional - Fixes sk-ant-usr-... 400 error) -->
-            <div class="cline-field-group">
+            <!-- Anthropic-Only Workspace ID Field -->
+            <div id="claudeWorkspaceFieldWrap" class="cline-field-group">
               <label class="cline-label" for="inputClaudeWorkspaceId">Anthropic Workspace ID (Tùy chọn cho Key <code>sk-ant-usr-...</code>)</label>
-              <input id="inputClaudeWorkspaceId" type="text" class="input input-mono" placeholder="wrkspc_01... (Để trống nếu dùng key sk-ant-api03-...)" autocomplete="off" />
+              <input id="inputClaudeWorkspaceId" type="text" oninput="handleLiveProviderFieldInput()" class="input input-mono" placeholder="wrkspc_01... (Để trống nếu dùng key sk-ant-api03-...)" autocomplete="off" />
               <span class="cline-caption">
-                Nếu bạn dùng User Key (<code>sk-ant-usr-...</code>), dán mã <code>wrkspc_...</code> (lấy trong mục Settings ➔ Workspaces trên Claude Console) vào đây để không bị lỗi 400.
+                Nếu bạn dùng User Key (<code>sk-ant-usr-...</code>), dán mã <code>wrkspc_...</code> (lấy trong Settings ➔ Workspaces trên Claude Console) để khắc phục lỗi 400.
               </span>
             </div>
 
-            <!-- Use custom base URL -->
+            <!-- Custom Base URL Toggle + Input (Available for ALL providers) -->
             <div class="cline-field-group">
               <label class="cline-checkbox-row">
-                <input id="chkCustomBaseUrl" type="checkbox" onchange="toggleCustomBaseUrlInput()" />
-                <span>Use custom base URL</span>
+                <input id="chkCustomBaseUrl" type="checkbox" onchange="toggleCustomBaseUrlInput(); handleLiveProviderFieldInput();" />
+                <span>Use custom base URL (Tùy chỉnh Endpoint / Proxy)</span>
               </label>
               <div id="customBaseUrlWrap" class="hidden" style="margin-top:4px;">
-                <input id="inputCustomBaseUrl" type="text" class="input input-mono" placeholder="https://api.anthropic.com" />
-                <span class="cline-caption" style="display:block;margin-top:4px;">
-                  Mặc định: <code>https://api.anthropic.com</code> (tự động nối <code>/v1/messages</code> nếu chỉ nhập domain).
+                <input id="inputCustomBaseUrl" type="text" oninput="handleLiveProviderFieldInput()" class="input input-mono" placeholder="https://api.anthropic.com" />
+                <span id="captionCustomBaseUrl" class="cline-caption" style="display:block;margin-top:4px;">
+                  Endpoint mặc định của nhà cung cấp.
                 </span>
               </div>
             </div>
 
-            <!-- Model Dropdown (Default: claude-opus-5-5 matching user screenshot) -->
+            <!-- Model Selector + Custom Model ID Input (Available for ALL providers) -->
             <div class="cline-field-group">
-              <label class="cline-label" for="selectClaudeModel">Model</label>
-              <select id="selectClaudeModel" onchange="handleClaudeModelChange()" class="select input-mono">
-                <option value="claude-opus-5-5">claude-opus-5-5</option>
-                <option value="claude-sonnet-4-5">claude-sonnet-4-5</option>
-                <option value="claude-opus-4-1-20250805">claude-opus-4-1-20250805</option>
-                <option value="claude-opus-4-20250514">claude-opus-4-20250514</option>
-                <option value="claude-sonnet-4-20250514">claude-sonnet-4-20250514</option>
-                <option value="claude-3-7-sonnet-latest">claude-3-7-sonnet-latest</option>
-                <option value="claude-3-5-sonnet-latest">claude-3-5-sonnet-latest</option>
-                <option value="claude-3-5-haiku-latest">claude-3-5-haiku-latest</option>
-                <option value="__custom__">-- Nhập mã Model tùy chỉnh (Custom Model ID) --</option>
-              </select>
-              <div id="customClaudeModelWrap" class="hidden" style="margin-top:4px;">
-                <input id="inputCustomClaudeModel" type="text" class="input input-mono" placeholder="Nhập chính xác Model ID (VD: claude-opus-5-5)..." />
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <label class="cline-label" for="selectProviderModel">Model (Chọn có sẵn hoặc tự nhập mã Model tùy ý)</label>
+                <span id="activeModelTagPreview" class="badge badge-primary" style="font-family:var(--font-mono);font-size:11px;">claude-opus-5-5</span>
+              </div>
+              <select id="selectProviderModel" onchange="handleProviderModelSelectChange()" class="select input-mono"></select>
+              <div id="customProviderModelWrap" class="hidden" style="margin-top:6px;">
+                <input id="inputCustomProviderModel" type="text" oninput="handleLiveProviderFieldInput()" class="input input-mono" placeholder="Nhập chính xác mã Model ID (VD: deepseek-reasoner, gpt-4.1, gemini-2.5-pro)..." />
+                <span class="cline-caption" style="display:block;margin-top:3px;">
+                  Bạn có thể gõ bất kỳ mã Model mới nào của nhà cung cấp này vào ô trên.
+                </span>
               </div>
             </div>
 
             <!-- Reasoning Effort Dropdown -->
             <div class="cline-field-group">
-              <label class="cline-label" for="selectReasoningEffort">Reasoning Effort</label>
-              <select id="selectReasoningEffort" class="select">
-                <option value="none">None</option>
+              <label class="cline-label" for="selectReasoningEffort">Reasoning Effort / Thinking Mode</label>
+              <select id="selectReasoningEffort" onchange="handleLiveProviderFieldInput()" class="select">
+                <option value="none">None (Tắt suy luận mở rộng — Phản hồi nhanh nhất)</option>
                 <option value="low">Low</option>
-                <option value="medium" selected>Medium</option>
-                <option value="high">High</option>
+                <option value="medium" selected>Medium (Cân bằng tốc độ & độ sâu)</option>
+                <option value="high">High (Phân tích chuyên sâu)</option>
               </select>
-              <span class="cline-caption">
-                Use None to disable extended thinking. Higher effort improves depth, but uses more tokens.
-              </span>
-              <!-- Dynamic Specs Line matching Cline screenshot -->
               <div id="modelSpecsLine" class="cline-specs-bar">
                 <span>Context: <strong>1M</strong></span>
                 <span>Input: <strong>$4/M</strong></span>
@@ -1810,33 +1690,28 @@
             <div style="border-top:1px solid var(--border-default);padding-top:10px;">
               <button type="button" onclick="toggleAdvancedSection()" class="cline-advanced-toggle">
                 <span id="advArrowIcon">►</span>
-                <span>ADVANCED</span>
+                <span>ADVANCED & BUDGET TRACKER</span>
               </button>
 
               <div id="clineAdvancedBody" class="hidden" style="margin-top:10px;display:flex;flex-direction:column;gap:14px;">
-                <!-- Use different models for Plan and Act modes -->
                 <div class="cline-field-group">
                   <label class="cline-checkbox-row">
-                    <input id="chkSplitPlanAct" type="checkbox" onchange="togglePlanActModelSelect()" />
+                    <input id="chkSplitPlanAct" type="checkbox" onchange="togglePlanActModelSelect(); handleLiveProviderFieldInput();" />
                     <span>Use different models for Plan and Act modes</span>
                   </label>
                   <span class="cline-caption">
-                    Switching between Plan (chấm chữa câu sâu & phân tích ngữ pháp) and Act mode (dịch nhanh câu mẫu khi Smart Paste) giúp tối ưu tốc độ và chi phí token.
+                    Tách riêng model chấm câu chuyên sâu (Plan) và model dịch nhanh câu mẫu (Act) giúp phản hồi tức thì và tiết kiệm token.
                   </span>
                   <div id="fastActModelWrap" class="hidden" style="margin-top:6px;">
-                    <label class="cline-label" style="display:block;margin-bottom:4px;">Act Mode Model (Dịch nhanh & Tách từ):</label>
-                    <select id="selectFastActModel" class="select input-mono">
-                      <option value="claude-3-5-haiku-latest">claude-3-5-haiku-latest (Nhanh & Tiết kiệm)</option>
-                      <option value="claude-sonnet-4-20250514">claude-sonnet-4-20250514</option>
-                      <option value="claude-opus-5-5">claude-opus-5-5</option>
-                    </select>
+                    <label class="cline-label" style="display:block;margin-bottom:4px;">Act Mode Model (Model chạy tác vụ nhanh):</label>
+                    <input id="inputFastActModel" type="text" oninput="handleLiveProviderFieldInput()" class="input input-mono" placeholder="VD: claude-3-5-haiku-latest, gemini-2.5-flash, gpt-4o-mini..." />
                   </div>
                 </div>
 
-                <!-- Claude Console $200 Credit Tracker (Matching Screenshot 2: haisonet + myapikey) -->
+                <!-- Credit Tracker -->
                 <div style="padding:12px 14px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-md);display:flex;flex-direction:column;gap:8px;">
                   <div style="display:flex;align-items:center;justify-content:space-between;">
-                    <span style="font-size:12.5px;font-weight:700;color:var(--text-primary);">Claude Console Credit Tracker ($200 Budget)</span>
+                    <span style="font-size:12.5px;font-weight:700;color:var(--text-primary);">API Credit & Token Tracker ($200 Budget)</span>
                     <span id="creditRemainingBadge" class="badge badge-success">Còn lại: $79.57</span>
                   </div>
                   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:12px;">
@@ -1846,7 +1721,7 @@
                     </div>
                     <div style="padding:8px;background-color:var(--bg-surface);border:1px solid var(--border-default);border-radius:var(--radius-sm);">
                       <div style="color:var(--text-muted);font-size:11px;">Đã dùng trên Console ($)</div>
-                      <input id="inputConsoleSpent" type="number" step="0.01" value="120.43" oninput="updateCreditSummaryUI()" class="input input-mono" style="height:26px;padding:2px 6px;margin-top:3px;font-weight:600;" title="$2.15 (haisonet) + $118.28 (myapikey) = $120.43" />
+                      <input id="inputConsoleSpent" type="number" step="0.01" value="120.43" oninput="updateCreditSummaryUI()" class="input input-mono" style="height:26px;padding:2px 6px;margin-top:3px;font-weight:600;" />
                     </div>
                     <div style="padding:8px;background-color:var(--bg-surface);border:1px solid var(--border-default);border-radius:var(--radius-sm);">
                       <div style="color:var(--text-muted);font-size:11px;">Phát sinh trên Web App</div>
@@ -1861,48 +1736,13 @@
             </div>
           </div>
 
-          <!-- ==================== GOOGLE GEMINI CONFIG BLOCK ==================== -->
-          <div id="geminiConfigBlock" class="hidden" style="display:flex;flex-direction:column;gap:14px;">
-            <div class="cline-field-group">
-              <label class="cline-label" for="inputGeminiKey">Google Gemini API Key (Miễn phí tại aistudio.google.com)</label>
-              <input id="inputGeminiKey" type="password" class="input input-mono" placeholder="AIzaSy... (Để trống nếu dùng mặc định trên Canvas)" />
-              <span class="cline-caption">
-                Stored locally in browser localStorage. Leave blank to use the built-in runtime key.
-              </span>
+          <!-- Guide Pane when clicking the $ Icon on Left Rail -->
+          <div id="freeApiGuidePane" class="hidden" style="display:flex;flex-direction:column;gap:12px;">
+            <div style="padding:14px 16px;background-color:var(--primary-soft);border:1px solid var(--primary-border);border-radius:var(--radius-md);font-size:13px;line-height:1.6;">
+              <strong>💡 Mẹo dùng đa nguồn AI miễn phí & tiết kiệm nhất:</strong><br/>
+              Tất cả API Key bạn nhập vào từng icon bên cột trái đều được <strong>lưu độc lập trên trình duyệt của bạn</strong>. Bạn có thể nạp sẵn 2–3 nguồn dưới đây để chuyển đổi chỉ bằng 1 cú click chuột!
             </div>
-            <div class="cline-field-group">
-              <label class="cline-label" for="selectGeminiModel">Model</label>
-              <select id="selectGeminiModel" class="select input-mono">
-                <option value="gemini-3-flash-preview">gemini-3-flash-preview</option>
-                <option value="gemini-2.5-flash">gemini-2.5-flash</option>
-                <option value="gemini-2.5-pro">gemini-2.5-pro</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- ==================== OPENAI / GROQ / GITHUB MODELS CONFIG BLOCK ==================== -->
-          <div id="openaiConfigBlock" class="hidden" style="display:flex;flex-direction:column;gap:14px;">
-            <div class="cline-field-group">
-              <label class="cline-label" for="selectOpenAiPreset">Nguồn cung cấp (Preset Endpoint)</label>
-              <select id="selectOpenAiPreset" onchange="applyOpenAiPreset(this.value)" class="select">
-                <option value="openai">OpenAI Chính thức (api.openai.com)</option>
-                <option value="github_free">GitHub Models — Free GPT-4o (models.inference.ai.azure.com)</option>
-                <option value="groq_free">GroqCloud — Free Llama 3.3 70B Siêu tốc (api.groq.com)</option>
-                <option value="openrouter_free">OpenRouter — Free Models (openrouter.ai)</option>
-              </select>
-            </div>
-            <div class="cline-field-group">
-              <label class="cline-label" for="inputOpenAiKey">API Key / GitHub Personal Access Token</label>
-              <input id="inputOpenAiKey" type="password" class="input input-mono" placeholder="sk-proj-... hoặc github_pat_... hoặc gsk_..." autocomplete="off" />
-            </div>
-            <div class="cline-field-group">
-              <label class="cline-label" for="inputOpenAiBaseUrl">Base URL (Chuẩn OpenAI Chat Completions)</label>
-              <input id="inputOpenAiBaseUrl" type="text" class="input input-mono" value="https://api.openai.com/v1/chat/completions" />
-            </div>
-            <div class="cline-field-group">
-              <label class="cline-label" for="inputOpenAiModel">Model ID</label>
-              <input id="inputOpenAiModel" type="text" class="input input-mono" value="gpt-4o-mini" placeholder="gpt-4o-mini, gpt-4o, llama-3.3-70b-versatile..." />
-            </div>
+            <div id="freeProvidersGuideList" style="display:flex;flex-direction:column;gap:8px;"></div>
           </div>
 
           <!-- Connection Test Status Box -->
@@ -1920,16 +1760,21 @@
       <div class="modal-header">
         <div>
           <h3 style="font-size:16px;font-weight:700;">Sao lưu & Khôi phục Dữ liệu 120 Ngày (JSON)</h3>
-          <p style="font-size:12px;color:var(--text-muted);">Đảm bảo dữ liệu học tập của bạn an toàn tuyệt đối</p>
+          <p style="font-size:12px;color:var(--text-muted);">Xuất file .JSON để lưu trữ hoặc mang sang máy khác / gửi cho bạn bè</p>
         </div>
         <button onclick="closeModal('backupModal')" class="btn btn-secondary btn-sm">Đóng</button>
       </div>
 
       <div class="modal-body">
-        <div style="display:flex;flex-wrap:wrap;gap:8px;">
-          <button onclick="downloadBackupFile()" class="btn btn-primary btn-sm">Tải file .JSON về máy</button>
-          <button onclick="copyBackupJson()" class="btn btn-secondary btn-sm">Copy mã JSON</button>
-          <button onclick="restoreFromBackupTextarea()" class="btn btn-soft btn-sm">Khôi phục từ ô JSON bên dưới</button>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+          <button onclick="downloadBackupFile()" class="btn btn-primary btn-sm">⬇️ Tải file .JSON về máy</button>
+          <button onclick="copyBackupJson()" class="btn btn-secondary btn-sm">📋 Copy mã JSON</button>
+          <label class="btn btn-secondary btn-sm" style="cursor:pointer;">
+            📂 Chọn file .JSON từ máy
+            <input type="file" accept=".json,application/json" onchange="handleImportJsonFile(event)" style="display:none;" />
+          </label>
+          <button onclick="restoreFromBackupTextarea('merge')" class="btn btn-soft btn-sm" title="Giữ nguyên dữ liệu hiện có và gộp thêm từ vựng từ JSON">➕ Gộp dữ liệu (Merge)</button>
+          <button onclick="restoreFromBackupTextarea('overwrite')" class="btn btn-amber btn-sm" title="Thay thế toàn bộ bằng dữ liệu trong ô JSON">🔄 Ghi đè toàn bộ</button>
         </div>
         <textarea id="backupJsonTextarea" rows="10" class="textarea input-mono"></textarea>
       </div>
@@ -1945,449 +1790,219 @@
 
   <script data-cfasync="false">
     // ==========================================================================
-    // 1. GLOBAL STATE, CONSTANTS & SEED DATA (DAY 1: 21 WORDS + 2 LIFE STORIES)
+    // 2. MULTI-PROVIDER AI ENGINE WITH BRAND ICONS & INDEPENDENT CONFIGS
     // ==========================================================================
-    const STORAGE_KEY = 'toeic_120days_hub_v4_state';
-    const AI_CONFIG_KEY = 'toeic_120days_hub_v4_aiconfig';
-
-    const DEFAULT_DAY1_WORDS = [
-      {
-        id: 'w_day1_1',
-        word: 'filing cabinet',
-        pos: 'Noun Phrase',
-        phonetic: '/ˈfaɪ.lɪŋ ˌkæb.ɪ.nət/',
-        meaning: 'tủ đựng tài liệu',
-        exampleEn: 'She needed some folders, so she went to the filing cabinet and opened the top drawer.',
-        exampleVi: 'Cô ấy cần một vài bìa kẹp hồ sơ, vì vậy cô ấy đã đi đến tủ đựng tài liệu và mở ngăn kéo trên cùng.',
-        notes: 'open the top/bottom drawer (mở ngăn kéo trên/dưới); locked filing cabinet (tủ tài liệu có khóa).'
+    const AI_PROVIDERS_CATALOG = {
+      claude: {
+        id: 'claude',
+        name: 'Anthropic Claude',
+        shortName: 'Anthropic',
+        color: '#D97757',
+        badgeText: '$200 Credit / Console',
+        keyLabel: 'Anthropic API Key',
+        keyPlaceholder: 'sk-ant-api03-... hoặc sk-ant-usr-...',
+        keyUrl: 'https://console.anthropic.com/settings/keys',
+        defaultBaseUrl: 'https://api.anthropic.com',
+        baseUrlHint: 'Mặc định: https://api.anthropic.com (tự động nối /v1/messages)',
+        svg: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D97757" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L4 20h3.5l1.1-3.5h6.8L16.5 20H20L14.5 4z"/><path d="M9.7 13.5L12 6.2l2.3 7.3H9.7z"/></svg>`,
+        models: [
+          { id: 'claude-opus-5-5', label: 'claude-opus-5-5 (Flagship Reasoning)', context: '1M', inputRate: 4, outputRate: 20 },
+          { id: 'claude-sonnet-4-5', label: 'claude-sonnet-4-5 (Balanced & Fast)', context: '1M', inputRate: 3, outputRate: 15 },
+          { id: 'claude-opus-4-1-20250805', label: 'claude-opus-4-1-20250805', context: '200K', inputRate: 15, outputRate: 75 },
+          { id: 'claude-sonnet-4-20250514', label: 'claude-sonnet-4-20250514', context: '200K', inputRate: 3, outputRate: 15 },
+          { id: 'claude-3-7-sonnet-latest', label: 'claude-3-7-sonnet-latest', context: '200K', inputRate: 3, outputRate: 15 },
+          { id: 'claude-3-5-sonnet-latest', label: 'claude-3-5-sonnet-latest', context: '200K', inputRate: 3, outputRate: 15 },
+          { id: 'claude-3-5-haiku-latest', label: 'claude-3-5-haiku-latest (Siêu nhanh & Rẻ)', context: '200K', inputRate: 0.8, outputRate: 4 }
+        ]
       },
-      {
-        id: 'w_day1_2',
-        word: 'set up',
-        pos: 'Phrasal Verb',
-        phonetic: '/set ʌp/',
-        meaning: 'bố trí, thiết lập, lắp đặt',
-        exampleEn: 'Can you help me set up the office before the new intern arrives?',
-        exampleVi: 'Anh có thể giúp tôi bố trí văn phòng trước khi thực tập sinh mới đến không?',
-        notes: 'set up a workstation (thiết lập góc làm việc); set up a meeting (sắp xếp cuộc họp).'
+      gemini: {
+        id: 'gemini',
+        name: 'Google Gemini',
+        shortName: 'Gemini',
+        color: '#2563EB',
+        badgeText: 'FREE (1,500 req/ngày)',
+        keyLabel: 'Google AI Studio API Key',
+        keyPlaceholder: 'AIzaSy... (Lấy miễn phí tại aistudio.google.com)',
+        keyUrl: 'https://aistudio.google.com/app/apikey',
+        defaultBaseUrl: 'https://generativelanguage.googleapis.com',
+        baseUrlHint: 'Mặc định: https://generativelanguage.googleapis.com',
+        svg: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C12 7.5 16.5 12 22 12C16.5 12 12 16.5 12 22C12 16.5 7.5 12 2 12C7.5 12 12 7.5 12 2Z"/></svg>`,
+        models: [
+          { id: 'gemini-2.5-flash', label: 'gemini-2.5-flash (Khuyên dùng - Free & Nhanh)', context: '1M', inputRate: 0, outputRate: 0 },
+          { id: 'gemini-2.5-pro', label: 'gemini-2.5-pro (Chấm bài & Giải thích sâu)', context: '2M', inputRate: 0, outputRate: 0 },
+          { id: 'gemini-3-flash-preview', label: 'gemini-3-flash-preview (Thế hệ mới)', context: '1M', inputRate: 0, outputRate: 0 },
+          { id: 'gemini-2.0-flash', label: 'gemini-2.0-flash (Tốc độ cao)', context: '1M', inputRate: 0, outputRate: 0 }
+        ]
       },
-      {
-        id: 'w_day1_3',
-        word: 'seat',
-        pos: 'Verb / Noun',
-        phonetic: '/siːt/',
-        meaning: 'xếp chỗ ngồi / chỗ ngồi',
-        exampleEn: 'We will seat her near the window so she has plenty of natural light.',
-        exampleVi: 'Chúng ta sẽ xếp chỗ ngồi cho cô ấy gần cửa sổ để có nhiều ánh sáng tự nhiên.',
-        notes: 'Chú ý động từ "seat someone" (xếp chỗ cho ai) rất hay gặp trong TOEIC Part 1 & Part 3.'
+      deepseek: {
+        id: 'deepseek',
+        name: 'DeepSeek AI',
+        shortName: 'DeepSeek',
+        color: '#0284C7',
+        badgeText: 'V3 & R1 Reasoning',
+        keyLabel: 'DeepSeek API Key',
+        keyPlaceholder: 'sk-... (Lấy tại platform.deepseek.com)',
+        keyUrl: 'https://platform.deepseek.com/api_keys',
+        defaultBaseUrl: 'https://api.deepseek.com/chat/completions',
+        baseUrlHint: 'Mặc định: https://api.deepseek.com/chat/completions',
+        svg: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c2-4 6-7 11-7 4 0 7 2 9 5-2 3-5 5-9 5-2 0-4 1-6 3-1-2-3-4-5-6z"/><circle cx="15" cy="10" r="1"/><path d="M22 10c1-2 1-4 0-6"/></svg>`,
+        models: [
+          { id: 'deepseek-chat', label: 'deepseek-chat (DeepSeek-V3 — Siêu rẻ & Chuẩn)', context: '64K', inputRate: 0.27, outputRate: 1.1 },
+          { id: 'deepseek-reasoner', label: 'deepseek-reasoner (DeepSeek-R1 — Suy luận sâu)', context: '64K', inputRate: 0.55, outputRate: 2.19 }
+        ]
       },
-      {
-        id: 'w_day1_4',
-        word: 'copy machine',
-        pos: 'Noun Phrase',
-        phonetic: '/ˈkɒp.i məˌʃiːn/',
-        meaning: 'máy photocopy',
-        exampleEn: 'The copy machine in the hallway is out of toner again.',
-        exampleVi: 'Chiếc máy photocopy ngoài hành lang lại hết mực rồi.',
-        notes: 'use the copy machine; paper jam in the copy machine (kẹt giấy máy photo).'
+      openai: {
+        id: 'openai',
+        name: 'OpenAI (ChatGPT)',
+        shortName: 'ChatGPT',
+        color: '#059669',
+        badgeText: 'GPT-4o / GPT-4.1 / o3',
+        keyLabel: 'OpenAI API Key',
+        keyPlaceholder: 'sk-proj-... (Lấy tại platform.openai.com)',
+        keyUrl: 'https://platform.openai.com/api-keys',
+        defaultBaseUrl: 'https://api.openai.com/v1/chat/completions',
+        baseUrlHint: 'Mặc định: https://api.openai.com/v1/chat/completions',
+        svg: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a4.5 4.5 0 0 0 0 9 4.5 4.5 0 0 1 0 9"/><path d="M3.6 9h16.8"/><path d="M3.6 15h16.8"/></svg>`,
+        models: [
+          { id: 'gpt-4o-mini', label: 'gpt-4o-mini (Nhanh & Tiết kiệm nhất)', context: '128K', inputRate: 0.15, outputRate: 0.6 },
+          { id: 'gpt-4o', label: 'gpt-4o (Flagship ChatGPT)', context: '128K', inputRate: 2.5, outputRate: 10 },
+          { id: 'gpt-4.1-mini', label: 'gpt-4.1-mini', context: '1M', inputRate: 0.4, outputRate: 1.6 },
+          { id: 'gpt-4.1', label: 'gpt-4.1', context: '1M', inputRate: 2.0, outputRate: 8.0 },
+          { id: 'o3-mini', label: 'o3-mini (Reasoning Model)', context: '200K', inputRate: 1.1, outputRate: 4.4 }
+        ]
       },
-      {
-        id: 'w_day1_5',
-        word: 'install',
-        pos: 'Verb',
-        phonetic: '/ɪnˈstɔːl/',
-        meaning: 'lắp đặt (thiết bị), cài đặt (phần mềm)',
-        exampleEn: 'Technicians came this morning to install the high-speed router.',
-        exampleVi: 'Các kỹ thuật viên đã đến sáng nay để lắp đặt bộ định tuyến tốc độ cao.',
-        notes: 'install new software / install office equipment.'
+      groq: {
+        id: 'groq',
+        name: 'GroqCloud (Free LPU)',
+        shortName: 'Groq',
+        color: '#EA580C',
+        badgeText: 'FREE (Siêu tốc 0.3s)',
+        keyLabel: 'GroqCloud API Key',
+        keyPlaceholder: 'gsk_... (Lấy miễn phí tại console.groq.com)',
+        keyUrl: 'https://console.groq.com/keys',
+        defaultBaseUrl: 'https://api.groq.com/openai/v1/chat/completions',
+        baseUrlHint: 'Mặc định: https://api.groq.com/openai/v1/chat/completions',
+        svg: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EA580C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+        models: [
+          { id: 'llama-3.3-70b-versatile', label: 'llama-3.3-70b-versatile (Free — Rất thông minh)', context: '128K', inputRate: 0, outputRate: 0 },
+          { id: 'deepseek-r1-distill-llama-70b', label: 'deepseek-r1-distill-llama-70b (Free DeepSeek R1)', context: '128K', inputRate: 0, outputRate: 0 },
+          { id: 'qwen-qwq-32b', label: 'qwen-qwq-32b (Free Reasoning)', context: '128K', inputRate: 0, outputRate: 0 },
+          { id: 'llama-3.1-8b-instant', label: 'llama-3.1-8b-instant (Free — Phản hồi 0.2s)', context: '128K', inputRate: 0, outputRate: 0 }
+        ]
       },
-      {
-        id: 'w_day1_6',
-        word: 'fax machine',
-        pos: 'Noun Phrase',
-        phonetic: '/ˈfæks məˌʃiːn/',
-        meaning: 'máy fax',
-        exampleEn: 'Even in modern offices, some legal departments still keep a fax machine.',
-        exampleVi: 'Ngay cả trong các văn phòng hiện đại, một số phòng pháp chế vẫn giữ lại một chiếc máy fax.',
-        notes: 'send a document via fax machine.'
+      github: {
+        id: 'github',
+        name: 'GitHub Models (Free GPT-4o)',
+        shortName: 'GitHub AI',
+        color: '#334155',
+        badgeText: 'FREE GPT-4o bằng GitHub Token',
+        keyLabel: 'GitHub Personal Access Token (PAT)',
+        keyPlaceholder: 'github_pat_... hoặc ghp_...',
+        keyUrl: 'https://github.com/settings/tokens',
+        defaultBaseUrl: 'https://models.inference.ai.azure.com/chat/completions',
+        baseUrlHint: 'Mặc định: https://models.inference.ai.azure.com/chat/completions',
+        svg: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>`,
+        models: [
+          { id: 'gpt-4o', label: 'gpt-4o (Free OpenAI GPT-4o qua GitHub)', context: '128K', inputRate: 0, outputRate: 0 },
+          { id: 'gpt-4o-mini', label: 'gpt-4o-mini (Free — 150 lượt/ngày)', context: '128K', inputRate: 0, outputRate: 0 },
+          { id: 'DeepSeek-R1', label: 'DeepSeek-R1 (Free qua GitHub)', context: '64K', inputRate: 0, outputRate: 0 },
+          { id: 'Llama-3.3-70B-Instruct', label: 'Llama-3.3-70B-Instruct (Free)', context: '128K', inputRate: 0, outputRate: 0 }
+        ]
       },
-      {
-        id: 'w_day1_7',
-        word: 'replace',
-        pos: 'Verb',
-        phonetic: '/rɪˈpleɪs/',
-        meaning: 'thay thế',
-        exampleEn: 'I will replace the broken keyboard before Monday morning.',
-        exampleVi: 'Tôi sẽ thay thế chiếc bàn phím bị hỏng trước sáng thứ Hai.',
-        notes: 'replace A with B (thay thế A bằng B).'
-      },
-      {
-        id: 'w_day1_8',
-        word: 'stapler',
-        pos: 'Noun',
-        phonetic: '/ˈsteɪ.plər/',
-        meaning: 'cái dập ghim',
-        exampleEn: 'Could I borrow your stapler to fasten these handouts together?',
-        exampleVi: 'Tôi có thể mượn cái dập ghim của bạn để ghim các tài liệu phát tay này lại với nhau không?',
-        notes: 'heavy-duty stapler; run out of staples (hết ghim bấm).'
-      },
-      {
-        id: 'w_day1_9',
-        word: 'organize',
-        pos: 'Verb',
-        phonetic: '/ˈɔː.ɡən.aɪz/',
-        meaning: 'sắp xếp, tổ chức',
-        exampleEn: 'Spending ten minutes on Sunday to organize your desk makes Monday much easier.',
-        exampleVi: 'Dành mười phút ngày Chủ nhật để sắp xếp bàn làm việc giúp ngày thứ Hai nhẹ nhàng hơn nhiều.',
-        notes: 'organize files alphabetically (sắp xếp hồ sơ theo thứ tự bảng chữ cái).'
-      },
-      {
-        id: 'w_day1_10',
-        word: 'label',
-        pos: 'Verb / Noun',
-        phonetic: '/ˈleɪ.bəl/',
-        meaning: 'dán nhãn / nhãn dán',
-        exampleEn: 'Please label each box clearly before moving into the new apartment.',
-        exampleVi: 'Vui lòng dán nhãn từng thùng đồ rõ ràng trước khi chuyển vào căn hộ mới.',
-        notes: 'label each drawer (dán nhãn từng ngăn kéo).'
-      },
-      {
-        id: 'w_day1_11',
-        word: 'drawer',
-        pos: 'Noun',
-        phonetic: '/drɔːr/',
-        meaning: 'ngăn kéo',
-        exampleEn: 'I keep my spare charging cables in the bottom drawer of my desk.',
-        exampleVi: 'Tôi cất dây sạc dự phòng ở ngăn kéo dưới cùng của bàn làm việc.',
-        notes: 'top drawer / bottom drawer / locked drawer.'
-      },
-      {
-        id: 'w_day1_12',
-        word: 'locate',
-        pos: 'Verb',
-        phonetic: '/ləʊˈkeɪt/',
-        meaning: 'tìm thấy, xác định vị trí',
-        exampleEn: 'Clear labels help everyone locate important folders within seconds.',
-        exampleVi: 'Nhãn dán rõ ràng giúp mọi người tìm thấy các thư mục quan trọng chỉ trong vài giây.',
-        notes: 'locate a missing file; conveniently located (nằm ở vị trí thuận tiện).'
-      },
-      {
-        id: 'w_day1_13',
-        word: 'document',
-        pos: 'Noun',
-        phonetic: '/ˈdɒk.jə.mənt/',
-        meaning: 'tài liệu, văn bản',
-        exampleEn: 'Please sign the attached document and return it to HR.',
-        exampleVi: 'Vui lòng ký vào tài liệu đính kèm và gửi lại cho phòng Nhân sự.',
-        notes: 'confidential document; official document.'
-      },
-      {
-        id: 'w_day1_14',
-        word: 'place',
-        pos: 'Verb / Noun',
-        phonetic: '/pleɪs/',
-        meaning: 'đặt, để / địa điểm',
-        exampleEn: 'Where should I place this new potted plant in our living room?',
-        exampleVi: 'Tôi nên đặt chậu cây mới này ở đâu trong phòng khách của chúng ta?',
-        notes: 'place an order (đặt hàng); place an item on the shelf.'
-      },
-      {
-        id: 'w_day1_15',
-        word: 'printing paper',
-        pos: 'Noun Phrase',
-        phonetic: '/ˈprɪn.tɪŋ ˌpeɪ.pər/',
-        meaning: 'giấy in',
-        exampleEn: 'We need to order five more boxes of A4 printing paper.',
-        exampleVi: 'Chúng ta cần đặt thêm năm thùng giấy in cỡ A4.',
-        notes: 'load printing paper into the tray (nạp giấy in vào khay).'
-      },
-      {
-        id: 'w_day1_16',
-        word: 'stack',
-        pos: 'Verb / Noun',
-        phonetic: '/stæk/',
-        meaning: 'xếp chồng lên nhau / chồng, đống',
-        exampleEn: 'Just stack the extra notebooks neatly on the corner table.',
-        exampleVi: 'Cứ xếp chồng những cuốn sổ dư lên chiếc bàn ở góc phòng một cách gọn gàng.',
-        notes: 'stack boxes on the shelf; a stack of documents.'
-      },
-      {
-        id: 'w_day1_17',
-        word: 'shelf',
-        pos: 'Noun',
-        phonetic: '/ʃelf/',
-        meaning: 'kệ, ngăn kệ',
-        exampleEn: 'He put his favorite coffee mug on the wooden shelf above the desk.',
-        exampleVi: 'Anh ấy đặt chiếc cốc cà phê yêu thích lên chiếc kệ gỗ phía trên bàn làm việc.',
-        notes: 'on the top/bottom shelf (trên kệ trên cùng / dưới cùng).'
-      },
-      {
-        id: 'w_day1_18',
-        word: 'supply room',
-        pos: 'Noun Phrase',
-        phonetic: '/səˈplaɪ ruːm/',
-        meaning: 'phòng kho, phòng đựng vật tư văn phòng',
-        exampleEn: 'Extra pens and markers are stored in the supply room down the hall.',
-        exampleVi: 'Bút bi và bút lông dự phòng được cất trong phòng vật tư ở cuối hành lang.',
-        notes: 'office supply room.'
-      },
-      {
-        id: 'w_day1_19',
-        word: 'notepad',
-        pos: 'Noun',
-        phonetic: '/ˈnəʊt.pæd/',
-        meaning: 'cuốn sổ ghi chép nhỏ',
-        exampleEn: 'I always keep a small notepad beside my laptop to jot down quick ideas.',
-        exampleVi: 'Tôi luôn để một cuốn sổ ghi chép nhỏ cạnh laptop để ghi nhanh các ý tưởng.',
-        notes: 'write on a notepad.'
-      },
-      {
-        id: 'w_day1_20',
-        word: 'bulletin board',
-        pos: 'Noun Phrase',
-        phonetic: '/ˈbʊl.ɪ.tɪn ˌbɔːd/',
-        meaning: 'bảng thông báo',
-        exampleEn: 'The weekend team-building schedule is pinned on the bulletin board.',
-        exampleVi: 'Lịch trình dã ngoại cuối tuần của nhóm được ghim trên bảng thông báo.',
-        notes: 'pin a notice on the bulletin board.'
-      },
-      {
-        id: 'w_day1_21',
-        word: 'equipment',
-        pos: 'Noun (Uncountable)',
-        phonetic: '/ɪˈkwɪp.mənt/',
-        meaning: 'trang thiết bị (danh từ không đếm được)',
-        exampleEn: 'We should review all the audio equipment before the client presentation.',
-        exampleVi: 'Chúng ta nên kiểm tra lại toàn bộ thiết bị âm thanh trước buổi thuyết trình với khách hàng.',
-        notes: 'Lưu ý: equipment luôn không có "s" ở cuối! (a piece of equipment).'
+      openrouter: {
+        id: 'openrouter',
+        name: 'OpenRouter (Free Hub)',
+        shortName: 'OpenRouter',
+        color: '#7C3AED',
+        badgeText: 'FREE Models (:free)',
+        keyLabel: 'OpenRouter API Key',
+        keyPlaceholder: 'sk-or-v1-... (Lấy miễn phí tại openrouter.ai)',
+        keyUrl: 'https://openrouter.ai/keys',
+        defaultBaseUrl: 'https://openrouter.ai/api/v1/chat/completions',
+        baseUrlHint: 'Mặc định: https://openrouter.ai/api/v1/chat/completions',
+        svg: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>`,
+        models: [
+          { id: 'deepseek/deepseek-chat:free', label: 'deepseek/deepseek-chat:free (Free DeepSeek V3)', context: '64K', inputRate: 0, outputRate: 0 },
+          { id: 'deepseek/deepseek-r1:free', label: 'deepseek/deepseek-r1:free (Free DeepSeek R1)', context: '64K', inputRate: 0, outputRate: 0 },
+          { id: 'google/gemini-2.0-flash-exp:free', label: 'google/gemini-2.0-flash-exp:free', context: '1M', inputRate: 0, outputRate: 0 },
+          { id: 'meta-llama/llama-3.3-70b-instruct:free', label: 'meta-llama/llama-3.3-70b-instruct:free', context: '128K', inputRate: 0, outputRate: 0 }
+        ]
       }
-    ];
-
-    const DEFAULT_DAY1_STORIES = [
-      {
-        id: 'st_seed_1',
-        title: 'Chuyện Đời Sống: Chủ nhật dọn lại Góc Làm Việc tại Căn hộ',
-        genre: 'daily_life',
-        sourceDays: [1],
-        createdAt: 'Mẫu Đời sống #1',
-        englishText: `Emma: Hey Nam, since it is raining this Sunday morning, do you want to help me set up our home study corner?\nNam: Good idea! Let's seat you by the balcony window and place the small copy machine on the side table.\nEmma: Perfect. Yesterday I bought a compact filing cabinet so we can organize our apartment lease and tax documents.\nNam: Nice! Should we label each drawer so we can locate any document without digging through a messy pile?\nEmma: Definitely. I will also replace that broken stapler and stack the extra printing paper on the bottom shelf.\nNam: Where should we hang this cork bulletin board?\nEmma: Let's install it right above the desk! I'll leave a yellow notepad next to your monitor so we can review our weekly grocery list and check all our computer equipment before Monday.`,
-        vietnameseText: `Emma: Này Nam, sáng Chủ nhật hôm nay trời mưa rồi, anh có muốn cùng em bố trí lại góc học tập ở nhà mình không?\nNam: Ý hay đấy! Để anh xếp chỗ ngồi cho em cạnh cửa sổ ban công và đặt chiếc máy photocopy nhỏ lên bàn phụ nhé.\nEmma: Tuyệt vời. Hôm qua em mới mua một chiếc tủ đựng tài liệu nhỏ gọn để tụi mình sắp xếp hợp đồng thuê căn hộ và các tài liệu thuế.\nNam: Hay quá! Mình có nên dán nhãn từng ngăn kéo để tìm thấy bất kỳ tài liệu nào ngay lập tức mà không phải bới tung đống giấy lộn xộn không?\nEmma: Chắc chắn rồi. Em cũng sẽ thay thế cái dập ghim bị hỏng và xếp chồng xấp giấy in dư lên chiếc kệ dưới cùng.\nNam: Thế tụi mình treo chiếc bảng thông báo bằng gỗ bần này ở đâu nhỉ?\nEmma: Mình lắp nó ngay phía trên bàn làm việc đi! Em sẽ để một cuốn sổ ghi chép màu vàng cạnh màn hình của anh để mình tiện xem lại danh sách đi chợ hàng tuần và kiểm tra toàn bộ thiết bị máy tính trước ngày thứ Hai.`,
-        userContinuation: ''
-      },
-      {
-        id: 'st_seed_2',
-        title: 'Preparing the Office for the New Intern (Hội thoại TOEIC Part 3)',
-        genre: 'office_dialogue',
-        sourceDays: [1],
-        createdAt: 'Mẫu Công sở #2',
-        englishText: `Linda: Mark, can you help me set up the office before the new intern arrives? We'll seat her near the copy machine.\nMark: Sure. I just had technicians install a new fax machine, and I'll replace the old stapler too.\nLinda: Great. Please organize the filing cabinet and label each drawer so she can locate any document quickly.\nMark: Okay. Where should I place the printing paper?\nLinda: Stack it on the bottom shelf in the supply room. Also, put a notepad on her desk and pin the safety rules on the bulletin board.\nMark: Got it. I'll review all the equipment this afternoon to make sure everything works.`,
-        vietnameseText: `Linda: Mark, anh có thể giúp tôi bố trí văn phòng trước khi thực tập sinh mới đến không? Chúng ta sẽ xếp chỗ ngồi cho cô ấy gần máy photocopy.\nMark: Được chứ. Tôi vừa nhờ kỹ thuật viên lắp đặt một máy fax mới, và tôi cũng sẽ thay thế cái dập ghim cũ.\nLinda: Tuyệt. Anh hãy sắp xếp lại tủ đựng tài liệu và dán nhãn từng ngăn kéo để cô ấy có thể nhanh chóng tìm thấy bất kỳ tài liệu nào.\nMark: Được. Tôi nên đặt giấy in ở đâu?\nLinda: Hãy xếp chồng nó trên kệ dưới cùng trong phòng kho. Ngoài ra, anh để một cuốn sổ ghi chép trên bàn của cô ấy và ghim nội quy an toàn lên bảng thông báo nhé.\nMark: Tôi hiểu rồi. Chiều nay tôi sẽ kiểm tra lại toàn bộ thiết bị để đảm bảo mọi thứ đều hoạt động tốt.`,
-        userContinuation: ''
-      }
-    ];
-
-    const FALLBACK_POOL = [
-      {
-        id: 'fb_1',
-        word: 'implement',
-        pos: 'Verb',
-        phonetic: '/ˈɪm.plɪ.ment/',
-        meaning: 'triển khai, thực thi',
-        exampleEn: 'Our backend team will implement the new authentication API this afternoon.'
-      },
-      {
-        id: 'fb_2',
-        word: 'verify',
-        pos: 'Verb',
-        phonetic: '/ˈver.ɪ.faɪ/',
-        meaning: 'xác minh, kiểm chứng',
-        exampleEn: 'Please verify the database schema before running the migration.'
-      },
-      {
-        id: 'fb_3',
-        word: 'confidential',
-        pos: 'Adjective',
-        phonetic: '/ˌkɒn.fɪˈden.ʃəl/',
-        meaning: 'bảo mật, tuyệt mật',
-        exampleEn: 'All client payment records must be kept strictly confidential.'
-      },
-      {
-        id: 'fb_4',
-        word: 'reconcile',
-        pos: 'Verb',
-        phonetic: '/ˈrek.ən.saɪl/',
-        meaning: 'đối soát, hòa giải',
-        exampleEn: 'The system automatically reconciles tuition payments via VietQR.'
-      }
-    ];
-
-    function createInitialAppState() {
-      const days = {};
-      for (let i = 1; i <= 120; i++) {
-        days[String(i)] = {
-          words: i === 1 ? [...DEFAULT_DAY1_WORDS] : [],
-          sentences: i === 1 ? [
-            {
-              id: 's_seed_1',
-              text: 'Even though we deploy project documents on the cloud, HR still keeps signed contracts in the filing cabinet.',
-              usedWords: ['filing cabinet', 'document'],
-              createdAt: 'Mẫu gợi ý Ngày 1',
-              aiFeedback: {
-                score: '9.5/10',
-                encouragement: 'Kết hợp từ vựng văn phòng (filing cabinet, document) vào ngữ cảnh thực tế công nghệ rất tự nhiên!',
-                grammarNotes: 'Cấu trúc tương phản "Even though + mệnh đề" chuẩn xác, dùng giới từ "in the filing cabinet" hoàn toàn đúng.',
-                naturalWorkVersion: 'We store most specs on the cloud, but HR still locks physical contracts in the filing cabinet.',
-                toeicHighVersion: 'Although most corporate documentation is archived digitally, the HR department retains signed agreements in a locked filing cabinet.'
-              }
-            }
-          ] : [],
-          stories: i === 1 ? [...DEFAULT_DAY1_STORIES] : [],
-          activeStoryId: i === 1 ? 'st_seed_1' : null
-        };
-      }
-      return {
-        activeDay: 1,
-        extraReviewDays: [],
-        dayFilter: 'all',
-        vocabViewMode: 'focus',
-        focusCardIndex: 0,
-        voiceAccent: 'en-US',
-        voiceRate: 0.92,
-        voicePitch: 0.96,
-        voicePersona: 'auto', // 'auto' (Nam & Nữ), 'female', 'male'
-        preferredFemaleVoiceURI: '',
-        preferredMaleVoiceURI: '',
-        storySourceDay: 1,
-        days
-      };
-    }
-
-    function loadAppState() {
-      const base = createInitialAppState();
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return base;
-        const parsed = JSON.parse(raw);
-        if (!parsed || typeof parsed !== 'object' || !parsed.days) return base;
-        for (let i = 1; i <= 120; i++) {
-          const k = String(i);
-          if (!parsed.days[k]) {
-            parsed.days[k] = { words: [], sentences: [], stories: [], activeStoryId: null };
-          } else {
-            parsed.days[k].words = Array.isArray(parsed.days[k].words) ? parsed.days[k].words : [];
-            parsed.days[k].sentences = Array.isArray(parsed.days[k].sentences) ? parsed.days[k].sentences : [];
-            // Migrate legacy single `story` object into `stories` array without losing user data
-            if (!Array.isArray(parsed.days[k].stories)) {
-              parsed.days[k].stories = [];
-              if (parsed.days[k].story && parsed.days[k].story.englishText) {
-                parsed.days[k].stories.push({
-                  id: 'st_mig_' + k,
-                  title: parsed.days[k].story.title || `Truyện ngữ cảnh Ngày ${k}`,
-                  genre: 'office_dialogue',
-                  sourceDays: [i],
-                  createdAt: 'Đã lưu trước đó',
-                  englishText: parsed.days[k].story.englishText,
-                  vietnameseText: parsed.days[k].story.vietnameseText || ''
-                });
-              }
-            }
-            if (i === 1 && parsed.days['1'].stories.length === 0) {
-              parsed.days['1'].stories = [...DEFAULT_DAY1_STORIES];
-            }
-            if (!parsed.days[k].activeStoryId && parsed.days[k].stories.length > 0) {
-              parsed.days[k].activeStoryId = parsed.days[k].stories[0].id;
-            }
-          }
-        }
-        // Upgrade Day 1 seed if it only had 1 word previously
-        if (parsed.days['1'].words.length <= 1) {
-          parsed.days['1'].words = [...DEFAULT_DAY1_WORDS];
-        }
-        return {
-          ...base,
-          ...parsed,
-          voiceRate: parsed.voiceRate && parsed.voiceRate <= 1.0 ? parsed.voiceRate : 0.92,
-          voicePitch: parsed.voicePitch || 0.96,
-          voicePersona: parsed.voicePersona || 'auto',
-          storySourceDay: parsed.storySourceDay || parsed.activeDay || 1
-        };
-      } catch (e) {
-        return base;
-      }
-    }
-
-    let activeTab = 'vocab';
-    let quizState = {
-      mode: 'EN_VI',
-      phaseSize: '7', // '5', '7', '10', 'all', 'custom'
-      activePhaseIndex: 0,
-      customStart: 1,
-      customEnd: 7,
-      completedPhases: {}, // key: `${day}_${phaseSize}_${phaseIdx}`
-      wrongWordsInPhase: [],
-      questions: [],
-      currentIndex: 0,
-      score: 0,
-      answeredCount: 0
     };
 
-    // Speaking & Role-play state for Tab 4 & Quiz Speaking
-    let storyStudioSubMode = 'read'; // 'read' | 'shadowing' | 'roleplay'
-    let rolePlayUserGender = 'male'; // 'male' (Mark/Nam) | 'female' (Linda/Emma)
-    let rolePlayActive = false;
-    let rolePlayCurrentLineIdx = -1;
-    let lineSpeechResults = {}; // key: `${storyId}_${lineIdx}` -> { transcript, accuracy, wordDiffHtml, aiCoachNote }
-    let activeSpeechRecognition = null;
-    let activeRecordingKey = null;
-
-    // ==========================================================================
-    // 2. CLINE-STYLE AI ENGINE (ANTHROPIC CLAUDE OPUS 5.5 / SONNET & GEMINI)
-    // ==========================================================================
-    const CLAUDE_MODEL_SPECS = {
-      'claude-opus-5-5': { context: '1M', inputRate: 4, outputRate: 20 },
-      'claude-sonnet-4-5': { context: '1M', inputRate: 3, outputRate: 15 },
-      'claude-opus-4-1-20250805': { context: '200K', inputRate: 15, outputRate: 75 },
-      'claude-opus-4-20250514': { context: '200K', inputRate: 15, outputRate: 75 },
-      'claude-sonnet-4-20250514': { context: '200K', inputRate: 3, outputRate: 15 },
-      'claude-3-7-sonnet-latest': { context: '200K', inputRate: 3, outputRate: 15 },
-      'claude-3-5-sonnet-latest': { context: '200K', inputRate: 3, outputRate: 15 },
-      'claude-3-5-haiku-latest': { context: '200K', inputRate: 0.8, outputRate: 4 }
-    };
-
-    // Automatic fallback list if an experimental/alias model ID isn't enabled on direct endpoint
     const ANTHROPIC_FALLBACK_MODELS = [
       'claude-sonnet-4-20250514',
       'claude-3-7-sonnet-latest',
       'claude-3-5-sonnet-latest'
     ];
 
+    function createDefaultProvidersMap() {
+      const map = {};
+      Object.values(AI_PROVIDERS_CATALOG).forEach(cat => {
+        map[cat.id] = {
+          apiKey: '',
+          workspaceId: '',
+          useCustomBaseUrl: false,
+          baseUrl: cat.defaultBaseUrl,
+          model: cat.models[0].id,
+          customModel: '',
+          fastActModel: cat.models[cat.models.length - 1].id
+        };
+      });
+      return map;
+    }
+
     function loadAiSettings() {
+      const defaultMap = createDefaultProvidersMap();
       const def = {
         provider: 'claude',
-        claudeKey: '',
-        claudeWorkspaceId: '',
-        claudeModel: 'claude-opus-5-5',
-        customClaudeModel: '',
-        useCustomBaseUrl: false,
-        customBaseUrl: 'https://api.anthropic.com',
         reasoningEffort: 'medium',
         splitPlanAct: false,
-        fastActModel: 'claude-3-5-haiku-latest',
         budgetTotal: 200.00,
         consoleSpent: 120.43,
         appInputTokens: 0,
         appOutputTokens: 0,
         appEstimatedCost: 0,
-        geminiKey: '',
-        geminiModel: 'gemini-3-flash-preview',
-        openAiPreset: 'openai',
-        openAiKey: '',
-        openAiBaseUrl: 'https://api.openai.com/v1/chat/completions',
-        openAiModel: 'gpt-4o-mini'
+        providers: defaultMap
       };
       try {
         const raw = localStorage.getItem(AI_CONFIG_KEY);
-        return raw ? { ...def, ...JSON.parse(raw) } : def;
+        if (!raw) return def;
+        const parsed = JSON.parse(raw);
+
+        // Migrate legacy flat keys (claudeKey, geminiKey, openAiKey) into independent providers map
+        const mergedProviders = { ...defaultMap };
+        if (parsed.providers && typeof parsed.providers === 'object') {
+          Object.keys(defaultMap).forEach(k => {
+            if (parsed.providers[k]) {
+              mergedProviders[k] = { ...defaultMap[k], ...parsed.providers[k] };
+            }
+          });
+        }
+        if (parsed.claudeKey && !mergedProviders.claude.apiKey) {
+          mergedProviders.claude.apiKey = parsed.claudeKey;
+          mergedProviders.claude.workspaceId = parsed.claudeWorkspaceId || '';
+          mergedProviders.claude.model = parsed.claudeModel || 'claude-opus-5-5';
+          mergedProviders.claude.customModel = parsed.customClaudeModel || '';
+          mergedProviders.claude.useCustomBaseUrl = Boolean(parsed.useCustomBaseUrl);
+          mergedProviders.claude.baseUrl = parsed.customBaseUrl || AI_PROVIDERS_CATALOG.claude.defaultBaseUrl;
+        }
+        if (parsed.geminiKey && !mergedProviders.gemini.apiKey) {
+          mergedProviders.gemini.apiKey = parsed.geminiKey;
+          mergedProviders.gemini.model = parsed.geminiModel || 'gemini-2.5-flash';
+        }
+        if (parsed.openAiKey && !mergedProviders.openai.apiKey) {
+          mergedProviders.openai.apiKey = parsed.openAiKey;
+          mergedProviders.openai.baseUrl = parsed.openAiBaseUrl || AI_PROVIDERS_CATALOG.openai.defaultBaseUrl;
+          mergedProviders.openai.model = parsed.openAiModel || 'gpt-4o-mini';
+        }
+
+        return {
+          ...def,
+          ...parsed,
+          provider: AI_PROVIDERS_CATALOG[parsed.provider] ? parsed.provider : 'claude',
+          providers: mergedProviders
+        };
       } catch (e) {
         return def;
       }
@@ -2398,65 +2013,289 @@
       updateAiHeaderIndicator();
     }
 
-    function getResolvedClaudeModel(cfg, mode = 'plan') {
-      if (mode === 'act' && cfg.splitPlanAct && cfg.fastActModel) {
-        return cfg.fastActModel;
+    function getProviderConfig(cfg, providerId = null) {
+      const pId = providerId || cfg.provider || 'claude';
+      const cat = AI_PROVIDERS_CATALOG[pId] || AI_PROVIDERS_CATALOG.claude;
+      if (!cfg.providers) cfg.providers = createDefaultProvidersMap();
+      if (!cfg.providers[pId]) {
+        cfg.providers[pId] = {
+          apiKey: '',
+          workspaceId: '',
+          useCustomBaseUrl: false,
+          baseUrl: cat.defaultBaseUrl,
+          model: cat.models[0].id,
+          customModel: '',
+          fastActModel: cat.models[cat.models.length - 1].id
+        };
       }
-      if (cfg.claudeModel === '__custom__') {
-        return (cfg.customClaudeModel || 'claude-opus-5-5').trim();
+      return cfg.providers[pId];
+    }
+
+    function getResolvedProviderModel(cfg, providerId = null, mode = 'plan') {
+      const pId = providerId || cfg.provider || 'claude';
+      const cat = AI_PROVIDERS_CATALOG[pId] || AI_PROVIDERS_CATALOG.claude;
+      const pCfg = getProviderConfig(cfg, pId);
+      if (mode === 'act' && cfg.splitPlanAct && pCfg.fastActModel && pCfg.fastActModel.trim()) {
+        return pCfg.fastActModel.trim();
       }
-      return cfg.claudeModel || 'claude-opus-5-5';
+      if (pCfg.model === '__custom__') {
+        return (pCfg.customModel || cat.models[0].id).trim();
+      }
+      return pCfg.model || cat.models[0].id;
     }
 
     function updateAiHeaderIndicator() {
       const label = document.getElementById('aiHeaderLabel');
       const dot = document.getElementById('aiStatusDot');
+      const iconSpan = document.getElementById('aiHeaderIcon');
       if (!label || !dot) return;
 
-      if (aiConfig.provider === 'claude') {
-        const hasKey = Boolean(aiConfig.claudeKey && aiConfig.claudeKey.trim());
-        const activeM = getResolvedClaudeModel(aiConfig, 'plan');
-        label.textContent = hasKey ? `Anthropic: ${activeM}` : `Anthropic: ${activeM} (Nhập Key)`;
-        dot.style.backgroundColor = hasKey ? 'var(--success)' : 'var(--amber)';
-      } else if (aiConfig.provider === 'openai') {
-        const hasKey = Boolean(aiConfig.openAiKey && aiConfig.openAiKey.trim());
-        label.textContent = `OpenAI: ${aiConfig.openAiModel || 'gpt-4o-mini'}`;
-        dot.style.backgroundColor = hasKey ? 'var(--success)' : 'var(--amber)';
-      } else {
-        label.textContent = `Gemini: ${aiConfig.geminiModel || 'gemini-3-flash-preview'}`;
-        dot.style.backgroundColor = 'var(--success)';
-      }
+      const pId = aiConfig.provider || 'claude';
+      const cat = AI_PROVIDERS_CATALOG[pId] || AI_PROVIDERS_CATALOG.claude;
+      const pCfg = getProviderConfig(aiConfig, pId);
+      const hasKey = Boolean(pCfg.apiKey && pCfg.apiKey.trim());
+      const activeM = getResolvedProviderModel(aiConfig, pId, 'plan');
+
+      if (iconSpan) iconSpan.innerHTML = cat.svg;
+      label.textContent = hasKey ? `${cat.shortName}: ${activeM}` : `${cat.shortName}: ${activeM} (Nhập Key)`;
+      dot.style.backgroundColor = (hasKey || pId === 'gemini') ? 'var(--success)' : 'var(--amber)';
     }
 
-    function handleProviderDropdownChange(prov) {
-      const anthBlock = document.getElementById('anthropicConfigBlock');
-      const gemBlock = document.getElementById('geminiConfigBlock');
-      const oaiBlock = document.getElementById('openaiConfigBlock');
-      anthBlock.classList.add('hidden');
-      gemBlock.classList.add('hidden');
-      oaiBlock.classList.add('hidden');
+    let activeSettingsModalTab = 'provider'; // 'provider' | 'guide'
 
-      if (prov === 'claude') anthBlock.classList.remove('hidden');
-      else if (prov === 'openai') oaiBlock.classList.remove('hidden');
-      else gemBlock.classList.remove('hidden');
+    function renderSettingsProviderRailAndCards() {
+      const railEl = document.getElementById('clineProviderIconRail');
+      const stripEl = document.getElementById('providerVisualCardsStrip');
+      if (!railEl || !stripEl) return;
+
+      const currentProv = aiConfig.provider || 'claude';
+      railEl.innerHTML = '';
+      stripEl.innerHTML = '';
+
+      Object.values(AI_PROVIDERS_CATALOG).forEach(cat => {
+        const pCfg = getProviderConfig(aiConfig, cat.id);
+        const hasKey = Boolean(pCfg.apiKey && pCfg.apiKey.trim());
+        const isAct = activeSettingsModalTab === 'provider' && currentProv === cat.id;
+
+        // 1. Left Rail Icon Item
+        const railBtn = document.createElement('button');
+        railBtn.type = 'button';
+        railBtn.className = `cline-rail-item ${isAct ? 'active' : ''}`;
+        railBtn.title = `${cat.name} (${hasKey ? 'Đã lưu API Key' : 'Chưa nhập Key'})`;
+        railBtn.onclick = () => selectSettingsProvider(cat.id);
+        railBtn.innerHTML = `
+          ${cat.svg}
+          ${hasKey ? '<span class="rail-key-dot" title="Đã lưu API Key"></span>' : ''}
+        `;
+        railEl.appendChild(railBtn);
+
+        // 2. Visual Mini Card in Main Pane
+        const cardBtn = document.createElement('button');
+        cardBtn.type = 'button';
+        cardBtn.className = `provider-mini-card ${currentProv === cat.id ? 'active' : ''}`;
+        cardBtn.onclick = () => selectSettingsProvider(cat.id);
+        cardBtn.innerHTML = `
+          <span style="flex-shrink:0;display:inline-flex;">${cat.svg}</span>
+          <div style="min-width:0;flex:1;">
+            <div style="font-size:12px;font-weight:700;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+              ${escapeHtml(cat.shortName)}
+            </div>
+            <div style="font-size:10.5px;color:${hasKey ? 'var(--success)' : 'var(--text-muted)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+              ${hasKey ? '✓ Đã lưu Key' : escapeHtml(cat.badgeText)}
+            </div>
+          </div>
+        `;
+        stripEl.appendChild(cardBtn);
+      });
+
+      // Bottom Icon on Left Rail: Free API Keys & Billing Guide ($)
+      const guideRailBtn = document.createElement('button');
+      guideRailBtn.type = 'button';
+      guideRailBtn.className = `cline-rail-item ${activeSettingsModalTab === 'guide' ? 'active' : ''}`;
+      guideRailBtn.style.marginTop = 'auto';
+      guideRailBtn.title = 'Hướng dẫn lấy API Key Miễn phí (Gemini, Groq, GitHub GPT-4o, OpenRouter, DeepSeek)';
+      guideRailBtn.onclick = () => openFreeApiGuideInModal();
+      guideRailBtn.innerHTML = `
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      `;
+      railEl.appendChild(guideRailBtn);
     }
 
-    function applyOpenAiPreset(preset) {
-      const urlInp = document.getElementById('inputOpenAiBaseUrl');
-      const modInp = document.getElementById('inputOpenAiModel');
-      if (preset === 'github_free') {
-        urlInp.value = 'https://models.inference.ai.azure.com/chat/completions';
-        modInp.value = 'gpt-4o';
-      } else if (preset === 'groq_free') {
-        urlInp.value = 'https://api.groq.com/openai/v1/chat/completions';
-        modInp.value = 'llama-3.3-70b-versatile';
-      } else if (preset === 'openrouter_free') {
-        urlInp.value = 'https://openrouter.ai/api/v1/chat/completions';
-        modInp.value = 'deepseek/deepseek-chat:free';
+    function openFreeApiGuideInModal() {
+      activeSettingsModalTab = 'guide';
+      document.getElementById('providerDynamicFormPane').classList.add('hidden');
+      const guidePane = document.getElementById('freeApiGuidePane');
+      guidePane.classList.remove('hidden');
+
+      const listEl = document.getElementById('freeProvidersGuideList');
+      listEl.innerHTML = Object.values(AI_PROVIDERS_CATALOG).map(cat => {
+        const pCfg = getProviderConfig(aiConfig, cat.id);
+        const hasKey = Boolean(pCfg.apiKey && pCfg.apiKey.trim());
+        return `
+          <div style="padding:12px 14px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span>${cat.svg}</span>
+              <div>
+                <div style="font-size:13px;font-weight:700;color:var(--text-primary);">
+                  ${escapeHtml(cat.name)} <span class="badge ${hasKey ? 'badge-success' : ''}" style="margin-left:4px;">${hasKey ? '✓ Đã cấu hình' : escapeHtml(cat.badgeText)}</span>
+                </div>
+                <div style="font-size:11.5px;color:var(--text-secondary);">
+                  Model tiêu biểu: <code>${escapeHtml(cat.models.map(m => m.id).slice(0, 2).join(', '))}</code>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <a href="${cat.keyUrl}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" style="text-decoration:none;">Lấy Key ↗</a>
+              <button type="button" onclick="selectSettingsProvider('${cat.id}')" class="btn btn-primary btn-sm">Cấu hình</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      renderSettingsProviderRailAndCards();
+    }
+
+    function selectSettingsProvider(providerId) {
+      if (!AI_PROVIDERS_CATALOG[providerId]) providerId = 'claude';
+      activeSettingsModalTab = 'provider';
+      aiConfig.provider = providerId;
+
+      document.getElementById('freeApiGuidePane').classList.add('hidden');
+      document.getElementById('providerDynamicFormPane').classList.remove('hidden');
+
+      const selectProvEl = document.getElementById('selectApiProvider');
+      if (selectProvEl) selectProvEl.value = providerId;
+
+      const cat = AI_PROVIDERS_CATALOG[providerId];
+      const pCfg = getProviderConfig(aiConfig, providerId);
+
+      // Update Heading & Status
+      document.getElementById('activeProviderSvgHeading').innerHTML = cat.svg;
+      document.getElementById('activeProviderTitleHeading').textContent = `API Configuration — ${cat.name}`;
+      const statusBadge = document.getElementById('activeProviderKeyStatusBadge');
+      const hasKey = Boolean(pCfg.apiKey && pCfg.apiKey.trim());
+      statusBadge.className = `badge ${hasKey ? 'badge-success' : 'badge-amber'}`;
+      statusBadge.textContent = hasKey ? '✓ Đã lưu Key riêng' : cat.badgeText;
+
+      // Update API Key Input & Link
+      document.getElementById('lblProviderApiKey').textContent = cat.keyLabel;
+      const keyInput = document.getElementById('inputProviderApiKey');
+      keyInput.value = pCfg.apiKey || '';
+      keyInput.placeholder = cat.keyPlaceholder;
+      const linkEl = document.getElementById('linkGetProviderKey');
+      if (linkEl) linkEl.href = cat.keyUrl;
+
+      // Workspace ID (Anthropic only)
+      const wsWrap = document.getElementById('claudeWorkspaceFieldWrap');
+      if (providerId === 'claude') {
+        wsWrap.classList.remove('hidden');
+        document.getElementById('inputClaudeWorkspaceId').value = pCfg.workspaceId || '';
       } else {
-        urlInp.value = 'https://api.openai.com/v1/chat/completions';
-        modInp.value = 'gpt-4o-mini';
+        wsWrap.classList.add('hidden');
       }
+
+      // Base URL
+      document.getElementById('chkCustomBaseUrl').checked = Boolean(pCfg.useCustomBaseUrl);
+      document.getElementById('inputCustomBaseUrl').value = pCfg.baseUrl || cat.defaultBaseUrl;
+      document.getElementById('inputCustomBaseUrl').placeholder = cat.defaultBaseUrl;
+      document.getElementById('captionCustomBaseUrl').textContent = cat.baseUrlHint;
+      toggleCustomBaseUrlInput();
+
+      // Populate Models Dropdown + Custom Option
+      const modelSel = document.getElementById('selectProviderModel');
+      modelSel.innerHTML = '';
+      cat.models.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.id;
+        opt.textContent = m.label;
+        modelSel.appendChild(opt);
+      });
+      const customOpt = document.createElement('option');
+      customOpt.value = '__custom__';
+      customOpt.textContent = '✏️ Tùy chỉnh tên Model (Nhập mã Model ID bất kỳ)...';
+      modelSel.appendChild(customOpt);
+
+      const knownIds = cat.models.map(m => m.id);
+      if (pCfg.model && knownIds.includes(pCfg.model)) {
+        modelSel.value = pCfg.model;
+      } else if (pCfg.model === '__custom__' || (pCfg.customModel && pCfg.customModel.trim())) {
+        modelSel.value = '__custom__';
+      } else {
+        modelSel.value = cat.models[0].id;
+      }
+      document.getElementById('inputCustomProviderModel').value = pCfg.customModel || '';
+      handleProviderModelSelectChange(false);
+
+      // Fast Act Model
+      document.getElementById('inputFastActModel').value = pCfg.fastActModel || cat.models[cat.models.length - 1].id;
+
+      renderSettingsProviderRailAndCards();
+      updateAiHeaderIndicator();
+    }
+
+    function handleProviderModelSelectChange(triggerSave = true) {
+      const pId = aiConfig.provider || 'claude';
+      const cat = AI_PROVIDERS_CATALOG[pId] || AI_PROVIDERS_CATALOG.claude;
+      const val = document.getElementById('selectProviderModel').value;
+      const customWrap = document.getElementById('customProviderModelWrap');
+      if (val === '__custom__') {
+        customWrap.classList.remove('hidden');
+      } else {
+        customWrap.classList.add('hidden');
+      }
+
+      const foundSpec = cat.models.find(m => m.id === val) || cat.models[0] || { context: '128K', inputRate: 0, outputRate: 0 };
+      const specEl = document.getElementById('modelSpecsLine');
+      if (specEl) {
+        specEl.innerHTML = `
+          <span>Provider: <strong>${escapeHtml(cat.shortName)}</strong></span>
+          <span>Context: <strong>${foundSpec.context}</strong></span>
+          <span>Input: <strong>${foundSpec.inputRate === 0 ? 'FREE ($0)' : `$${foundSpec.inputRate}/M`}</strong></span>
+          <span>Output: <strong>${foundSpec.outputRate === 0 ? 'FREE ($0)' : `$${foundSpec.outputRate}/M`}</strong></span>
+        `;
+      }
+
+      if (triggerSave) handleLiveProviderFieldInput();
+      const resolvedModel = getResolvedProviderModel(aiConfig, pId, 'plan');
+      const previewBadge = document.getElementById('activeModelTagPreview');
+      if (previewBadge) previewBadge.textContent = resolvedModel;
+    }
+
+    function handleLiveProviderFieldInput() {
+      const pId = aiConfig.provider || 'claude';
+      const cat = AI_PROVIDERS_CATALOG[pId] || AI_PROVIDERS_CATALOG.claude;
+      const pCfg = getProviderConfig(aiConfig, pId);
+
+      pCfg.apiKey = document.getElementById('inputProviderApiKey').value.trim();
+      if (pId === 'claude') {
+        pCfg.workspaceId = document.getElementById('inputClaudeWorkspaceId').value.trim();
+      }
+      pCfg.useCustomBaseUrl = document.getElementById('chkCustomBaseUrl').checked;
+      pCfg.baseUrl = document.getElementById('inputCustomBaseUrl').value.trim() || cat.defaultBaseUrl;
+      pCfg.model = document.getElementById('selectProviderModel').value;
+      pCfg.customModel = document.getElementById('inputCustomProviderModel').value.trim();
+      pCfg.fastActModel = document.getElementById('inputFastActModel').value.trim();
+
+      aiConfig.reasoningEffort = document.getElementById('selectReasoningEffort').value;
+      aiConfig.splitPlanAct = document.getElementById('chkSplitPlanAct').checked;
+      aiConfig.budgetTotal = parseFloat(document.getElementById('inputBudgetTotal').value) || 200;
+      aiConfig.consoleSpent = parseFloat(document.getElementById('inputConsoleSpent').value) || 120.43;
+
+      const resolvedModel = getResolvedProviderModel(aiConfig, pId, 'plan');
+      const previewBadge = document.getElementById('activeModelTagPreview');
+      if (previewBadge) previewBadge.textContent = resolvedModel;
+
+      const statusBadge = document.getElementById('activeProviderKeyStatusBadge');
+      const hasKey = Boolean(pCfg.apiKey && pCfg.apiKey.trim());
+      if (statusBadge) {
+        statusBadge.className = `badge ${hasKey ? 'badge-success' : 'badge-amber'}`;
+        statusBadge.textContent = hasKey ? '✓ Đã lưu Key riêng' : cat.badgeText;
+      }
+
+      saveAiSettings();
+      renderSettingsProviderRailAndCards();
     }
 
     function togglePasswordVisibility(inputId, btnEl) {
@@ -2476,25 +2315,6 @@
       const wrap = document.getElementById('customBaseUrlWrap');
       if (checked) wrap.classList.remove('hidden');
       else wrap.classList.add('hidden');
-    }
-
-    function handleClaudeModelChange() {
-      const val = document.getElementById('selectClaudeModel').value;
-      const customWrap = document.getElementById('customClaudeModelWrap');
-      if (val === '__custom__') {
-        customWrap.classList.remove('hidden');
-      } else {
-        customWrap.classList.add('hidden');
-      }
-      const spec = CLAUDE_MODEL_SPECS[val] || { context: '1M', inputRate: 4, outputRate: 20 };
-      const specEl = document.getElementById('modelSpecsLine');
-      if (specEl) {
-        specEl.innerHTML = `
-          <span>Context: <strong>${spec.context}</strong></span>
-          <span>Input: <strong>$${spec.inputRate}/M</strong></span>
-          <span>Output: <strong>$${spec.outputRate}/M</strong></span>
-        `;
-      }
     }
 
     function toggleAdvancedSection(forceOpen = false) {
@@ -2538,44 +2358,40 @@
     }
 
     function buildClineDraftConfigFromModal() {
-      return {
-        ...aiConfig,
-        provider: document.getElementById('selectApiProvider').value,
-        claudeKey: document.getElementById('inputClaudeKey').value.trim(),
-        claudeWorkspaceId: document.getElementById('inputClaudeWorkspaceId').value.trim(),
-        claudeModel: document.getElementById('selectClaudeModel').value,
-        customClaudeModel: document.getElementById('inputCustomClaudeModel').value.trim(),
-        useCustomBaseUrl: document.getElementById('chkCustomBaseUrl').checked,
-        customBaseUrl: document.getElementById('inputCustomBaseUrl').value.trim() || 'https://api.anthropic.com',
-        reasoningEffort: document.getElementById('selectReasoningEffort').value,
-        splitPlanAct: document.getElementById('chkSplitPlanAct').checked,
-        fastActModel: document.getElementById('selectFastActModel').value,
-        budgetTotal: parseFloat(document.getElementById('inputBudgetTotal').value) || 200,
-        consoleSpent: parseFloat(document.getElementById('inputConsoleSpent').value) || 120.43,
-        geminiKey: document.getElementById('inputGeminiKey').value.trim(),
-        geminiModel: document.getElementById('selectGeminiModel').value,
-        openAiPreset: document.getElementById('selectOpenAiPreset').value,
-        openAiKey: document.getElementById('inputOpenAiKey').value.trim(),
-        openAiBaseUrl: document.getElementById('inputOpenAiBaseUrl').value.trim(),
-        openAiModel: document.getElementById('inputOpenAiModel').value.trim()
-      };
+      handleLiveProviderFieldInput();
+      return aiConfig;
     }
 
-    function resolveAnthropicEndpoint(cfg) {
-      let base = (cfg.useCustomBaseUrl && cfg.customBaseUrl)
-        ? cfg.customBaseUrl.trim()
-        : 'https://api.anthropic.com';
+    function resolveProviderEndpoint(cfg, providerId = null) {
+      const pId = providerId || cfg.provider || 'claude';
+      const cat = AI_PROVIDERS_CATALOG[pId] || AI_PROVIDERS_CATALOG.claude;
+      const pCfg = getProviderConfig(cfg, pId);
+      let base = (pCfg.useCustomBaseUrl && pCfg.baseUrl)
+        ? pCfg.baseUrl.trim()
+        : cat.defaultBaseUrl;
       base = base.replace(/\/+$/, '');
-      if (base.endsWith('/v1/messages')) return base;
-      if (base.endsWith('/v1')) return base + '/messages';
-      return base + '/v1/messages';
+
+      if (pId === 'claude') {
+        if (base.endsWith('/v1/messages')) return base;
+        if (base.endsWith('/v1')) return base + '/messages';
+        return base + '/v1/messages';
+      }
+      if (pId === 'gemini') {
+        return base;
+      }
+      // OpenAI-compatible providers (deepseek, openai, groq, github, openrouter)
+      if (base.endsWith('/chat/completions')) return base;
+      if (base.endsWith('/v1')) return base + '/chat/completions';
+      return base + '/chat/completions';
     }
 
     function saveAiConfigFromModal() {
-      aiConfig = buildClineDraftConfigFromModal();
+      handleLiveProviderFieldInput();
       saveAiSettings();
       closeModal('aiSettingsModal');
-      showToast('Đã lưu cấu hình AI API thành công!');
+      const cat = AI_PROVIDERS_CATALOG[aiConfig.provider] || AI_PROVIDERS_CATALOG.claude;
+      const mod = getResolvedProviderModel(aiConfig, aiConfig.provider, 'plan');
+      showToast(`Đã lưu cấu hình ${cat.name} (${mod})!`);
     }
 
     async function sendAnthropicRequestSingle(endpoint, apiKey, modelId, systemPrompt, userPrompt, reasoningEffort, workspaceId = '') {
@@ -2629,37 +2445,42 @@
 
     async function callAI(systemPrompt, userPrompt, overrideCfg = null, mode = 'plan') {
       const cfg = overrideCfg || aiConfig;
-      if (cfg.provider === 'claude') {
-        if (!cfg.claudeKey) {
+      const pId = cfg.provider || 'claude';
+      const cat = AI_PROVIDERS_CATALOG[pId] || AI_PROVIDERS_CATALOG.claude;
+      const pCfg = getProviderConfig(cfg, pId);
+      const activeModel = getResolvedProviderModel(cfg, pId, mode);
+
+      // 1. ANTHROPIC CLAUDE
+      if (pId === 'claude') {
+        if (!pCfg.apiKey) {
           openModal('aiSettingsModal');
-          throw new Error('Vui lòng dán Anthropic API Key vào mục Settings -> API Configuration!');
+          throw new Error('Vui lòng dán Anthropic API Key vào mục Settings!');
         }
 
-        const endpoint = resolveAnthropicEndpoint(cfg);
-        const primaryModel = getResolvedClaudeModel(cfg, mode);
+        const endpoint = resolveProviderEndpoint(cfg, 'claude');
         const candidateModels = [
-          primaryModel,
-          ...ANTHROPIC_FALLBACK_MODELS.filter(m => m !== primaryModel)
+          activeModel,
+          ...ANTHROPIC_FALLBACK_MODELS.filter(m => m !== activeModel)
         ];
 
         let lastError = '';
         for (const modelId of candidateModels) {
           const res = await sendAnthropicRequestSingle(
             endpoint,
-            cfg.claudeKey,
+            pCfg.apiKey,
             modelId,
             systemPrompt,
             userPrompt,
             cfg.reasoningEffort,
-            cfg.claudeWorkspaceId
+            pCfg.workspaceId
           );
 
           if (res.ok) {
             const data = await res.json();
             const inTok = data?.usage?.input_tokens || 0;
             const outTok = data?.usage?.output_tokens || 0;
-            const spec = CLAUDE_MODEL_SPECS[modelId] || { inputRate: 4, outputRate: 20 };
-            const callCost = (inTok / 1_000_000) * spec.inputRate + (outTok / 1_000_000) * spec.outputRate;
+            const foundSpec = cat.models.find(m => m.id === modelId) || { inputRate: 4, outputRate: 20 };
+            const callCost = (inTok / 1_000_000) * foundSpec.inputRate + (outTok / 1_000_000) * foundSpec.outputRate;
 
             aiConfig.appInputTokens = (aiConfig.appInputTokens || 0) + inTok;
             aiConfig.appOutputTokens = (aiConfig.appOutputTokens || 0) + outTok;
@@ -2677,37 +2498,13 @@
           }
         }
         throw new Error(lastError || 'Không thể kết nối tới Anthropic API.');
-      } else if (cfg.provider === 'openai') {
-        if (!cfg.openAiKey) {
-          openModal('aiSettingsModal');
-          throw new Error('Vui lòng dán OpenAI / GitHub / Groq API Key vào mục Settings!');
-        }
-        const endpoint = cfg.openAiBaseUrl || 'https://api.openai.com/v1/chat/completions';
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${cfg.openAiKey}`
-          },
-          body: JSON.stringify({
-            model: cfg.openAiModel || 'gpt-4o-mini',
-            messages: [
-              { role: 'system', content: systemPrompt },
-              { role: 'user', content: userPrompt }
-            ],
-            temperature: 0.65
-          })
-        });
-        if (!res.ok) {
-          const errTxt = await res.text();
-          throw new Error(`OpenAI/Compatible API (${res.status}): ${errTxt.slice(0, 180)}`);
-        }
-        const data = await res.json();
-        return data?.choices?.[0]?.message?.content || '';
-      } else {
-        const apiKey = cfg.geminiKey || "";
-        const model = cfg.geminiModel || 'gemini-3-flash-preview';
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      }
+
+      // 2. GOOGLE GEMINI
+      if (pId === 'gemini') {
+        const apiKey = pCfg.apiKey || "";
+        const baseHost = resolveProviderEndpoint(cfg, 'gemini');
+        const url = `${baseHost}/v1beta/models/${activeModel}:generateContent?key=${apiKey}`;
         const res = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -2718,11 +2515,56 @@
         });
         if (!res.ok) {
           const errTxt = await res.text();
-          throw new Error(`Gemini API (${res.status}): ${errTxt.slice(0, 160)}`);
+          throw new Error(`Gemini API (${res.status} - ${activeModel}): ${errTxt.slice(0, 180)}`);
         }
         const data = await res.json();
         return data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
       }
+
+      // 3. OPENAI-COMPATIBLE PROVIDERS (DeepSeek, OpenAI ChatGPT, GroqCloud, GitHub Models, OpenRouter)
+      if (!pCfg.apiKey) {
+        openModal('aiSettingsModal');
+        throw new Error(`Vui lòng dán ${cat.keyLabel} vào mục Settings!`);
+      }
+      const endpoint = resolveProviderEndpoint(cfg, pId);
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${pCfg.apiKey}`
+      };
+      if (pId === 'openrouter') {
+        headers['HTTP-Referer'] = window.location.origin || 'https://toeic-120-days.pages.dev';
+        headers['X-Title'] = 'TOEIC 120-Day Mastery Hub';
+      }
+
+      const bodyPayload = {
+        model: activeModel,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ]
+      };
+      // o3-mini / deepseek-reasoner may not accept custom temperature
+      if (!/o3|o1|reasoner/i.test(activeModel)) {
+        bodyPayload.temperature = 0.65;
+      }
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(bodyPayload)
+      });
+      if (!res.ok) {
+        const errTxt = await res.text();
+        throw new Error(`${cat.name} (${res.status} - ${activeModel}): ${errTxt.slice(0, 180)}`);
+      }
+      const data = await res.json();
+      const inTok = data?.usage?.prompt_tokens || 0;
+      const outTok = data?.usage?.completion_tokens || 0;
+      aiConfig.appInputTokens = (aiConfig.appInputTokens || 0) + inTok;
+      aiConfig.appOutputTokens = (aiConfig.appOutputTokens || 0) + outTok;
+      saveAiSettings();
+
+      return data?.choices?.[0]?.message?.content || '';
     }
 
     function parseJsonResponse(raw) {
@@ -2739,13 +2581,16 @@
       const btn = document.getElementById('btnTestAi');
       const box = document.getElementById('aiConnectionResultBox');
       const tempCfg = buildClineDraftConfigFromModal();
+      const pId = tempCfg.provider || 'claude';
+      const cat = AI_PROVIDERS_CATALOG[pId] || AI_PROVIDERS_CATALOG.claude;
+      const activeM = getResolvedProviderModel(tempCfg, pId, 'act');
 
       btn.disabled = true;
       btn.textContent = 'Testing...';
       box.classList.remove('hidden');
       box.style.backgroundColor = 'var(--bg-subtle)';
       box.style.color = 'var(--text-secondary)';
-      box.textContent = `Đang kiểm tra kết nối tới ${tempCfg.provider === 'claude' ? resolveAnthropicEndpoint(tempCfg) : 'Google Gemini'}...`;
+      box.textContent = `Đang kiểm tra kết nối tới ${cat.name} (Model: ${activeM})...`;
 
       const t0 = performance.now();
       try {
@@ -2759,7 +2604,7 @@
         box.style.backgroundColor = 'var(--success-soft)';
         box.style.borderColor = 'var(--success-border)';
         box.style.color = 'var(--success)';
-        box.textContent = `✓ Kết nối thành công (${ms}ms): "${reply.trim()}"`;
+        box.textContent = `✓ Kết nối ${cat.shortName} (${activeM}) thành công (${ms}ms): "${reply.trim()}"`;
         updateCreditSummaryUI();
       } catch (err) {
         box.style.backgroundColor = 'var(--danger-soft)';
@@ -5164,43 +5009,15 @@ Trả về DUY NHẤT 1 JSON object hợp lệ:
         refreshVoicePool();
       }
       if (id === 'aiSettingsModal') {
-        const prov = aiConfig.provider || 'claude';
-        document.getElementById('selectApiProvider').value = prov;
-        handleProviderDropdownChange(prov);
-
-        document.getElementById('inputClaudeKey').value = aiConfig.claudeKey || '';
-        document.getElementById('inputClaudeWorkspaceId').value = aiConfig.claudeWorkspaceId || '';
-        document.getElementById('chkCustomBaseUrl').checked = Boolean(aiConfig.useCustomBaseUrl);
-        document.getElementById('inputCustomBaseUrl').value = aiConfig.customBaseUrl || 'https://api.anthropic.com';
-        toggleCustomBaseUrlInput();
-
-        const selectModelEl = document.getElementById('selectClaudeModel');
-        const knownModels = Array.from(selectModelEl.options).map(o => o.value);
-        if (knownModels.includes(aiConfig.claudeModel)) {
-          selectModelEl.value = aiConfig.claudeModel;
-        } else {
-          selectModelEl.value = '__custom__';
-          document.getElementById('inputCustomClaudeModel').value = aiConfig.claudeModel || '';
-        }
-        handleClaudeModelChange();
-
         document.getElementById('selectReasoningEffort').value = aiConfig.reasoningEffort || 'medium';
         document.getElementById('chkSplitPlanAct').checked = Boolean(aiConfig.splitPlanAct);
-        document.getElementById('selectFastActModel').value = aiConfig.fastActModel || 'claude-3-5-haiku-latest';
         togglePlanActModelSelect();
 
         document.getElementById('inputBudgetTotal').value = (aiConfig.budgetTotal ?? 200).toFixed(2);
         document.getElementById('inputConsoleSpent').value = (aiConfig.consoleSpent ?? 120.43).toFixed(2);
         updateCreditSummaryUI();
 
-        document.getElementById('inputGeminiKey').value = aiConfig.geminiKey || '';
-        document.getElementById('selectGeminiModel').value = aiConfig.geminiModel || 'gemini-3-flash-preview';
-
-        document.getElementById('selectOpenAiPreset').value = aiConfig.openAiPreset || 'openai';
-        document.getElementById('inputOpenAiKey').value = aiConfig.openAiKey || '';
-        document.getElementById('inputOpenAiBaseUrl').value = aiConfig.openAiBaseUrl || 'https://api.openai.com/v1/chat/completions';
-        document.getElementById('inputOpenAiModel').value = aiConfig.openAiModel || 'gpt-4o-mini';
-
+        selectSettingsProvider(aiConfig.provider || 'claude');
         document.getElementById('aiConnectionResultBox').classList.add('hidden');
       }
       document.getElementById(id).classList.add('open');
@@ -5230,15 +5047,61 @@ Trả về DUY NHẤT 1 JSON object hợp lệ:
       showToast('Đã copy dữ liệu JSON!');
     }
 
-    function restoreFromBackupTextarea() {
+    function handleImportJsonFile(event) {
+      const file = event?.target?.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target?.result;
+        if (typeof content === 'string') {
+          document.getElementById('backupJsonTextarea').value = content;
+          showToast('Đã nạp nội dung file .JSON vào khung! Hãy bấm "Gộp dữ liệu" hoặc "Ghi đè".');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function restoreFromBackupTextarea(mode = 'overwrite') {
       try {
         const parsed = JSON.parse(document.getElementById('backupJsonTextarea').value);
         if (!parsed.days) throw new Error('JSON thiếu trường days');
-        appState = parsed;
-        saveAppState();
-        closeModal('backupModal');
-        renderAll();
-        showToast('Đã khôi phục dữ liệu thành công!');
+
+        if (mode === 'merge') {
+          for (let i = 1; i <= 120; i++) {
+            const k = String(i);
+            const incomingDay = parsed.days[k];
+            if (!incomingDay) continue;
+            const currentDayObj = ensureDay(i);
+
+            // Merge words without duplicates
+            (incomingDay.words || []).forEach(inW => {
+              const exists = currentDayObj.words.some(w => w.word.toLowerCase() === (inW.word || '').toLowerCase());
+              if (!exists && inW.word) currentDayObj.words.push(inW);
+            });
+
+            // Merge sentences
+            (incomingDay.sentences || []).forEach(inS => {
+              const exists = currentDayObj.sentences.some(s => s.text === inS.text);
+              if (!exists && inS.text) currentDayObj.sentences.push(inS);
+            });
+
+            // Merge stories
+            (incomingDay.stories || []).forEach(inSt => {
+              const exists = currentDayObj.stories.some(st => st.title === inSt.title);
+              if (!exists && inSt.englishText) currentDayObj.stories.push(inSt);
+            });
+          }
+          saveAppState();
+          closeModal('backupModal');
+          renderAll();
+          showToast('Đã gộp (Merge) thêm từ vựng và truyện từ JSON thành công!');
+        } else {
+          appState = parsed;
+          saveAppState();
+          closeModal('backupModal');
+          renderAll();
+          showToast('Đã khôi phục toàn bộ dữ liệu thành công!');
+        }
       } catch (e) {
         showToast('Mã JSON không hợp lệ!');
       }
