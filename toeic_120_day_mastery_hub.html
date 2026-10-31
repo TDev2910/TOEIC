@@ -680,6 +680,106 @@
     }
 
     /* ==========================================================================
+       5A. PHASE CHUNKING PILLS & SPEAKING STUDIO STYLES (FLAT SOLID PALETTE)
+       ========================================================================== */
+    .phase-bar-box {
+      background-color: var(--bg-canvas);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .phase-pills-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .phase-pill-btn {
+      height: 30px;
+      padding: 0 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-default);
+      background-color: var(--bg-surface);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.12s ease;
+    }
+
+    .phase-pill-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .phase-pill-btn.active {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .phase-pill-btn.completed {
+      border-color: var(--success-border);
+      background-color: var(--success-soft);
+      color: var(--success);
+    }
+
+    .phase-pill-btn.completed.active {
+      background-color: var(--success);
+      border-color: var(--success);
+      color: #FFFFFF;
+    }
+
+    .mic-record-btn {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--primary-border);
+      background-color: var(--primary-soft);
+      color: var(--primary);
+      transition: all 0.15s ease;
+    }
+
+    .mic-record-btn:hover {
+      background-color: #DBEAFE;
+    }
+
+    .mic-record-btn.recording {
+      background-color: var(--danger);
+      border-color: var(--danger);
+      color: #FFFFFF;
+    }
+
+    .pronun-word-ok {
+      color: var(--success);
+      font-weight: 700;
+      background-color: var(--success-soft);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
+    .pronun-word-miss {
+      color: var(--danger);
+      font-weight: 700;
+      background-color: var(--danger-soft);
+      padding: 1px 5px;
+      border-radius: 4px;
+      text-decoration: underline;
+    }
+
+    /* ==========================================================================
        5B. TAB 4: MASTER-DETAIL LIFE STORIES & TOEIC AUDIO STUDIO
        ========================================================================== */
     .story-studio-grid {
@@ -1256,17 +1356,48 @@
           <!-- ==================== TAB 2: IMMERSIVE MCQ QUIZ ==================== -->
           <section id="tabPanel-quiz" class="hidden" style="display:flex;flex-direction:column;gap:16px;">
             <div class="card" style="padding:20px 24px;">
-              <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;">
-                <div class="segmented-group">
-                  <button id="quizModeBtn-EN_VI" onclick="setQuizMode('EN_VI')" class="segmented-btn active">Anh ➔ Việt</button>
-                  <button id="quizModeBtn-VI_EN" onclick="setQuizMode('VI_EN')" class="segmented-btn">Việt ➔ Anh</button>
-                  <button id="quizModeBtn-CONTEXT" onclick="setQuizMode('CONTEXT')" class="segmented-btn">Điền từ TOEIC Part 5</button>
+              <!-- Top Quiz Mode Selector -->
+              <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;">
+                <div class="segmented-group" style="flex-wrap:wrap;">
+                  <button id="quizModeBtn-EN_VI" onclick="setQuizMode('EN_VI')" class="segmented-btn active">🇬🇧 EN ➔ 🇻🇳 VI</button>
+                  <button id="quizModeBtn-VI_EN" onclick="setQuizMode('VI_EN')" class="segmented-btn">🇻🇳 VI ➔ 🇬🇧 EN</button>
+                  <button id="quizModeBtn-CONTEXT" onclick="setQuizMode('CONTEXT')" class="segmented-btn">📝 Điền từ Ngữ cảnh (Cloze)</button>
+                  <button id="quizModeBtn-SPEAKING" onclick="setQuizMode('SPEAKING')" class="segmented-btn">🎙️ Phản xạ Phát âm (Speaking Quiz)</button>
                 </div>
 
                 <div style="display:flex;align-items:center;gap:8px;">
                   <span id="quizScoreBadge" class="badge badge-success">Đúng: 0/0</span>
-                  <button onclick="startNewQuiz()" class="btn btn-secondary btn-sm">Trộn đề mới</button>
+                  <button onclick="startNewQuiz()" class="btn btn-secondary btn-sm">🔀 Trộn lại Phase này</button>
                 </div>
+              </div>
+
+              <!-- Phase / Batch Chunking Configurator -->
+              <div class="phase-bar-box">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;">
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                    <span style="font-size:12.5px;font-weight:700;color:var(--text-primary);">🎯 Chia nhỏ Phase để dễ thuộc:</span>
+                    <select id="quizPhaseSizeSelect" onchange="handleQuizPhaseSizeChange(this.value)" class="select" style="width:auto;height:30px;padding:2px 10px;font-weight:600;">
+                      <option value="5">5 từ / Phase (Dễ nhớ nhất)</option>
+                      <option value="7">7 từ / Phase (3 Phase / 21 từ)</option>
+                      <option value="10">10 từ / Phase</option>
+                      <option value="all">Tất cả ( Toàn bộ từ đang chọn )</option>
+                      <option value="custom">Tùy chỉnh khoảng (Từ số X ➔ Y)</option>
+                    </select>
+
+                    <!-- Custom Range Inputs -->
+                    <div id="quizCustomRangeWrap" class="hidden" style="display:inline-flex;align-items:center;gap:6px;">
+                      <span style="font-size:12px;color:var(--text-secondary);">Từ số</span>
+                      <input id="quizCustomStart" type="number" min="1" value="1" onchange="applyCustomQuizRange()" class="input" style="width:60px;height:28px;padding:2px 6px;text-align:center;" />
+                      <span style="font-size:12px;color:var(--text-secondary);">đến</span>
+                      <input id="quizCustomEnd" type="number" min="1" value="7" onchange="applyCustomQuizRange()" class="input" style="width:60px;height:28px;padding:2px 6px;text-align:center;" />
+                    </div>
+                  </div>
+
+                  <span id="quizPhaseWordsPreview" style="font-size:11.5px;color:var(--text-muted);"></span>
+                </div>
+
+                <!-- Dynamic Phase Pills -->
+                <div id="quizPhasePillsContainer" class="phase-pills-wrap"></div>
               </div>
 
               <div id="quizBodyContainer"></div>
@@ -2188,11 +2319,26 @@
     let activeTab = 'vocab';
     let quizState = {
       mode: 'EN_VI',
+      phaseSize: '7', // '5', '7', '10', 'all', 'custom'
+      activePhaseIndex: 0,
+      customStart: 1,
+      customEnd: 7,
+      completedPhases: {}, // key: `${day}_${phaseSize}_${phaseIdx}`
+      wrongWordsInPhase: [],
       questions: [],
       currentIndex: 0,
       score: 0,
       answeredCount: 0
     };
+
+    // Speaking & Role-play state for Tab 4 & Quiz Speaking
+    let storyStudioSubMode = 'read'; // 'read' | 'shadowing' | 'roleplay'
+    let rolePlayUserGender = 'male'; // 'male' (Mark/Nam) | 'female' (Linda/Emma)
+    let rolePlayActive = false;
+    let rolePlayCurrentLineIdx = -1;
+    let lineSpeechResults = {}; // key: `${storyId}_${lineIdx}` -> { transcript, accuracy, wordDiffHtml, aiCoachNote }
+    let activeSpeechRecognition = null;
+    let activeRecordingKey = null;
 
     // ==========================================================================
     // 2. CLINE-STYLE AI ENGINE (ANTHROPIC CLAUDE OPUS 5.5 / SONNET & GEMINI)
@@ -3495,15 +3641,244 @@ Chỉ trả về văn bản kết quả, không giải thích thừa.`;
     }
 
     // ==========================================================================
-    // 7. TAB 2: IMMERSIVE MCQ QUIZ (EN-VI / VI-EN / TOEIC PART 5)
+    // 6B. WEB SPEECH RECOGNITION ENGINE (SPEAKING, SHADOWING & PRONUNCIATION)
+    // ==========================================================================
+    function stopActiveSpeechRecognition() {
+      if (activeSpeechRecognition) {
+        try {
+          activeSpeechRecognition.onend = null;
+          activeSpeechRecognition.stop();
+        } catch (e) {}
+        activeSpeechRecognition = null;
+      }
+      activeRecordingKey = null;
+    }
+
+    function normalizeTokensForSpeech(str) {
+      return String(str || '')
+        .toLowerCase()
+        .replace(/^([a-zà-ỹ\s]{2,18}):\s*/i, '') // strip speaker prefix if any
+        .replace(/[^a-z0-9'\s]/gi, ' ')
+        .split(/\s+/)
+        .filter(Boolean);
+    }
+
+    function evaluateSpokenTranscript(targetSentence, spokenTranscript) {
+      const cleanTarget = stripSpeakerPrefixForTTS(targetSentence);
+      const rawWords = cleanTarget.trim().split(/\s+/).filter(Boolean);
+      const spokenTokens = normalizeTokensForSpeech(spokenTranscript);
+      const spokenBag = [...spokenTokens];
+
+      let matchedCount = 0;
+      const diffParts = rawWords.map(rawWord => {
+        const normW = rawWord.toLowerCase().replace(/[^a-z0-9']/gi, '');
+        if (!normW) return escapeHtml(rawWord);
+
+        const foundIdx = spokenBag.findIndex(t => t === normW || (normW.length > 4 && (t.startsWith(normW.slice(0, -1)) || normW.startsWith(t.slice(0, -1)))));
+        if (foundIdx !== -1) {
+          matchedCount++;
+          spokenBag.splice(foundIdx, 1);
+          return `<span class="pronun-word-ok">${escapeHtml(rawWord)}</span>`;
+        } else {
+          return `<span class="pronun-word-miss">${escapeHtml(rawWord)}</span>`;
+        }
+      });
+
+      const total = Math.max(1, rawWords.length);
+      const accuracy = Math.round((matchedCount / total) * 100);
+      return {
+        accuracy,
+        matchedCount,
+        totalWords: total,
+        wordDiffHtml: diffParts.join(' '),
+        spokenTranscript: spokenTranscript.trim()
+      };
+    }
+
+    function startSpeechRecognitionSession({ lang = 'en-US', onInterim, onFinal, onError }) {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec) {
+        showToast('Trình duyệt hiện tại chưa bật Web Speech Recognition (Khuyên dùng Chrome / Edge / Brave Desktop).');
+        if (onError) onError('UNSUPPORTED');
+        return null;
+      }
+
+      stopActiveSpeechRecognition();
+      stopAllSpeech();
+
+      const rec = new SpeechRec();
+      rec.lang = appState.voiceAccent || lang || 'en-US';
+      rec.interimResults = true;
+      rec.maxAlternatives = 1;
+      rec.continuous = false;
+
+      let finalTranscript = '';
+      let latestInterim = '';
+
+      rec.onresult = (event) => {
+        let interim = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const txt = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += txt + ' ';
+          } else {
+            interim += txt;
+          }
+        }
+        latestInterim = (finalTranscript + interim).trim();
+        if (onInterim) onInterim(latestInterim);
+      };
+
+      rec.onerror = (err) => {
+        const code = err?.error || 'unknown';
+        if (code !== 'no-speech' && code !== 'aborted') {
+          showToast(`Lưu ý Mic (${code}): Hãy cho phép quyền Microphone trên trình duyệt.`);
+        }
+        if (onError) onError(code);
+      };
+
+      rec.onend = () => {
+        activeSpeechRecognition = null;
+        activeRecordingKey = null;
+        const resultText = (finalTranscript || latestInterim).trim();
+        if (onFinal) onFinal(resultText);
+      };
+
+      try {
+        rec.start();
+        activeSpeechRecognition = rec;
+        return rec;
+      } catch (e) {
+        if (onError) onError(e.message);
+        return null;
+      }
+    }
+
+    // ==========================================================================
+    // 7. TAB 2: IMMERSIVE MCQ QUIZ WITH PHASE CHUNKING & SPEAKING QUIZ
     // ==========================================================================
     function setQuizMode(mode) {
+      stopActiveSpeechRecognition();
       quizState.mode = mode;
-      ['EN_VI', 'VI_EN', 'CONTEXT'].forEach(m => {
+      ['EN_VI', 'VI_EN', 'CONTEXT', 'SPEAKING'].forEach(m => {
         const btn = document.getElementById(`quizModeBtn-${m}`);
         if (btn) btn.className = m === mode ? 'segmented-btn active' : 'segmented-btn';
       });
       startNewQuiz();
+    }
+
+    function handleQuizPhaseSizeChange(val) {
+      quizState.phaseSize = val;
+      quizState.activePhaseIndex = 0;
+      const customWrap = document.getElementById('quizCustomRangeWrap');
+      if (customWrap) {
+        if (val === 'custom') customWrap.classList.remove('hidden');
+        else customWrap.classList.add('hidden');
+      }
+      startNewQuiz();
+    }
+
+    function applyCustomQuizRange() {
+      const s = Math.max(1, parseInt(document.getElementById('quizCustomStart')?.value, 10) || 1);
+      const e = Math.max(s, parseInt(document.getElementById('quizCustomEnd')?.value, 10) || s + 4);
+      quizState.customStart = s;
+      quizState.customEnd = e;
+      startNewQuiz();
+    }
+
+    function getQuizPhasesList() {
+      const fullPool = getActiveVocabularyPool();
+      const total = fullPool.length;
+      if (total === 0) return [];
+
+      const sizeMode = quizState.phaseSize || '7';
+      if (sizeMode === 'all') {
+        return [{
+          index: 0,
+          label: `Tất cả (1–${total})`,
+          startNum: 1,
+          endNum: total,
+          words: fullPool
+        }];
+      }
+
+      if (sizeMode === 'custom') {
+        const s = Math.min(total, Math.max(1, quizState.customStart || 1));
+        const e = Math.min(total, Math.max(s, quizState.customEnd || Math.min(total, s + 6)));
+        return [{
+          index: 0,
+          label: `Tùy chọn (Từ ${s}–${e})`,
+          startNum: s,
+          endNum: e,
+          words: fullPool.slice(s - 1, e)
+        }];
+      }
+
+      const chunkSize = Math.max(1, parseInt(sizeMode, 10) || 7);
+      const phases = [];
+      let pIdx = 0;
+      for (let i = 0; i < total; i += chunkSize) {
+        const slice = fullPool.slice(i, i + chunkSize);
+        const startNum = i + 1;
+        const endNum = i + slice.length;
+        phases.push({
+          index: pIdx++,
+          label: `Phase ${phases.length + 1} (Từ ${startNum}–${endNum})`,
+          startNum,
+          endNum,
+          words: slice
+        });
+      }
+      return phases;
+    }
+
+    function selectQuizPhase(phaseIdx) {
+      quizState.activePhaseIndex = phaseIdx;
+      startNewQuiz();
+    }
+
+    function renderQuizPhaseBar() {
+      const phases = getQuizPhasesList();
+      const pillsWrap = document.getElementById('quizPhasePillsContainer');
+      const previewEl = document.getElementById('quizPhaseWordsPreview');
+      const selEl = document.getElementById('quizPhaseSizeSelect');
+      if (selEl && selEl.value !== String(quizState.phaseSize)) {
+        selEl.value = String(quizState.phaseSize);
+      }
+
+      if (!pillsWrap) return;
+      pillsWrap.innerHTML = '';
+
+      if (phases.length === 0) {
+        if (previewEl) previewEl.textContent = 'Chưa có từ vựng';
+        return;
+      }
+
+      if (quizState.activePhaseIndex >= phases.length) {
+        quizState.activePhaseIndex = 0;
+      }
+
+      phases.forEach(p => {
+        const compKey = `${appState.activeDay}_${quizState.phaseSize}_${p.index}`;
+        const isDone = Boolean(quizState.completedPhases[compKey]);
+        const isAct = p.index === quizState.activePhaseIndex;
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `phase-pill-btn ${isAct ? 'active' : ''} ${isDone ? 'completed' : ''}`;
+        btn.onclick = () => selectQuizPhase(p.index);
+        btn.innerHTML = `
+          <span>${isDone ? '✓' : '•'}</span>
+          <span>${escapeHtml(p.label)}</span>
+        `;
+        pillsWrap.appendChild(btn);
+      });
+
+      const currentPhase = phases[quizState.activePhaseIndex] || phases[0];
+      if (previewEl && currentPhase) {
+        const sampleNames = currentPhase.words.map(w => w.word).join(', ');
+        previewEl.textContent = `Gồm ${currentPhase.words.length} từ: ${sampleNames}`;
+      }
     }
 
     function shuffle(arr) {
@@ -3515,9 +3890,19 @@ Chỉ trả về văn bản kết quả, không giải thích thừa.`;
       return a;
     }
 
-    function startNewQuiz() {
-      const pool = getActiveVocabularyPool();
-      quizState.questions = shuffle(pool);
+    function startNewQuiz(onlyWrongWords = false) {
+      stopActiveSpeechRecognition();
+      renderQuizPhaseBar();
+      const phases = getQuizPhasesList();
+      const activePhase = phases[quizState.activePhaseIndex] || phases[0];
+      const basePool = activePhase ? activePhase.words : getActiveVocabularyPool();
+
+      if (onlyWrongWords && quizState.wrongWordsInPhase.length > 0) {
+        quizState.questions = shuffle([...quizState.wrongWordsInPhase]);
+      } else {
+        quizState.questions = shuffle(basePool);
+      }
+      quizState.wrongWordsInPhase = [];
       quizState.currentIndex = 0;
       quizState.score = 0;
       quizState.answeredCount = 0;
@@ -3534,19 +3919,87 @@ Chỉ trả về văn bản kết quả, không giải thích thừa.`;
         return;
       }
 
+      const phases = getQuizPhasesList();
+      const activePhase = phases[quizState.activePhaseIndex] || { index: 0, label: 'Phase hiện tại' };
+
       if (quizState.currentIndex >= quizState.questions.length) {
+        const compKey = `${appState.activeDay}_${quizState.phaseSize}_${activePhase.index}`;
+        if (quizState.score === quizState.questions.length && quizState.questions.length > 0) {
+          quizState.completedPhases[compKey] = true;
+          renderQuizPhaseBar();
+        }
+        const hasNextPhase = quizState.activePhaseIndex + 1 < phases.length;
+        const wrongCount = quizState.wrongWordsInPhase.length;
+
         container.innerHTML = `
-          <div style="text-align:center;padding:28px 16px;">
-            <div class="badge badge-success" style="margin-bottom:8px;">HOÀN THÀNH LƯỢT ÔN TẬP</div>
-            <h3 style="font-size:20px;font-weight:700;margin-bottom:6px;">Kết quả: ${quizState.score} / ${quizState.questions.length} câu đúng</h3>
-            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Luyện tập lặp lại giúp bạn phản xạ nghĩa trực tiếp không cần dịch nhẩm.</p>
-            <button onclick="startNewQuiz()" class="btn btn-primary">Làm lại lượt mới</button>
+          <div style="text-align:center;padding:28px 16px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+            <div class="badge badge-success">HOÀN THÀNH ${escapeHtml(activePhase.label.toUpperCase())}</div>
+            <h3 style="font-size:20px;font-weight:700;">Kết quả: ${quizState.score} / ${quizState.questions.length} từ chính xác</h3>
+            <p style="font-size:13px;color:var(--text-secondary);max-width:480px;">
+              ${wrongCount === 0
+                ? 'Tuyệt vời! Bạn đã nắm chắc toàn bộ từ vựng trong Phase này. Hãy chuyển sang Phase tiếp theo!'
+                : `Bạn còn ${wrongCount} từ chưa phản xạ kịp. Hãy bấm "Ôn lại ${wrongCount} từ sai" trước khi qua Phase mới nhé!`}
+            </p>
+            <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:4px;">
+              ${wrongCount > 0 ? `
+                <button onclick="startNewQuiz(true)" class="btn btn-amber">
+                  🔁 Ôn lại ${wrongCount} từ chưa thuộc
+                </button>
+              ` : ''}
+              <button onclick="startNewQuiz(false)" class="btn btn-secondary">
+                🔀 Làm lại ${escapeHtml(activePhase.label)}
+              </button>
+              ${hasNextPhase ? `
+                <button onclick="selectQuizPhase(${quizState.activePhaseIndex + 1})" class="btn btn-primary">
+                  ⏭️ Chuyển sang Phase ${quizState.activePhaseIndex + 2} →
+                </button>
+              ` : ''}
+            </div>
           </div>
         `;
         return;
       }
 
       const target = quizState.questions[quizState.currentIndex];
+
+      // Mode 4: SPEAKING QUIZ (Look at Vietnamese meaning -> Speak English Word)
+      if (quizState.mode === 'SPEAKING') {
+        container.innerHTML = `
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div style="padding:20px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-md);">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <span style="font-size:11px;font-weight:700;color:var(--primary);letter-spacing:0.04em;">
+                  🎙️ PHẢN XẠ PHÁT ÂM (${escapeHtml(activePhase.label)}) — NHÌN NGHĨA & ĐỌC TO TỪ TIẾNG ANH:
+                </span>
+                <span style="font-size:12px;color:var(--text-muted);">Từ ${quizState.currentIndex + 1}/${quizState.questions.length}</span>
+              </div>
+              <div style="font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:6px;">
+                "${escapeHtml(target.meaning)}"
+              </div>
+              <div style="font-size:13px;color:var(--text-secondary);">
+                Từ loại: <strong>${escapeHtml(target.pos || 'Vocabulary')}</strong> • Gợi ý chữ cái đầu: <code style="font-family:var(--font-mono);font-weight:700;">${escapeHtml(target.word.slice(0, 2))}...</code>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
+              <button id="btnQuizSpeakMic" onclick="startQuizSpeakingAttempt()" class="mic-record-btn">
+                🎙️ Bấm Mic & Đọc từ tiếng Anh
+              </button>
+              <button onclick="speakText('${escapeJsStr(target.word)}')" class="btn btn-secondary btn-sm">
+                🔊 Nghe mẫu phát âm chuẩn
+              </button>
+              <button onclick="revealQuizSpeakingAnswer()" class="btn btn-secondary btn-sm">
+                👁️ Hiện đáp án & Qua câu tiếp
+              </button>
+            </div>
+
+            <div id="quizSpeakingStatusBox" class="hidden" style="padding:14px 16px;border-radius:var(--radius-md);border:1px solid var(--border-default);background-color:var(--bg-canvas);font-size:13.5px;"></div>
+          </div>
+        `;
+        return;
+      }
+
+      // Modes 1-3: Multiple Choice
       const allWords = [...getActiveVocabularyPool(), ...FALLBACK_POOL].filter(
         w => w.word.toLowerCase() !== target.word.toLowerCase()
       );
@@ -3566,32 +4019,35 @@ Chỉ trả về văn bản kết quả, không giải thích thừa.`;
       let promptSub = '';
 
       if (quizState.mode === 'EN_VI') {
-        promptLabel = 'CHỌN NGHĨA TIẾNG VIỆT ĐÚNG CHO TỪ:';
+        promptLabel = `CHỌN NGHĨA TIẾNG VIỆT ĐÚNG (${activePhase.label}):`;
         promptMain = target.word;
         promptSub = `${target.pos || ''} ${target.phonetic || ''}`;
       } else if (quizState.mode === 'VI_EN') {
-        promptLabel = 'CHỌN TỪ TIẾNG ANH TƯƠNG ỨNG VỚI NGHĨA:';
+        promptLabel = `CHỌN TỪ TIẾNG ANH TƯƠNG ỨNG (${activePhase.label}):`;
         promptMain = target.meaning;
         promptSub = `Từ loại gợi ý: ${target.pos || 'Vocabulary'}`;
       } else {
-        promptLabel = 'ĐIỀN TỪ PHÙ HỢP VÀO CHỖ TRỐNG (TOEIC PART 5):';
+        promptLabel = `ĐIỀN TỪ VÀO NGỮ CẢNH TOEIC PART 5 (${activePhase.label}):`;
         if (target.exampleEn) {
           const reg = new RegExp(target.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
           promptMain = target.exampleEn.replace(reg, '_______');
         } else {
           promptMain = `_______ (${target.meaning})`;
         }
-        promptSub = target.exampleVi ? `Gợi ý nghĩa: "${target.exampleVi}"` : `Nghĩa từ cần điền: ${target.meaning}`;
+        promptSub = target.exampleVi ? `Gợi ý nghĩa câu: "${target.exampleVi}"` : `Nghĩa từ cần điền: ${target.meaning}`;
       }
 
       container.innerHTML = `
         <div style="display:flex;flex-direction:column;gap:16px;">
           <div style="padding:20px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-md);">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-              <span style="font-size:11px;font-weight:700;color:var(--primary);letter-spacing:0.04em;">${promptLabel}</span>
+              <span style="font-size:11px;font-weight:700;color:var(--primary);letter-spacing:0.04em;">${escapeHtml(promptLabel)}</span>
               <span style="font-size:12px;color:var(--text-muted);">Câu ${quizState.currentIndex + 1}/${quizState.questions.length}</span>
             </div>
-            <div style="font-size:20px;font-weight:700;color:var(--text-primary);margin-bottom:4px;">${escapeHtml(promptMain)}</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+              <div style="font-size:20px;font-weight:700;color:var(--text-primary);margin-bottom:4px;">${escapeHtml(promptMain)}</div>
+              ${quizState.mode === 'EN_VI' ? `<button onclick="speakText('${escapeJsStr(target.word)}')" class="speaker-mini-btn" title="Nghe phát âm">🔊</button>` : ''}
+            </div>
             <div style="font-size:12.5px;color:var(--text-secondary);">${escapeHtml(promptSub)}</div>
           </div>
 
@@ -3623,6 +4079,9 @@ Chỉ trả về văn bản kết quả, không giải thích thừa.`;
         clickedBtn.classList.add('correct');
       } else {
         clickedBtn.classList.add('wrong');
+        if (!quizState.wrongWordsInPhase.some(w => w.id === target.id)) {
+          quizState.wrongWordsInPhase.push(target);
+        }
         buttons.forEach(b => {
           const expected = quizState.mode === 'EN_VI' ? target.meaning : target.word;
           if (b.textContent.includes(expected)) b.classList.add('correct');
@@ -3637,7 +4096,7 @@ Chỉ trả về văn bản kết quả, không giải thích thừa.`;
       fb.innerHTML = `
         <div style="padding:14px 16px;background-color:${isCorrect ? 'var(--success-soft)' : 'var(--bg-canvas)'};border:1px solid ${isCorrect ? 'var(--success-border)' : 'var(--border-default)'};border-radius:var(--radius-md);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
           <div style="font-size:13px;">
-            <strong>${escapeHtml(target.word)}</strong> (${escapeHtml(target.pos || '')}): ${escapeHtml(target.meaning)}
+            <strong>${escapeHtml(target.word)}</strong> (${escapeHtml(target.pos || '')} ${escapeHtml(target.phonetic || '')}): ${escapeHtml(target.meaning)}
             ${target.exampleEn ? `<div style="color:var(--text-secondary);margin-top:2px;">Ví dụ: "${escapeHtml(target.exampleEn)}"</div>` : ''}
           </div>
           <button onclick="quizState.currentIndex++; renderQuizQuestion();" class="btn btn-primary btn-sm">
@@ -3645,6 +4104,105 @@ Chỉ trả về văn bản kết quả, không giải thích thừa.`;
           </button>
         </div>
       `;
+    }
+
+    function startQuizSpeakingAttempt() {
+      const target = quizState.questions[quizState.currentIndex];
+      if (!target) return;
+
+      const micBtn = document.getElementById('btnQuizSpeakMic');
+      const statusBox = document.getElementById('quizSpeakingStatusBox');
+      if (!micBtn || !statusBox) return;
+
+      if (activeSpeechRecognition) {
+        stopActiveSpeechRecognition();
+        micBtn.classList.remove('recording');
+        micBtn.innerHTML = '🎙️ Bấm Mic & Đọc từ tiếng Anh';
+        return;
+      }
+
+      micBtn.classList.add('recording');
+      micBtn.innerHTML = '⏹️ Đang nghe bạn đọc... (Bấm để dừng)';
+      statusBox.classList.remove('hidden');
+      statusBox.innerHTML = `<span style="color:var(--primary);font-weight:600;">🎙️ Hãy đọc to từ tiếng Anh có nghĩa là "${escapeHtml(target.meaning)}"...</span>`;
+
+      startSpeechRecognitionSession({
+        onInterim: (interim) => {
+          statusBox.innerHTML = `Đang nhận diện giọng nói: <strong>"${escapeHtml(interim)}"</strong>`;
+        },
+        onFinal: (finalTxt) => {
+          micBtn.classList.remove('recording');
+          micBtn.innerHTML = '🎙️ Đọc thử lại';
+
+          if (!finalTxt) {
+            statusBox.innerHTML = `<span style="color:var(--amber);">Chưa nghe rõ giọng của bạn. Hãy bấm Mic và đọc to hơn một chút nhé!</span>`;
+            return;
+          }
+
+          const evalRes = evaluateSpokenTranscript(target.word, finalTxt);
+          const isPass = evalRes.accuracy >= 65 || finalTxt.toLowerCase().includes(target.word.toLowerCase());
+
+          quizState.answeredCount++;
+          if (isPass) {
+            quizState.score++;
+            speakText(target.word);
+          } else if (!quizState.wrongWordsInPhase.some(w => w.id === target.id)) {
+            quizState.wrongWordsInPhase.push(target);
+          }
+          document.getElementById('quizScoreBadge').textContent = `Đúng: ${quizState.score}/${quizState.answeredCount}`;
+
+          statusBox.innerHTML = `
+            <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+              <div>
+                <div style="margin-bottom:4px;">
+                  <span class="badge ${isPass ? 'badge-success' : 'badge-amber'}">
+                    ${isPass ? '✓ Phát âm Chuẩn' : 'Cần luyện thêm'} (${evalRes.accuracy}%)
+                  </span>
+                  <span style="margin-left:8px;">Bạn đã đọc: <strong>"${escapeHtml(finalTxt)}"</strong></span>
+                </div>
+                <div style="font-size:14px;">
+                  Đáp án chuẩn: <strong>${escapeHtml(target.word)}</strong> <span style="font-family:var(--font-mono);color:var(--text-secondary);">${escapeHtml(target.phonetic || '')}</span>
+                </div>
+              </div>
+              <button onclick="quizState.currentIndex++; renderQuizQuestion();" class="btn btn-primary btn-sm">
+                Từ tiếp theo →
+              </button>
+            </div>
+          `;
+        },
+        onError: () => {
+          micBtn.classList.remove('recording');
+          micBtn.innerHTML = '🎙️ Bấm Mic & Đọc từ tiếng Anh';
+        }
+      });
+    }
+
+    function revealQuizSpeakingAnswer() {
+      const target = quizState.questions[quizState.currentIndex];
+      if (!target) return;
+      stopActiveSpeechRecognition();
+      quizState.answeredCount++;
+      if (!quizState.wrongWordsInPhase.some(w => w.id === target.id)) {
+        quizState.wrongWordsInPhase.push(target);
+      }
+      speakText(target.word);
+      document.getElementById('quizScoreBadge').textContent = `Đúng: ${quizState.score}/${quizState.answeredCount}`;
+
+      const statusBox = document.getElementById('quizSpeakingStatusBox');
+      if (statusBox) {
+        statusBox.classList.remove('hidden');
+        statusBox.innerHTML = `
+          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+            <div>
+              Đáp án: <strong style="font-size:16px;color:var(--primary);">${escapeHtml(target.word)}</strong>
+              <span style="font-family:var(--font-mono);margin-left:6px;">${escapeHtml(target.phonetic || '')}</span> — ${escapeHtml(target.meaning)}
+            </div>
+            <button onclick="quizState.currentIndex++; renderQuizQuestion();" class="btn btn-primary btn-sm">
+              Từ tiếp theo →
+            </button>
+          </div>
+        `;
+      }
     }
 
     // ==========================================================================
@@ -3877,9 +4435,28 @@ Hãy đánh giá câu tiếng Anh của người học và trả về DUY NHẤT
       return Number(appState.storySourceDay) || Number(appState.activeDay) || 1;
     }
 
+    function setStoryStudioSubMode(subMode) {
+      stopActiveSpeechRecognition();
+      stopAllSpeech();
+      rolePlayActive = false;
+      rolePlayCurrentLineIdx = -1;
+      storyStudioSubMode = subMode;
+      renderStorySection();
+    }
+
+    function setRolePlayUserGender(gender) {
+      rolePlayUserGender = gender;
+      stopActiveSpeechRecognition();
+      stopAllSpeech();
+      rolePlayActive = false;
+      rolePlayCurrentLineIdx = -1;
+      renderStorySection();
+    }
+
     function handleStorySourceDayChange(val) {
       const dayNum = parseInt(val, 10) || appState.activeDay;
       appState.storySourceDay = dayNum;
+      stopActiveSpeechRecognition();
       stopAllSpeech();
       // Also synchronize activeDay so vocabulary & stories stay cohesive
       appState.activeDay = dayNum;
@@ -3888,7 +4465,10 @@ Hãy đánh giá câu tiếng Anh của người học và trả về DUY NHẤT
     }
 
     function selectStoryItem(storyId) {
+      stopActiveSpeechRecognition();
       stopAllSpeech();
+      rolePlayActive = false;
+      rolePlayCurrentLineIdx = -1;
       const targetDay = getTargetStoryDayNum();
       const dObj = ensureDay(targetDay);
       dObj.activeStoryId = storyId;
@@ -3898,6 +4478,7 @@ Hãy đánh giá câu tiếng Anh của người học và trả về DUY NHẤT
 
     function deleteStoryItem(storyId, event) {
       if (event) event.stopPropagation();
+      stopActiveSpeechRecognition();
       stopAllSpeech();
       const targetDay = getTargetStoryDayNum();
       const dObj = ensureDay(targetDay);
@@ -3908,6 +4489,200 @@ Hãy đánh giá câu tiếng Anh của người học và trả về DUY NHẤT
       saveAppState();
       renderStorySection();
       showToast('Đã xóa truyện khỏi danh sách.');
+    }
+
+    function recordStoryLineShadowing(storyId, lineIndex, event) {
+      if (event) event.stopPropagation();
+      const targetDay = getTargetStoryDayNum();
+      const dObj = ensureDay(targetDay);
+      const activeStory = (dObj.stories || []).find(s => s.id === storyId);
+      if (!activeStory) return;
+
+      const lines = activeStory.englishText.split(/\n+/).map(l => l.trim()).filter(Boolean);
+      const targetLine = lines[lineIndex];
+      if (!targetLine) return;
+
+      const recKey = `${storyId}_${lineIndex}`;
+      if (activeSpeechRecognition && activeRecordingKey === recKey) {
+        stopActiveSpeechRecognition();
+        renderStorySection();
+        return;
+      }
+
+      activeRecordingKey = recKey;
+      const btnEl = document.getElementById(`btnShadowMic_${lineIndex}`);
+      if (btnEl) {
+        btnEl.classList.add('recording');
+        btnEl.innerHTML = '⏹️ Đang nghe... (Bấm để dừng)';
+      }
+
+      const liveBox = document.getElementById(`shadowResultBox_${lineIndex}`);
+      if (liveBox) {
+        liveBox.classList.remove('hidden');
+        liveBox.innerHTML = `<span style="color:var(--primary);font-weight:600;">🎙️ Hãy đọc to câu trên bằng tiếng Anh...</span>`;
+      }
+
+      startSpeechRecognitionSession({
+        onInterim: (interim) => {
+          if (liveBox) {
+            liveBox.innerHTML = `Đang nghe bạn đọc: <strong>"${escapeHtml(interim)}"</strong>`;
+          }
+        },
+        onFinal: (finalTxt) => {
+          if (!finalTxt) {
+            if (liveBox) {
+              liveBox.innerHTML = `<span style="color:var(--amber);">Chưa thu được giọng nói. Hãy thử bấm Mic và đọc lại nhé!</span>`;
+            }
+            if (btnEl) {
+              btnEl.classList.remove('recording');
+              btnEl.innerHTML = '🎙️ Thu âm đọc thử';
+            }
+            return;
+          }
+
+          const evalData = evaluateSpokenTranscript(targetLine, finalTxt);
+          lineSpeechResults[recKey] = {
+            ...evalData,
+            targetLine
+          };
+          renderStorySection();
+
+          // If in Role-Play auto flow, advance to next line automatically
+          if (rolePlayActive && rolePlayCurrentLineIdx === lineIndex) {
+            setTimeout(() => {
+              advanceRolePlayDialogue(storyId, lineIndex + 1);
+            }, 900);
+          }
+        },
+        onError: () => {
+          if (btnEl) {
+            btnEl.classList.remove('recording');
+            btnEl.innerHTML = '🎙️ Thu âm đọc thử';
+          }
+        }
+      });
+    }
+
+    async function askAiPronunciationCoach(storyId, lineIndex, event) {
+      if (event) event.stopPropagation();
+      const recKey = `${storyId}_${lineIndex}`;
+      const saved = lineSpeechResults[recKey];
+      if (!saved) return;
+
+      const btn = document.getElementById(`btnAiPronun_${lineIndex}`);
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Đang phân tích phát âm...';
+      }
+
+      const sysPrompt = `Bạn là Huấn luyện viên Phát âm & Ngữ điệu TOEIC Speaking.
+Hãy so sánh câu gốc và câu hệ thống nhận diện được từ giọng đọc của học viên. Chỉ ra ngắn gọn (2-3 dòng):
+1. Các từ phát âm tốt và các từ bị nhận diện nhầm (hướng dẫn cách đặt môi/lưỡi hoặc trọng âm IPA cho từ bị nhầm).
+2. Cách nối âm (linking sounds) hoặc nhấn giọng tự nhiên trong câu này.`;
+
+      try {
+        const reply = await callAI(
+          sysPrompt,
+          `Câu gốc: "${saved.targetLine}"\nGiọng học viên đọc (Speech-to-Text): "${saved.spokenTranscript}" (Độ khớp: ${saved.accuracy}%)`,
+          null,
+          'act'
+        );
+        saved.aiCoachNote = reply.trim();
+        renderStorySection();
+      } catch (err) {
+        showToast(err.message);
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = '🤖 Nhờ AI sửa phát âm & nối âm';
+        }
+      }
+    }
+
+    function toggleRolePlayDialogue(storyId) {
+      if (rolePlayActive) {
+        rolePlayActive = false;
+        rolePlayCurrentLineIdx = -1;
+        stopActiveSpeechRecognition();
+        stopAllSpeech();
+        renderStorySection();
+        return;
+      }
+      rolePlayActive = true;
+      advanceRolePlayDialogue(storyId, 0);
+    }
+
+    function advanceRolePlayDialogue(storyId, nextIdx) {
+      if (!rolePlayActive) return;
+      const targetDay = getTargetStoryDayNum();
+      const dObj = ensureDay(targetDay);
+      const activeStory = (dObj.stories || []).find(s => s.id === storyId);
+      if (!activeStory) return;
+
+      const lines = activeStory.englishText.split(/\n+/).map(l => l.trim()).filter(Boolean);
+      if (nextIdx >= lines.length) {
+        rolePlayActive = false;
+        rolePlayCurrentLineIdx = -1;
+        showToast('🎉 Đã hoàn thành màn đóng vai Hội thoại! Hãy xem điểm phát âm của từng câu.');
+        renderStorySection();
+        return;
+      }
+
+      rolePlayCurrentLineIdx = nextIdx;
+      const rawLine = lines[nextIdx];
+      const lineGender = detectLineSpeakerGender(rawLine, nextIdx);
+
+      // Highlight current line
+      document.querySelectorAll('.story-line-block').forEach((el, i) => {
+        if (i === nextIdx) {
+          el.classList.add('speaking-active');
+          el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+          el.classList.remove('speaking-active');
+        }
+      });
+
+      const statusBanner = document.getElementById('rolePlayStatusBanner');
+      if (lineGender === rolePlayUserGender) {
+        // User's turn to speak!
+        if (statusBanner) {
+          statusBanner.innerHTML = `<strong style="color:var(--danger);">🎙️ ĐẾN LƯỢT VAI CỦA BẠN (Dòng #${nextIdx + 1}):</strong> Hãy đọc to câu đang tô sáng bên dưới!`;
+        }
+        recordStoryLineShadowing(storyId, nextIdx, null);
+      } else {
+        // AI Partner's turn to speak
+        if (statusBanner) {
+          statusBanner.innerHTML = `<strong style="color:var(--primary);">🔊 ĐỐI TÁC ĐANG NÓI (Dòng #${nextIdx + 1})...</strong> Chuẩn bị đến lượt bạn ở câu tiếp theo.`;
+        }
+        stopAllSpeech();
+        rolePlayActive = true; // keep flag true after stopAllSpeech
+        const session = storyPlaybackSessionId;
+        const spokenText = stripSpeakerPrefixForTTS(rawLine);
+        const utter = new SpeechSynthesisUtterance(spokenText);
+        const voice = pickBestVoice(lineGender);
+        if (voice) {
+          utter.voice = voice;
+          utter.lang = voice.lang;
+        } else {
+          utter.lang = appState.voiceAccent || 'en-US';
+        }
+        utter.rate = appState.voiceRate || 0.92;
+        const basePitch = appState.voicePitch || 0.96;
+        utter.pitch = lineGender === 'male' ? Math.max(0.85, basePitch - 0.06) : basePitch;
+
+        utter.onend = () => {
+          if (!rolePlayActive || session !== storyPlaybackSessionId) return;
+          setTimeout(() => {
+            advanceRolePlayDialogue(storyId, nextIdx + 1);
+          }, 450);
+        };
+        utter.onerror = () => {
+          if (!rolePlayActive || session !== storyPlaybackSessionId) return;
+          setTimeout(() => {
+            advanceRolePlayDialogue(storyId, nextIdx + 1);
+          }, 300);
+        };
+        window.speechSynthesis.speak(utter);
+      }
     }
 
     function playActiveStoryLineByLine() {
@@ -4106,32 +4881,111 @@ Hãy đánh giá câu tiếng Anh của người học và trả về DUY NHẤT
           htmlLine = `<span class="speaker-role-tag ${roleClass}">${roleIcon} ${speakerMatch[1]}</span> ${speakerMatch[2]}`;
         }
 
+        const recKey = `${activeStory.id}_${lIdx}`;
+        const speechRes = lineSpeechResults[recKey];
+        const isCurrentRecording = activeRecordingKey === recKey;
+        const isUserRoleLine = storyStudioSubMode === 'roleplay' && gender === rolePlayUserGender;
+
+        const showSpeakingControls = storyStudioSubMode === 'shadowing' || storyStudioSubMode === 'roleplay';
+
         return `
-          <div class="story-line-block" onclick="speakSingleStoryLine(${lIdx})" title="Bấm vào dòng này để nghe đọc riêng câu này">
-            ${htmlLine}
+          <div class="story-line-block ${rolePlayCurrentLineIdx === lIdx ? 'speaking-active' : ''}" style="${isUserRoleLine ? 'border-left:3px solid var(--primary);padding-left:10px;' : ''}" onclick="speakSingleStoryLine(${lIdx})" title="Bấm vào câu để nghe mẫu phát âm">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;">
+              <div style="flex:1;min-width:220px;">${htmlLine}</div>
+              ${showSpeakingControls ? `
+                <div style="display:flex;align-items:center;gap:6px;" onclick="event.stopPropagation()">
+                  <button onclick="speakSingleStoryLine(${lIdx})" class="btn btn-secondary btn-sm" title="Nghe mẫu câu này">🔊 Nghe mẫu</button>
+                  <button id="btnShadowMic_${lIdx}" onclick="recordStoryLineShadowing('${activeStory.id}', ${lIdx}, event)" class="mic-record-btn btn-sm ${isCurrentRecording ? 'recording' : ''}">
+                    ${isCurrentRecording ? '⏹️ Đang nghe...' : '🎙️ Thu âm đọc thử'}
+                  </button>
+                </div>
+              ` : ''}
+            </div>
+
+            <div id="shadowResultBox_${lIdx}" class="${speechRes ? '' : 'hidden'}" onclick="event.stopPropagation()" style="margin-top:8px;padding:10px 12px;background-color:var(--bg-surface);border:1px solid var(--border-default);border-radius:var(--radius-sm);font-size:12.5px;">
+              ${speechRes ? `
+                <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px;">
+                  <div>
+                    <span class="badge ${speechRes.accuracy >= 75 ? 'badge-success' : 'badge-amber'}">
+                      Độ chính xác Speaking: ${speechRes.accuracy}% (${speechRes.matchedCount}/${speechRes.totalWords} từ)
+                    </span>
+                    <span style="margin-left:8px;color:var(--text-secondary);">Giọng bạn đọc: <em>"${escapeHtml(speechRes.spokenTranscript)}"</em></span>
+                  </div>
+                  <button id="btnAiPronun_${lIdx}" onclick="askAiPronunciationCoach('${activeStory.id}', ${lIdx}, event)" class="btn btn-soft btn-sm">
+                    🤖 Nhờ AI sửa phát âm & nối âm
+                  </button>
+                </div>
+                <div style="line-height:1.6;">So khớp từng từ: ${speechRes.wordDiffHtml}</div>
+                ${speechRes.aiCoachNote ? `
+                  <div style="margin-top:6px;padding:8px 10px;background-color:var(--bg-canvas);border-left:3px solid var(--primary);color:var(--text-primary);white-space:pre-line;">
+                    <strong>💡 Huấn luyện viên Phát âm AI:</strong>\n${escapeHtml(speechRes.aiCoachNote)}
+                  </div>
+                ` : ''}
+              ` : ''}
+            </div>
           </div>
         `;
       }).join('');
 
       readerContainer.innerHTML = `
-        <div class="story-reader-header">
-          <div>
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-              <span class="badge badge-primary">Ngày ${targetDay}</span>
-              <span class="badge">${escapeHtml(STORY_GENRE_LABELS[activeStory.genre] || 'Truyện Đời sống')}</span>
-              <span style="font-size:11.5px;color:var(--text-muted);">Bấm vào từng câu bất kỳ để nghe phát âm câu đó</span>
+        <div class="story-reader-header" style="flex-direction:column;align-items:stretch;gap:12px;">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                <span class="badge badge-primary">Ngày ${targetDay}</span>
+                <span class="badge">${escapeHtml(STORY_GENRE_LABELS[activeStory.genre] || 'Truyện Đời sống')}</span>
+              </div>
+              <h2 style="font-size:17px;font-weight:700;color:var(--text-primary);">${escapeHtml(activeStory.title || 'Truyện ngắn Đời sống')}</h2>
             </div>
-            <h2 style="font-size:17px;font-weight:700;color:var(--text-primary);">${escapeHtml(activeStory.title || 'Truyện ngắn Đời sống')}</h2>
+
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <button id="btnPlayStoryAudio" onclick="playActiveStoryLineByLine()" class="btn btn-primary btn-sm">
+                🎙️ Nghe đọc cả bài (Giọng Nam & Nữ)
+              </button>
+              <button onclick="openModal('voiceStudioModal')" class="btn btn-secondary btn-sm" title="Đổi giọng đọc Nam/Nữ">
+                ⚙️ Giọng đọc
+              </button>
+            </div>
           </div>
 
-          <div style="display:flex;align-items:center;gap:8px;">
-            <button id="btnPlayStoryAudio" onclick="playActiveStoryLineByLine()" class="btn btn-primary btn-sm">
-              🎙️ Nghe đọc Truyện (Giọng TOEIC Nam & Nữ)
-            </button>
-            <button onclick="openModal('voiceStudioModal')" class="btn btn-secondary btn-sm" title="Đổi giọng đọc Nam/Nữ">
-              ⚙️ Giọng đọc
-            </button>
+          <!-- 3 Sub-Modes Bar: Read & Listen | Line-by-Line Shadowing | Role-Play Dialogue -->
+          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding-top:10px;border-top:1px solid var(--border-default);">
+            <div class="segmented-group">
+              <button onclick="setStoryStudioSubMode('read')" class="segmented-btn ${storyStudioSubMode === 'read' ? 'active' : ''}">
+                📖 1. Đọc & Nghe Ngữ cảnh
+              </button>
+              <button onclick="setStoryStudioSubMode('shadowing')" class="segmented-btn ${storyStudioSubMode === 'shadowing' ? 'active' : ''}">
+                🗣️ 2. Luyện Speaking từng câu (Shadowing)
+              </button>
+              <button onclick="setStoryStudioSubMode('roleplay')" class="segmented-btn ${storyStudioSubMode === 'roleplay' ? 'active' : ''}">
+                🎭 3. Đóng vai Hội thoại Nam - Nữ
+              </button>
+            </div>
+
+            ${storyStudioSubMode === 'roleplay' ? `
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <div class="segmented-group">
+                  <button onclick="setRolePlayUserGender('male')" class="segmented-btn ${rolePlayUserGender === 'male' ? 'active' : ''}">Tôi đóng vai: 👨 Nam (Mark/Nam)</button>
+                  <button onclick="setRolePlayUserGender('female')" class="segmented-btn ${rolePlayUserGender === 'female' ? 'active' : ''}">Tôi đóng vai: 👩 Nữ (Linda/Emma)</button>
+                </div>
+                <button onclick="toggleRolePlayDialogue('${activeStory.id}')" class="btn ${rolePlayActive ? 'btn-amber' : 'btn-primary'} btn-sm">
+                  ${rolePlayActive ? '⏹️ Dừng Hội thoại Phân vai' : '▶️ Bắt đầu Hội thoại Phân vai'}
+                </button>
+              </div>
+            ` : `
+              <span style="font-size:11.5px;color:var(--text-muted);">
+                ${storyStudioSubMode === 'shadowing'
+                  ? '🎙️ Bấm "Thu âm đọc thử" ở bất kỳ câu nào để chấm độ chuẩn phát âm (Xanh = Đúng, Đỏ = Cần sửa)'
+                  : '💡 Bấm vào từng dòng để nghe phát âm riêng câu đó'}
+              </span>
+            `}
           </div>
+
+          ${storyStudioSubMode === 'roleplay' ? `
+            <div id="rolePlayStatusBanner" style="padding:10px 14px;background-color:var(--primary-soft);border:1px solid var(--primary-border);border-radius:var(--radius-sm);font-size:12.5px;color:var(--text-primary);">
+              🎭 <strong>Hướng dẫn Đóng vai:</strong> Bạn đang chọn đóng vai <strong>${rolePlayUserGender === 'male' ? '👨 Nam' : '👩 Nữ'}</strong>. Khi bấm <strong>"▶️ Bắt đầu Hội thoại Phân vai"</strong>, máy sẽ đọc lời của nhân vật kia rồi tự động bật Mic chờ bạn đọc lời thoại của mình!
+            </div>
+          ` : ''}
         </div>
 
         <div class="story-reader-scroll">
@@ -4437,6 +5291,14 @@ Trả về DUY NHẤT 1 JSON object hợp lệ:
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
+    }
+
+    function escapeJsStr(str) {
+      return String(str || '')
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, "\\'")
+        .replace(/"/g, '\\"')
+        .replace(/\n/g, ' ');
     }
 
     function renderAll() {
