@@ -1753,6 +1753,161 @@
   </div>
 
   <!-- ==========================================================================
+       MODAL 1: SMART PASTE VOCABULARY IMPORTER
+       ========================================================================== -->
+  <div id="smartPasteModal" class="modal-backdrop">
+    <div class="modal-panel" style="max-width:640px;">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:16px;font-weight:700;">+ Nạp từ vựng nhanh (Smart Paste)</h3>
+          <p style="font-size:12px;color:var(--text-muted);">Dán 1 hoặc nhiều từ vựng (ngăn cách nhau bằng dấu ---)</p>
+        </div>
+        <button type="button" onclick="closeModal('smartPasteModal')" class="btn btn-secondary btn-sm">Đóng</button>
+      </div>
+
+      <div class="modal-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <label style="font-size:13px;font-weight:600;">Lưu vào:</label>
+            <select id="smartPasteDaySelect" class="select" style="width:140px;height:32px;padding:4px 8px;font-weight:600;"></select>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <button type="button" onclick="fillSampleSmartPaste()" class="btn btn-secondary btn-sm">Dán mẫu thử</button>
+            <button type="button" id="btnSmartPasteAI" onclick="autoTranslateSmartPasteWithAI()" class="btn btn-soft btn-sm">
+              ✨ Dùng AI tự dịch câu mẫu & thêm Collocations
+            </button>
+          </div>
+        </div>
+
+        <textarea id="smartPasteTextarea" rows="10" class="textarea input-mono" placeholder="Ví dụ định dạng mỗi từ (ngăn cách nhiều từ bằng ---):&#10;filing cabinet&#10;Noun Phrase&#10;/ˈfaɪ.lɪŋ ˌkæb.ɪ.nət/&#10;tủ đựng tài liệu&#10;Please organize the filing cabinet and label each drawer.&#10;Vui lòng sắp xếp tủ đựng tài liệu và dán nhãn từng ngăn kéo."></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" onclick="closeModal('smartPasteModal')" class="btn btn-secondary">Hủy</button>
+        <button type="button" onclick="confirmSmartPaste()" class="btn btn-primary">Lưu vào Ngày đã chọn</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 2: MANUAL ADD / EDIT WORD
+       ========================================================================== -->
+  <div id="editWordModal" class="modal-backdrop">
+    <div class="modal-panel" style="max-width:560px;">
+      <div class="modal-header">
+        <h3 id="editWordModalTitle" style="font-size:16px;font-weight:700;">Thêm / Chỉnh sửa từ vựng</h3>
+        <button type="button" onclick="closeModal('editWordModal')" class="btn btn-secondary btn-sm">Đóng</button>
+      </div>
+
+      <div class="modal-body">
+        <input id="editWordId" type="hidden" value="" />
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label class="cline-label" style="display:block;margin-bottom:4px;">Từ vựng tiếng Anh *</label>
+            <input id="fieldWord" type="text" class="input" placeholder="VD: filing cabinet" />
+          </div>
+          <div>
+            <label class="cline-label" style="display:block;margin-bottom:4px;">Từ loại (PoS)</label>
+            <input id="fieldPos" type="text" class="input" placeholder="Noun / Verb / Noun Phrase..." />
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label class="cline-label" style="display:block;margin-bottom:4px;">Phiên âm IPA</label>
+            <input id="fieldPhonetic" type="text" class="input input-mono" placeholder="/ˈfaɪ.lɪŋ ˌkæb.ɪ.nət/" />
+          </div>
+          <div>
+            <label class="cline-label" style="display:block;margin-bottom:4px;">Nghĩa tiếng Việt *</label>
+            <input id="fieldMeaning" type="text" class="input" placeholder="tủ đựng hồ sơ, tài liệu" />
+          </div>
+        </div>
+
+        <div>
+          <label class="cline-label" style="display:block;margin-bottom:4px;">Câu ví dụ tiếng Anh (Context Sentence)</label>
+          <textarea id="fieldExampleEn" rows="2" class="textarea" placeholder="Please organize the filing cabinet and label each drawer."></textarea>
+        </div>
+
+        <div>
+          <label class="cline-label" style="display:block;margin-bottom:4px;">Dịch nghĩa câu ví dụ (Tiếng Việt)</label>
+          <textarea id="fieldExampleVi" rows="2" class="textarea" placeholder="Vui lòng sắp xếp tủ đựng tài liệu và dán nhãn từng ngăn kéo."></textarea>
+        </div>
+
+        <div>
+          <label class="cline-label" style="display:block;margin-bottom:4px;">Collocations & Ghi chú TOEIC</label>
+          <input id="fieldNotes" type="text" class="input" placeholder="lock the filing cabinet, top drawer..." />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" onclick="closeModal('editWordModal')" class="btn btn-secondary">Hủy</button>
+        <button type="button" onclick="saveEditedWord()" class="btn btn-primary">Lưu từ vựng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 5: TOEIC NATURAL VOICE STUDIO
+       ========================================================================== -->
+  <div id="voiceStudioModal" class="modal-backdrop">
+    <div class="modal-panel" style="max-width:560px;">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:16px;font-weight:700;">🎙️ Phòng thu Giọng đọc TOEIC Nam & Nữ Tự nhiên</h3>
+          <p style="font-size:12px;color:var(--text-muted);">Tự động ưu tiên giọng đọc Neural / Natural Online êm tai, chống mỏi đầu</p>
+        </div>
+        <button type="button" onclick="closeModal('voiceStudioModal')" class="btn btn-secondary btn-sm">Đóng</button>
+      </div>
+
+      <div class="modal-body">
+        <div>
+          <label class="cline-label" style="display:block;margin-bottom:4px;">👩 Giọng Nữ TOEIC (Linda / Emma):</label>
+          <div style="display:flex;gap:8px;">
+            <select id="selectFemaleVoiceURI" onchange="saveCustomVoiceSelection()" class="select"></select>
+            <button type="button" onclick="testVoiceSample('female')" class="btn btn-secondary btn-sm">🔊 Nghe thử Nữ</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="cline-label" style="display:block;margin-bottom:4px;">👨 Giọng Nam TOEIC (Mark / Nam):</label>
+          <div style="display:flex;gap:8px;">
+            <select id="selectMaleVoiceURI" onchange="saveCustomVoiceSelection()" class="select"></select>
+            <button type="button" onclick="testVoiceSample('male')" class="btn btn-secondary btn-sm">🔊 Nghe thử Nam</button>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label class="cline-label" style="display:block;margin-bottom:4px;">Tốc độ đọc (Khuyên dùng 0.92x):</label>
+            <select id="selectStudioRate" onchange="changeStudioRate(this.value)" class="select">
+              <option value="0.85">0.85x (Chậm rãi, nghe rõ từng âm)</option>
+              <option value="0.92" selected>0.92x (Chuẩn TOEIC Listening - Êm tai)</option>
+              <option value="1">1.0x (Tốc độ bản xứ tiêu chuẩn)</option>
+            </select>
+          </div>
+          <div>
+            <label class="cline-label" style="display:block;margin-bottom:4px;">Độ trầm ấm (Pitch):</label>
+            <select id="selectStudioPitch" onchange="changeStudioPitch(this.value)" class="select">
+              <option value="0.92">0.92 (Trầm ấm, dịu tai nhất)</option>
+              <option value="0.96" selected>0.96 (Tự nhiên, cân bằng)</option>
+              <option value="1">1.00 (Mặc định)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="padding:12px;background-color:var(--bg-canvas);border:1px solid var(--border-default);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:12.5px;color:var(--text-secondary);">Nghe thử đoạn hội thoại luân phiên Nam & Nữ:</span>
+          <button type="button" onclick="testVoiceSample('dialogue')" class="btn btn-primary btn-sm">🎙️ Nghe thử Hội thoại Nam - Nữ</button>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" onclick="closeModal('voiceStudioModal')" class="btn btn-primary">Hoàn tất</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
        MODAL 4: BACKUP & RESTORE JSON
        ========================================================================== -->
   <div id="backupModal" class="modal-backdrop">
@@ -1789,6 +1944,348 @@
   <div id="toastContainer" class="toast-wrap"></div>
 
   <script data-cfasync="false">
+    // ==========================================================================
+    // 1. CORE STORAGE KEYS, DEFAULT 21 DAY-1 WORDS & GLOBAL RUNTIME STATE
+    // ==========================================================================
+    const STORAGE_KEY = 'toeic_120_days_mastery_v4';
+    const AI_CONFIG_KEY = 'toeic_120_days_ai_config_v4';
+
+    const DEFAULT_DAY_1_WORDS = [
+      {
+        id: 'd1_w1',
+        word: 'filing cabinet',
+        pos: 'Noun Phrase',
+        phonetic: '/ˈfaɪ.lɪŋ ˌkæb.ɪ.nət/',
+        meaning: 'tủ đựng hồ sơ, tài liệu',
+        exampleEn: 'Please organize the filing cabinet and label each drawer so she can locate any document quickly.',
+        exampleVi: 'Vui lòng sắp xếp tủ đựng tài liệu và dán nhãn từng ngăn kéo để cô ấy có thể tìm thấy bất kỳ tài liệu nào một cách nhanh chóng.',
+        notes: 'lock the filing cabinet, organize the filing cabinet, top drawer of the filing cabinet'
+      },
+      {
+        id: 'd1_w2',
+        word: 'set up',
+        pos: 'Phrasal Verb',
+        phonetic: '/ˈset ˌʌp/',
+        meaning: 'bố trí, thiết lập, lắp đặt',
+        exampleEn: 'Mark, can you help me set up the office before the new intern arrives?',
+        exampleVi: 'Mark, anh có thể giúp tôi bố trí văn phòng trước khi thực tập sinh mới đến không?',
+        notes: 'set up a workstation, set up a meeting, set up the equipment'
+      },
+      {
+        id: 'd1_w3',
+        word: 'seat',
+        pos: 'Verb / Noun',
+        phonetic: '/siːt/',
+        meaning: 'xếp chỗ ngồi / chỗ ngồi',
+        exampleEn: 'We will seat her near the copy machine so she can assist the team easily.',
+        exampleVi: 'Chúng ta sẽ xếp chỗ ngồi cho cô ấy gần máy photocopy để cô ấy có thể hỗ trợ nhóm dễ dàng.',
+        notes: 'seat a guest, take a seat, reserve a seat'
+      },
+      {
+        id: 'd1_w4',
+        word: 'copy machine',
+        pos: 'Noun Phrase',
+        phonetic: '/ˈkɑː.pi məˌʃiːn/',
+        meaning: 'máy photocopy',
+        exampleEn: 'We will seat her near the copy machine in the main hallway.',
+        exampleVi: 'Chúng ta sẽ xếp chỗ ngồi cho cô ấy gần máy photocopy ở hành lang chính.',
+        notes: 'use the copy machine, paper jam in the copy machine'
+      },
+      {
+        id: 'd1_w5',
+        word: 'install',
+        pos: 'Verb',
+        phonetic: '/ɪnˈstɔːl/',
+        meaning: 'lắp đặt, cài đặt (phần mềm/thiết bị)',
+        exampleEn: 'I just had technicians install a new fax machine this morning.',
+        exampleVi: 'Tôi vừa nhờ các kỹ thuật viên lắp đặt một chiếc máy fax mới vào sáng nay.',
+        notes: 'install new software, install equipment,newly installed'
+      },
+      {
+        id: 'd1_w6',
+        word: 'fax machine',
+        pos: 'Noun Phrase',
+        phonetic: '/ˈfæks məˌʃiːn/',
+        meaning: 'máy fax',
+        exampleEn: 'Technicians helped install a new fax machine next to the reception desk.',
+        exampleVi: 'Kỹ thuật viên đã giúp lắp đặt một máy fax mới cạnh quầy lễ tân.',
+        notes: 'send a document via fax machine'
+      },
+      {
+        id: 'd1_w7',
+        word: 'replace',
+        pos: 'Verb',
+        phonetic: '/rɪˈpleɪs/',
+        meaning: 'thay thế',
+        exampleEn: 'I will replace the old stapler on her desk with a brand-new one.',
+        exampleVi: 'Tôi sẽ thay thế chiếc dập ghim cũ trên bàn cô ấy bằng một chiếc mới tinh.',
+        notes: 'replace worn-out parts, replace the ink cartridge'
+      },
+      {
+        id: 'd1_w8',
+        word: 'stapler',
+        pos: 'Noun',
+        phonetic: '/ˈsteɪ.plɚ/',
+        meaning: 'cái dập ghim, bấm ghim',
+        exampleEn: 'I will replace the old stapler too because it keeps jamming.',
+        exampleVi: 'Tôi cũng sẽ thay cái dập ghim cũ vì nó cứ bị kẹt suốt.',
+        notes: 'heavy-duty stapler, run out of staples'
+      },
+      {
+        id: 'd1_w9',
+        word: 'organize',
+        pos: 'Verb',
+        phonetic: '/ˈɔːr.ɡə.naɪz/',
+        meaning: 'sắp xếp, tổ chức',
+        exampleEn: 'Please organize the filing cabinet before the audit tomorrow.',
+        exampleVi: 'Vui lòng sắp xếp lại tủ đựng tài liệu trước buổi kiểm toán ngày mai.',
+        notes: 'organize files, well-organized workspace'
+      },
+      {
+        id: 'd1_w10',
+        word: 'label',
+        pos: 'Verb / Noun',
+        phonetic: '/ˈleɪ.bəl/',
+        meaning: 'dán nhãn / nhãn dán',
+        exampleEn: 'Please label each drawer clearly with the category name.',
+        exampleVi: 'Vui lòng dán nhãn từng ngăn kéo rõ ràng với tên danh mục.',
+        notes: 'label each folder, shipping label'
+      },
+      {
+        id: 'd1_w11',
+        word: 'drawer',
+        pos: 'Noun',
+        phonetic: '/drɔːr/',
+        meaning: 'ngăn kéo',
+        exampleEn: 'She opened the top drawer of the filing cabinet to find the contract.',
+        exampleVi: 'Cô ấy mở ngăn kéo trên cùng của tủ hồ sơ để tìm bản hợp đồng.',
+        notes: 'top drawer, bottom drawer, lock the desk drawer'
+      },
+      {
+        id: 'd1_w12',
+        word: 'locate',
+        pos: 'Verb',
+        phonetic: '/ˈloʊ.keɪt/',
+        meaning: 'tìm thấy, xác định vị trí',
+        exampleEn: 'Label each drawer so she can locate any document quickly.',
+        exampleVi: 'Hãy dán nhãn từng ngăn kéo để cô ấy có thể tìm thấy bất kỳ tài liệu nào một cách nhanh chóng.',
+        notes: 'locate a missing file, conveniently located'
+      },
+      {
+        id: 'd1_w13',
+        word: 'document',
+        pos: 'Noun / Verb',
+        phonetic: '/ˈdɑː.kjə.mənt/',
+        meaning: 'tài liệu, văn bản',
+        exampleEn: 'Please review the confidential document before signing it.',
+        exampleVi: 'Vui lòng xem kỹ tài liệu mật trước khi ký.',
+        notes: 'official document, attach a document'
+      },
+      {
+        id: 'd1_w14',
+        word: 'place',
+        pos: 'Verb / Noun',
+        phonetic: '/pleɪs/',
+        meaning: 'đặt, để / nơi chốn',
+        exampleEn: 'Where should I place the printing paper that just arrived?',
+        exampleVi: 'Tôi nên đặt xấp giấy in vừa mới giao đến ở đâu?',
+        notes: 'place an order, place on the desk'
+      },
+      {
+        id: 'd1_w15',
+        word: 'printing paper',
+        pos: 'Noun Phrase',
+        phonetic: '/ˈprɪn.tɪŋ ˌpeɪ.pɚ/',
+        meaning: 'giấy in',
+        exampleEn: 'Where should I place the extra boxes of A4 printing paper?',
+        exampleVi: 'Tôi nên để các thùng giấy in A4 dự phòng ở đâu?',
+        notes: 'load printing paper, run out of printing paper'
+      },
+      {
+        id: 'd1_w16',
+        word: 'stack',
+        pos: 'Verb / Noun',
+        phonetic: '/stæk/',
+        meaning: 'xếp chồng lên / chồng, đống',
+        exampleEn: 'Stack it neatly on the bottom shelf in the supply room.',
+        exampleVi: 'Hãy xếp chồng nó gọn gàng ở kệ dưới cùng trong phòng vật tư.',
+        notes: 'stack the boxes, a stack of documents'
+      },
+      {
+        id: 'd1_w17',
+        word: 'shelf',
+        pos: 'Noun',
+        phonetic: '/ʃelf/',
+        meaning: 'kệ, giá đỡ',
+        exampleEn: 'Stack the printing paper on the bottom shelf in the supply room.',
+        exampleVi: 'Hãy xếp giấy in lên kệ dưới cùng trong phòng kho vật tư.',
+        notes: 'top shelf, bottom shelf, storage shelves'
+      },
+      {
+        id: 'd1_w18',
+        word: 'supply room',
+        pos: 'Noun Phrase',
+        phonetic: '/səˈplaɪ ˌruːm/',
+        meaning: 'phòng kho vật tư văn phòng',
+        exampleEn: 'Extra notebooks and pens are kept in the supply room.',
+        exampleVi: 'Sổ tay và bút dự phòng được cất trong phòng vật tư.',
+        notes: 'office supply room, check the supply room'
+      },
+      {
+        id: 'd1_w19',
+        word: 'notepad',
+        pos: 'Noun',
+        phonetic: '/ˈnoʊt.pæd/',
+        meaning: 'sổ ghi chép nhỏ',
+        exampleEn: 'Also, put a notepad on her desk so she can take notes during training.',
+        exampleVi: 'Ngoài ra, hãy để một cuốn sổ ghi chép trên bàn cô ấy để ghi chú trong buổi đào tạo.',
+        notes: 'write on a notepad, yellow notepad'
+      },
+      {
+        id: 'd1_w20',
+        word: 'bulletin board',
+        pos: 'Noun Phrase',
+        phonetic: '/ˈbʊl.ə.t̬ɪn ˌbɔːrd/',
+        meaning: 'bảng thông báo',
+        exampleEn: 'Pin the updated safety rules on the bulletin board in the break room.',
+        exampleVi: 'Hãy ghim nội quy an toàn mới cập nhật lên bảng thông báo trong phòng nghỉ.',
+        notes: 'post on the bulletin board, check the bulletin board'
+      },
+      {
+        id: 'd1_w21',
+        word: 'equipment',
+        pos: 'Noun (Uncountable)',
+        phonetic: '/ɪˈkwɪp.mənt/',
+        meaning: 'trang thiết bị (không đếm được)',
+        exampleEn: 'I will review all the office equipment this afternoon to make sure everything works.',
+        exampleVi: 'Tôi sẽ kiểm tra toàn bộ thiết bị văn phòng vào chiều nay để đảm bảo mọi thứ đều hoạt động tốt.',
+        notes: 'office equipment, piece of equipment (không có s)'
+      }
+    ];
+
+    const DEFAULT_DAY_1_STORIES = [
+      {
+        id: 'st_default_1',
+        title: 'Preparing the Office for the New Intern',
+        genre: 'office_dialogue',
+        sourceDays: [1],
+        createdAt: 'Mẫu TOEIC Part 3',
+        englishText: `Linda: Mark, can you help me set up the office before the new intern arrives? We'll seat her near the copy machine.\nMark: Sure. I just had technicians install a new fax machine, and I'll replace the old stapler too.\nLinda: Great. Please organize the filing cabinet and label each drawer so she can locate any document quickly.\nMark: Okay. Where should I place the printing paper?\nLinda: Stack it on the bottom shelf in the supply room. Also, put a notepad on her desk and pin the safety rules on the bulletin board.\nMark: Got it. I'll review all the equipment this afternoon to make sure everything works.`,
+        vietnameseText: `Linda: Mark, anh có thể giúp tôi bố trí văn phòng trước khi thực tập sinh mới đến không? Chúng ta sẽ xếp chỗ ngồi cho cô ấy gần máy photocopy.\nMark: Được chứ. Tôi vừa nhờ kỹ thuật viên lắp đặt một máy fax mới, và tôi cũng sẽ thay thế cái dập ghim cũ.\nLinda: Tuyệt. Anh hãy sắp xếp lại tủ đựng tài liệu và dán nhãn từng ngăn kéo để cô ấy có thể nhanh chóng tìm thấy bất kỳ tài liệu nào.\nMark: Được. Tôi nên đặt giấy in ở đâu?\nLinda: Hãy xếp chồng nó trên kệ dưới cùng trong phòng kho. Ngoài ra, anh để một cuốn sổ ghi chép trên bàn của cô ấy và ghim nội quy an toàn lên bảng thông báo nhé.\nMark: Tôi hiểu rồi. Chiều nay tôi sẽ kiểm tra lại toàn bộ thiết bị để đảm bảo mọi thứ đều hoạt động tốt.`
+      },
+      {
+        id: 'st_default_2',
+        title: 'Chủ nhật dọn góc làm việc tại căn hộ (Life Story)',
+        genre: 'daily_life',
+        sourceDays: [1],
+        createdAt: 'Truyện Đời sống',
+        englishText: `Emma: Nam, our home study corner is getting so messy! Can you help me set up a cleaner desk before Monday?\nNam: Good idea. Let's organize the small filing cabinet first and label each drawer so we can locate our tax document or warranty cards easily.\nEmma: Where should I place this heavy box of printing paper and the spare equipment?\nNam: Just stack them on the bottom shelf inside our hallway supply room. I will also replace this broken stapler and put a fresh notepad next to your laptop.\nEmma: Awesome! Let's pin our weekend coffee photos on the bulletin board above the copy machine too.`,
+        vietnameseText: `Emma: Nam ơi, góc học tập ở căn hộ của tụi mình bừa bộn quá rồi! Anh giúp em bố trí lại chiếc bàn gọn gàng hơn trước thứ Hai được không?\nNam: Ý hay đó. Hãy sắp xếp lại chiếc tủ đựng tài liệu nhỏ trước và dán nhãn từng ngăn kéo để tụi mình có thể tìm thấy tài liệu thuế hay phiếu bảo hành dễ dàng.\nEmma: Em nên đặt thùng giấy in nặng này và đám thiết bị dự phòng ở đâu đây?\nNam: Cứ xếp chồng chúng lên kệ dưới cùng trong phòng kho nhỏ ở hành lang ấy. Anh cũng sẽ thay cái dập ghim bị hỏng này và đặt một cuốn sổ ghi chép mới cạnh laptop của em.\nEmma: Tuyệt vời! Tụi mình ghim thêm mấy tấm ảnh đi cà phê cuối tuần lên bảng thông báo phía trên máy photocopy luôn nhé.`
+      }
+    ];
+
+    const FALLBACK_POOL = DEFAULT_DAY_1_WORDS.slice(0, 8);
+
+    let activeTab = 'vocab';
+    let storyStudioSubMode = 'read'; // 'read' | 'shadowing' | 'roleplay'
+    let rolePlayUserGender = 'male'; // 'male' | 'female'
+    let rolePlayActive = false;
+    let rolePlayCurrentLineIdx = -1;
+    let activeSpeechRecognition = null;
+    let activeRecordingKey = null;
+    let lineSpeechResults = {};
+
+    let quizState = {
+      mode: 'EN_VI',
+      phaseSize: '7',
+      activePhaseIndex: 0,
+      customStart: 1,
+      customEnd: 7,
+      completedPhases: {},
+      questions: [],
+      wrongWordsInPhase: [],
+      currentIndex: 0,
+      score: 0,
+      answeredCount: 0
+    };
+
+    function createInitialState() {
+      const days = {};
+      for (let i = 1; i <= 120; i++) {
+        days[String(i)] = {
+          words: i === 1 ? [...DEFAULT_DAY_1_WORDS] : [],
+          sentences: i === 1 ? [
+            {
+              id: 's_seed_1',
+              text: 'Please organize the filing cabinet and label each drawer so we can locate any document quickly.',
+              usedWords: ['organize', 'filing cabinet', 'label', 'drawer', 'locate', 'document'],
+              createdAt: 'Mẫu Start Mixing',
+              aiFeedback: {
+                score: '9.5/10',
+                encouragement: 'Kết hợp 6 từ vựng Ngày 1 trong một câu mệnh lệnh công sở cực kỳ mạch lạc!',
+                grammarNotes: 'Cấu trúc "so + S + can + V" diễn tả mục đích rất chuẩn xác.',
+                naturalWorkVersion: 'Could you organize the filing cabinet and label each drawer so the team can locate documents faster?',
+                toeicHighVersion: 'All personnel are requested to organize the filing cabinet and label each drawer to locate documents efficiently.'
+              }
+            }
+          ] : [],
+          stories: i === 1 ? [...DEFAULT_DAY_1_STORIES] : [],
+          activeStoryId: i === 1 ? 'st_default_1' : null
+        };
+      }
+      return {
+        activeDay: 1,
+        storySourceDay: 1,
+        dayFilter: 'all',
+        vocabViewMode: 'focus',
+        focusCardIndex: 0,
+        extraReviewDays: [],
+        voicePersona: 'auto',
+        voiceAccent: 'en-US',
+        voiceRate: 0.92,
+        voicePitch: 0.96,
+        preferredFemaleVoiceURI: '',
+        preferredMaleVoiceURI: '',
+        days
+      };
+    }
+
+    function loadAppState() {
+      const fallback = createInitialState();
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('toeic_120_days_mastery_v3');
+        if (!raw) return fallback;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object' || !parsed.days) return fallback;
+
+        // Ensure all 120 days exist and Day 1 has words if empty
+        for (let i = 1; i <= 120; i++) {
+          const k = String(i);
+          if (!parsed.days[k]) {
+            parsed.days[k] = { words: [], sentences: [], stories: [], activeStoryId: null };
+          } else {
+            if (!Array.isArray(parsed.days[k].words) && Array.isArray(parsed.days[k].vocab)) {
+              parsed.days[k].words = parsed.days[k].vocab;
+            }
+            if (!Array.isArray(parsed.days[k].words)) parsed.days[k].words = [];
+            if (!Array.isArray(parsed.days[k].sentences)) parsed.days[k].sentences = [];
+            if (!Array.isArray(parsed.days[k].stories)) parsed.days[k].stories = [];
+          }
+        }
+        if (parsed.days['1'].words.length <= 1) {
+          parsed.days['1'].words = [...DEFAULT_DAY_1_WORDS];
+        }
+        if (parsed.days['1'].stories.length === 0) {
+          parsed.days['1'].stories = [...DEFAULT_DAY_1_STORIES];
+          parsed.days['1'].activeStoryId = 'st_default_1';
+        }
+        return { ...fallback, ...parsed, days: parsed.days };
+      } catch (e) {
+        console.warn('Resetting corrupted state to default:', e);
+        return fallback;
+      }
+    }
+
     // ==========================================================================
     // 2. MULTI-PROVIDER AI ENGINE WITH BRAND ICONS & INDEPENDENT CONFIGS
     // ==========================================================================
